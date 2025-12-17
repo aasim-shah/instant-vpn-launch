@@ -41,9 +41,9 @@ export function Header() {
           {/* Desktop Actions */}
           <div className="hidden items-center gap-3 md:flex">
             <ThemeToggle />
-            <Button variant="ghost" size="sm">
+            {/* <Button variant="ghost" size="sm">
               Sign In
-            </Button>
+            </Button> */}
             <Button size="sm">Get Started</Button>
           </div>
 
@@ -75,9 +75,9 @@ export function Header() {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="ghost" className="justify-start">
+                {/* <Button variant="ghost" className="justify-start">
                   Sign In
-                </Button>
+                </Button> */}
                 <Button className="justify-start">Get Started</Button>
               </div>
             </div>

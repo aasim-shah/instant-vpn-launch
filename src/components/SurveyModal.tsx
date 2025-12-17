@@ -45,6 +45,7 @@ interface SurveyData {
     companySize: string;
     targetMarket: string;
     vpnBusinessType: string;
+    email: string;
   };
   applicationDetails: {
     platforms: string[];
@@ -89,6 +90,8 @@ const initialSurveyData: SurveyData = {
     companySize: "",
     targetMarket: "",
     vpnBusinessType: "",
+    email: "", 
+
   },
   applicationDetails: {
     platforms: [],
@@ -277,7 +280,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                   {index < steps.length - 1 && (
                     <div
                       className={cn(
-                        "mx-2 hidden h-0.5 w-8 lg:block",
+                        "hidden h-0.5 w-8 mx-3 lg:block",
                         isCompleted ? "bg-primary" : "bg-border"
                       )}
                     />
@@ -285,9 +288,6 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                 </div>
               );
             })}
-          </div>
-          <div className="mt-2 text-center text-sm font-medium">
-            Step {currentStep} of 6: {steps[currentStep - 1].title}
           </div>
         </div>
 
@@ -305,6 +305,17 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                   onChange={(e) => updateBusinessInfo("companyName", e.target.value)}
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companyEmail">Company Email *</Label>
+                <Input
+                  id="email"
+                  placeholder="Enter your company email"
+                  value={surveyData.businessInfo.email}
+                  onChange={(e) => updateBusinessInfo("email", e.target.value)}
+                />
+              </div>
+
 
               <div className="space-y-2">
                 <Label>Business Stage *</Label>
@@ -910,6 +921,10 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>
+
+          <div className="mt-2 text-center text-xs font-light text-muted-foreground/50">
+            Step {currentStep} of 6: {steps[currentStep - 1].title}
+          </div>
 
           {currentStep < 6 ? (
             <Button onClick={handleNext} className="gap-2">

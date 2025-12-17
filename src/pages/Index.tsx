@@ -8,6 +8,7 @@ import { PricingSection } from "@/components/PricingSection";
 import { FAQSection } from "@/components/FAQSection";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
+import GlobalServerMap from "@/components/MapSVG";
 
 const Index = () => {
   return (
@@ -18,7 +19,8 @@ const Index = () => {
         <HowItWorksSection />
         <FeaturesSection />
         <UseCasesSection />
-        <ServerDemographicsSection />
+        {/* <ServerDemographicsSection /> */}
+        <GlobalServerMap />
         <PricingSection />
         <FAQSection />
         <CTASection />
