@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Globe, Zap, Shield } from "lucide-react";
+import { SurveyModal } from "./SurveyModal";
 
 export function HeroSection() {
+  const [surveyOpen, setSurveyOpen] = useState(false);
+
   return (
     <section className="relative min-h-screen overflow-hidden pt-16">
       {/* Background Elements */}
@@ -51,7 +55,7 @@ export function HeroSection() {
 
           {/* CTAs */}
           <div className="animate-fade-up animation-delay-600 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button variant="hero" size="xl">
+            <Button variant="hero" size="xl" onClick={() => setSurveyOpen(true)}>
               Launch Your VPN Servers
               <ArrowRight className="h-5 w-5" />
             </Button>
@@ -98,6 +102,9 @@ export function HeroSection() {
           ))}
         </div>
       </div>
+
+      {/* Survey Modal */}
+      <SurveyModal open={surveyOpen} onOpenChange={setSurveyOpen} />
     </section>
   );
 }
