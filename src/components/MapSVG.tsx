@@ -46,14 +46,19 @@ export default function GlobalServerMap() {
   return (
     <section className="md:w-9/12 mx-auto border-none bg-transparent py-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-10">
-          <h2 className="text-3xl font-semibold tracking-tight">
-            Global Server Coverage
+      <div className="mx-auto mb-16 max-w-2xl text-center">
+          <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-wider text-primary">
+          WORLD MAP
+          </span>
+          <h2 className="mb-4 text-3xl font-bold sm:text-4xl lg:text-5xl">
+            Our <span className="gradient-text">Global Server</span> Network
           </h2>
-          <p className="mt-2 text-muted-foreground">
-            Live view of our production-tested VPN infrastructure across regions
+          <p className="text-lg text-muted-foreground">
+            Discover our extensive network of servers around the globe, ensuring optimal performance and reliability for your VPN needs.
           </p>
+
         </div>
+
 
         <div className="relative rounded-3xl border-none p-6">
           <svg
