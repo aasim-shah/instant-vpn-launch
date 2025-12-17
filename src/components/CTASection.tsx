@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
+import { SurveyModal } from "./SurveyModal";
 
 export function CTASection() {
+  const [surveyOpen, setSurveyOpen] = useState(false);
+
   return (
     <section className="relative overflow-hidden py-24 lg:py-32 bg-secondary/30">
       {/* Background Elements */}
@@ -31,7 +35,7 @@ export function CTASection() {
 
           {/* CTAs */}
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button variant="hero" size="xl">
+            <Button variant="hero" size="xl" onClick={() => setSurveyOpen(true)}>
               Start Your Free Trial
               <ArrowRight className="h-5 w-5" />
             </Button>
@@ -46,6 +50,9 @@ export function CTASection() {
           </p>
         </div>
       </div>
+
+      {/* Survey Modal */}
+      <SurveyModal open={surveyOpen} onOpenChange={setSurveyOpen} />
     </section>
   );
 }
