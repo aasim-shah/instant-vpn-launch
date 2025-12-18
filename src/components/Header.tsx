@@ -39,7 +39,6 @@ export function Header() {
                     to={link.href}
                     className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground flex items-center gap-1.5"
                   >
-                    {link.label === "Infrastructure" && <Settings className="h-3.5 w-3.5" />}
                     {link.label}
                   </Link>
                 );
