@@ -120,7 +120,7 @@ function TreeItem({
 
 // VPN Server Form Component
 function VPNServerForm({ infrastructure }: { infrastructure: ReturnType<typeof useInfrastructure> }) {
-  const { state, updateVPNMode, updateVPNClient, addVPNServer, removeVPNServer, updateVPNServer, addVPNServerTag, removeVPNServerTag, updateVPNServerTag, updateVPNEnvOverride } = infrastructure;
+  const { state, updateVPNMode, updateVPNClient, addVPNServer, removeVPNServer, updateVPNServer } = infrastructure;
   const { vpnConfig } = state;
 
   return (
@@ -149,82 +149,6 @@ function VPNServerForm({ infrastructure }: { infrastructure: ReturnType<typeof u
             value={vpnConfig.client}
             onChange={(e) => updateVPNClient(e.target.value)}
           />
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* Environment Overrides */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Settings className="h-4 w-4 text-primary" />
-          <h3 className="font-semibold">Environment Overrides</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label>NODE_ENV</Label>
-            <Select
-              value={vpnConfig.envOverrides.NODE_ENV}
-              onValueChange={(v) => updateVPNEnvOverride("NODE_ENV", v)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="production">production</SelectItem>
-                <SelectItem value="development">development</SelectItem>
-                <SelectItem value="staging">staging</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>LOG_LEVEL</Label>
-            <Select
-              value={vpnConfig.envOverrides.LOG_LEVEL}
-              onValueChange={(v) => updateVPNEnvOverride("LOG_LEVEL", v)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="debug">debug</SelectItem>
-                <SelectItem value="info">info</SelectItem>
-                <SelectItem value="warn">warn</SelectItem>
-                <SelectItem value="error">error</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>VPN_INTERFACE</Label>
-            <Input
-              value={vpnConfig.envOverrides.VPN_INTERFACE}
-              onChange={(e) => updateVPNEnvOverride("VPN_INTERFACE", e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>MONITORING_PORT</Label>
-            <Input
-              type="number"
-              value={vpnConfig.envOverrides.MONITORING_PORT}
-              onChange={(e) => updateVPNEnvOverride("MONITORING_PORT", parseInt(e.target.value) || 3000)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>HEALTH_CHECK_INTERVAL (sec)</Label>
-            <Input
-              type="number"
-              value={vpnConfig.envOverrides.HEALTH_CHECK_INTERVAL}
-              onChange={(e) => updateVPNEnvOverride("HEALTH_CHECK_INTERVAL", parseInt(e.target.value) || 30)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>MAX_PEERS</Label>
-            <Input
-              type="number"
-              value={vpnConfig.envOverrides.MAX_PEERS}
-              onChange={(e) => updateVPNEnvOverride("MAX_PEERS", parseInt(e.target.value) || 100)}
-            />
-          </div>
         </div>
       </div>
 
@@ -262,31 +186,7 @@ function VPNServerForm({ infrastructure }: { infrastructure: ReturnType<typeof u
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Host *</Label>
-                    <Input
-                      placeholder="192.168.1.100 or hostname"
-                      value={server.host}
-                      onChange={(e) => updateVPNServer(server.id, { host: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Username *</Label>
-                    <Input
-                      value={server.username}
-                      onChange={(e) => updateVPNServer(server.id, { username: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Password *</Label>
-                    <Input
-                      type="password"
-                      placeholder="SSH password"
-                      value={server.password}
-                      onChange={(e) => updateVPNServer(server.id, { password: e.target.value })}
-                    />
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Environment *</Label>
                     <Select
@@ -304,71 +204,41 @@ function VPNServerForm({ infrastructure }: { infrastructure: ReturnType<typeof u
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label>Group</Label>
+                  <div className="space-y-2">
+                    <Label>Size *</Label>
                     <Select
-                      value={server.group}
-                      onValueChange={(v) => updateVPNServer(server.id, { group: v })}
+                      value={server.size}
+                      onValueChange={(v) => updateVPNServer(server.id, { size: v })}
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="development">Development</SelectItem>
-                        <SelectItem value="staging">Staging</SelectItem>
-                        <SelectItem value="production">Production</SelectItem>
-                        <SelectItem value="testing">Testing</SelectItem>
+                        {NODE_SIZES.map((size) => (
+                          <SelectItem key={size.slug} value={size.slug}>
+                            {size.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-
-                {/* Tags */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="flex items-center gap-1.5">
-                      <Tag className="h-3.5 w-3.5" />
-                      Tags
-                    </Label>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={() => addVPNServerTag(server.id)}
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      Add Tag
-                    </Button>
-                  </div>
                   <div className="space-y-2">
-                    {server.tags.map((tag, tagIndex) => (
-                      <div key={tagIndex} className="flex items-center gap-2">
-                        <Input
-                          placeholder="Key"
-                          className="flex-1"
-                          value={tag.key}
-                          onChange={(e) =>
-                            updateVPNServerTag(server.id, tagIndex, { ...tag, key: e.target.value })
-                          }
-                        />
-                        <Input
-                          placeholder="Value"
-                          className="flex-1"
-                          value={tag.value}
-                          onChange={(e) =>
-                            updateVPNServerTag(server.id, tagIndex, { ...tag, value: e.target.value })
-                          }
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 flex-shrink-0"
-                          onClick={() => removeVPNServerTag(server.id, tagIndex)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
+                    <Label>Region *</Label>
+                    <Select
+                      value={server.region}
+                      onValueChange={(v) => updateVPNServer(server.id, { region: v })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {REGIONS.filter((r) => r.available).map((region) => (
+                          <SelectItem key={region.slug} value={region.slug}>
+                            {region.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </CardContent>
@@ -506,15 +376,15 @@ function RedisServerForm({ infrastructure }: { infrastructure: ReturnType<typeof
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label>VPC UUID *</Label>
           <Input
             placeholder="vpc-xxxxxxxx"
             value={redisConfig.vpcUUID}
             onChange={(e) => updateRedisConfig({ vpcUUID: e.target.value })}
           />
-        </div>
-        <div className="space-y-2">
+        </div> */}
+        {/* <div className="space-y-2">
           <Label>System Password *</Label>
           <Input
             type="password"
@@ -522,13 +392,14 @@ function RedisServerForm({ infrastructure }: { infrastructure: ReturnType<typeof
             value={redisConfig.systemPassword}
             onChange={(e) => updateRedisConfig({ systemPassword: e.target.value })}
           />
-        </div>
+        </div> */}
         <div className="space-y-2">
           <Label>Enable TLS</Label>
           <div className="flex items-center gap-2 pt-2">
             <Switch
               checked={redisConfig.enableTLS}
-              onCheckedChange={(checked) => updateRedisConfig({ enableTLS: checked })}
+              disabled={true}
+              // onCheckedChange={(checked) => updateRedisConfig({ enableTLS: checked })}
             />
             <span className="text-sm text-muted-foreground">
               {redisConfig.enableTLS ? "Enabled" : "Disabled"}
@@ -610,14 +481,14 @@ function KafkaServerForm({ infrastructure }: { infrastructure: ReturnType<typeof
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2 md:col-span-2">
+        {/* <div className="space-y-2 md:col-span-2">
           <Label>VPC UUID *</Label>
           <Input
             placeholder="vpc-xxxxxxxx"
             value={kafkaConfig.vpcUUID}
             onChange={(e) => updateKafkaConfig({ vpcUUID: e.target.value })}
           />
-        </div>
+        </div> */}
       </div>
 
       <Separator />

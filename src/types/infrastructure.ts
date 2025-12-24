@@ -43,19 +43,11 @@ export const NODE_SIZES: NodeSize[] = [
 ];
 
 // ============ VPN Server Types ============
-export interface VPNServerTag {
-  key: string;
-  value: string;
-}
-
 export interface VPNServer {
   id: string;
-  host: string;
-  username: string;
-  password: string;
   environment: Environment;
-  group: string;
-  tags: VPNServerTag[];
+  size: string;
+  region: string;
 }
 
 export interface VPNDeploymentConfig {
@@ -159,12 +151,9 @@ export interface InfrastructureState {
 // Initial state factory functions
 export const createInitialVPNServer = (): VPNServer => ({
   id: crypto.randomUUID(),
-  host: '',
-  username: 'root',
-  password: '',
   environment: 'dev',
-  group: 'development',
-  tags: [{ key: 'role', value: 'vpn' }],
+  size: 's-2vcpu-4gb',
+  region: 'nyc1',
 });
 
 export const createInitialVPNConfig = (): VPNDeploymentConfig => ({

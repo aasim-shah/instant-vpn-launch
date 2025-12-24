@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import {
   InfrastructureState,
   VPNServer,
-  VPNServerTag,
   RedisNode,
   RedisNodeRole,
   KafkaNode,
@@ -80,48 +79,6 @@ export function useInfrastructure() {
         ...prev.vpnConfig,
         servers: prev.vpnConfig.servers.map(s =>
           s.id === serverId ? { ...s, ...updates } : s
-        ),
-      },
-    }));
-  }, []);
-
-  const addVPNServerTag = useCallback((serverId: string) => {
-    setState(prev => ({
-      ...prev,
-      vpnConfig: {
-        ...prev.vpnConfig,
-        servers: prev.vpnConfig.servers.map(s =>
-          s.id === serverId
-            ? { ...s, tags: [...s.tags, { key: '', value: '' }] }
-            : s
-        ),
-      },
-    }));
-  }, []);
-
-  const removeVPNServerTag = useCallback((serverId: string, tagIndex: number) => {
-    setState(prev => ({
-      ...prev,
-      vpnConfig: {
-        ...prev.vpnConfig,
-        servers: prev.vpnConfig.servers.map(s =>
-          s.id === serverId
-            ? { ...s, tags: s.tags.filter((_, i) => i !== tagIndex) }
-            : s
-        ),
-      },
-    }));
-  }, []);
-
-  const updateVPNServerTag = useCallback((serverId: string, tagIndex: number, tag: VPNServerTag) => {
-    setState(prev => ({
-      ...prev,
-      vpnConfig: {
-        ...prev.vpnConfig,
-        servers: prev.vpnConfig.servers.map(s =>
-          s.id === serverId
-            ? { ...s, tags: s.tags.map((t, i) => (i === tagIndex ? tag : t)) }
-            : s
         ),
       },
     }));
@@ -336,14 +293,14 @@ export function useInfrastructure() {
     }
 
     vpnConfig.servers.forEach((server, index) => {
-      if (!server.host.trim()) {
-        errors.push(`Server ${index + 1}: Host is required`);
+      if (!server.environment) {
+        errors.push(`Server ${index + 1}: Environment is required`);
       }
-      if (!server.username.trim()) {
-        errors.push(`Server ${index + 1}: Username is required`);
+      if (!server.size) {
+        errors.push(`Server ${index + 1}: Size is required`);
       }
-      if (!server.password.trim()) {
-        errors.push(`Server ${index + 1}: Password is required`);
+      if (!server.region) {
+        errors.push(`Server ${index + 1}: Region is required`);
       }
     });
 
@@ -413,9 +370,6 @@ export function useInfrastructure() {
     addVPNServer,
     removeVPNServer,
     updateVPNServer,
-    addVPNServerTag,
-    removeVPNServerTag,
-    updateVPNServerTag,
     updateVPNEnvOverride,
     // Redis
     updateRedisConfig,

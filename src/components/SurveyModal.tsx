@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -40,46 +40,46 @@ interface SurveyModalProps {
 
 interface SurveyData {
   businessInfo: {
-    companyName: string;
-    businessStage: string;
-    companySize: string;
-    targetMarket: string;
-    vpnBusinessType: string;
+    companyName?: string;
+    businessStage?: string;
+    companySize?: string;
+    targetMarket?: string;
+    vpnBusinessType?: string;
     email: string;
   };
   applicationDetails: {
-    platforms: string[];
-    monthlyActiveUsers: string;
-    expectedGrowthPercent: string;
-    launchTimeline: string;
-    existingProduct: boolean;
+    platforms?: string[];
+    monthlyActiveUsers?: string;
+    expectedGrowthPercent?: string;
+    launchTimeline?: string;
+    existingProduct?: boolean;
   };
   infrastructure: {
-    initialServers: string;
-    regions: string[];
-    bandwidthPerServerMbps: string;
-    autoScaling: boolean;
-    availabilityTier: string;
+    initialServers?: string;
+    regions?: string[];
+    bandwidthPerServerMbps?: string;
+    autoScaling?: boolean;
+    availabilityTier?: string;
   };
   security: {
-    vpnProtocols: string[];
-    loggingPolicy: string;
-    customSecurity: boolean;
-    compliance: string[];
+    vpnProtocols?: string[];
+    loggingPolicy?: string;
+    customSecurity?: boolean;
+    compliance?: string[];
   };
   billing: {
-    pricingModel: string;
-    monthlyBudgetUsd: string;
-    analyticsRequired: boolean;
-    billingIntegration: boolean;
-    supportLevel: string;
+    pricingModel?: string;
+    monthlyBudgetUsd?: string;
+    analyticsRequired?: boolean;
+    billingIntegration?: boolean;
+    supportLevel?: string;
   };
   futurePlans: {
-    whiteLabel: boolean;
-    multiRegionFailover: boolean;
-    customIntegrations: boolean;
-    dedicatedManager: boolean;
-    notes: string;
+    whiteLabel?: boolean;
+    multiRegionFailover?: boolean;
+    customIntegrations?: boolean;
+    dedicatedManager?: boolean;
+    notes?: string;
   };
 }
 
@@ -90,8 +90,7 @@ const initialSurveyData: SurveyData = {
     companySize: "",
     targetMarket: "",
     vpnBusinessType: "",
-    email: "", 
-
+    email: "",
   },
   applicationDetails: {
     platforms: [],
@@ -138,10 +137,214 @@ const steps = [
   { id: 6, title: "Future Plans", icon: Rocket },
 ];
 
+const STORAGE_KEY = "vpn_survey_data";
+const STORAGE_STEP_KEY = "vpn_survey_step";
+
+// Survey Data Constants
+const COMPANY_SIZE_OPTIONS = [
+  { value: "solo", label: "Solo Founder" },
+  { value: "2-5", label: "2-5 People" },
+  { value: "6-20", label: "6-20 People" },
+  { value: "20+", label: "20+ People" },
+];
+
+const BUSINESS_STAGE_OPTIONS = [
+  { value: "idea", label: "Idea Stage" },
+  { value: "mvp", label: "MVP / Prototype" },
+  { value: "live", label: "Live Product" },
+  { value: "scaling", label: "Scaling" },
+];
+
+const TARGET_MARKET_OPTIONS = [
+  { value: "global", label: "Global" },
+  { value: "north_america", label: "North America" },
+  { value: "europe", label: "Europe" },
+  { value: "asia_pacific", label: "Asia Pacific" },
+  { value: "middle_east", label: "Middle East" },
+  { value: "latin_america", label: "Latin America" },
+];
+
+const VPN_BUSINESS_TYPE_OPTIONS = [
+  { value: "consumer", label: "Consumer VPN App" },
+  { value: "enterprise", label: "Enterprise VPN" },
+  { value: "white_label", label: "White-Label Solution" },
+  { value: "reseller", label: "Reseller / MSP" },
+];
+
+const PLATFORM_OPTIONS = [
+  { value: "android", label: "Android" },
+  { value: "ios", label: "iOS" },
+  { value: "web", label: "Web" },
+  { value: "desktop", label: "Desktop" },
+];
+
+const MONTHLY_ACTIVE_USERS_OPTIONS = [
+  { value: "0-1000", label: "0 - 1,000" },
+  { value: "1000-10000", label: "1,000 - 10,000" },
+  { value: "10000-50000", label: "10,000 - 50,000" },
+  { value: "50000-100000", label: "50,000 - 100,000" },
+  { value: "100000+", label: "100,000+" },
+];
+
+const EXPECTED_GROWTH_OPTIONS = [
+  { value: "0-25", label: "0% - 25%" },
+  { value: "25-50", label: "25% - 50%" },
+  { value: "50-100", label: "50% - 100%" },
+  { value: "100-200", label: "100% - 200%" },
+  { value: "200+", label: "200%+" },
+];
+
+const LAUNCH_TIMELINE_OPTIONS = [
+  { value: "immediate", label: "Immediate" },
+  { value: "30_days", label: "Within 30 days" },
+  { value: "60_days", label: "Within 60 days" },
+  { value: "90_days", label: "Within 90 days" },
+  { value: "6_months", label: "Within 6 months" },
+];
+
+const INITIAL_SERVERS_OPTIONS = [
+  { value: "1-3", label: "1 - 3 servers" },
+  { value: "3-5", label: "3 - 5 servers" },
+  { value: "5-10", label: "5 - 10 servers" },
+  { value: "10-20", label: "10 - 20 servers" },
+  { value: "20+", label: "20+ servers" },
+];
+
+const SERVER_REGIONS_OPTIONS = [
+  { value: "us-east", label: "US East" },
+  { value: "us-west", label: "US West" },
+  { value: "eu-west", label: "EU West" },
+  { value: "eu-central", label: "EU Central" },
+  { value: "asia-east", label: "Asia East" },
+  { value: "asia-southeast", label: "Asia Southeast" },
+];
+
+const BANDWIDTH_OPTIONS = [
+  { value: "100", label: "100 Mbps" },
+  { value: "500", label: "500 Mbps" },
+  { value: "1000", label: "1 Gbps" },
+  { value: "5000", label: "5 Gbps" },
+  { value: "10000", label: "10 Gbps" },
+];
+
+const AVAILABILITY_TIER_OPTIONS = [
+  {
+    value: "standard",
+    label: "Standard (99.9% uptime)",
+    description: "Suitable for most applications",
+  },
+  {
+    value: "enterprise",
+    label: "Enterprise (99.99% uptime)",
+    description: "Multi-zone redundancy with failover",
+  },
+];
+
+const VPN_PROTOCOLS_OPTIONS = [
+  { value: "wireguard", label: "WireGuard" },
+  { value: "openvpn", label: "OpenVPN" },
+  { value: "ikev2", label: "IKEv2" },
+  { value: "l2tp", label: "L2TP/IPSec" },
+];
+
+const LOGGING_POLICY_OPTIONS = [
+  {
+    value: "no_logs",
+    label: "No Logs",
+    description: "Zero logging of user activity",
+  },
+  {
+    value: "minimal_logs",
+    label: "Minimal Logs",
+    description: "Connection timestamps only",
+  },
+  {
+    value: "custom",
+    label: "Custom",
+    description: "Define your own logging policy",
+  },
+];
+
+const COMPLIANCE_OPTIONS = [
+  { value: "gdpr", label: "GDPR" },
+  { value: "hipaa", label: "HIPAA" },
+  { value: "soc2", label: "SOC 2" },
+  { value: "none", label: "None" },
+];
+
+const PRICING_MODEL_OPTIONS = [
+  {
+    value: "pay_as_you_go",
+    label: "Pay as You Go",
+    description: "Pay only for what you use",
+  },
+  {
+    value: "monthly",
+    label: "Monthly Subscription",
+    description: "Fixed monthly pricing",
+  },
+  {
+    value: "custom",
+    label: "Custom / Enterprise",
+    description: "Tailored pricing for your needs",
+  },
+];
+
+const MONTHLY_BUDGET_OPTIONS = [
+  { value: "0-100", label: "$0 - $100" },
+  { value: "100-500", label: "$100 - $500" },
+  { value: "500-1000", label: "$500 - $1,000" },
+  { value: "1000-5000", label: "$1,000 - $5,000" },
+  { value: "5000+", label: "$5,000+" },
+];
+
+const SUPPORT_LEVEL_OPTIONS = [
+  { value: "community", label: "Community / Self-Service" },
+  { value: "standard", label: "Standard (Email Support)" },
+  { value: "priority", label: "Priority (24h Response)" },
+  { value: "premium", label: "Premium (Dedicated Support)" },
+];
+
 export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [surveyData, setSurveyData] = useState<SurveyData>(initialSurveyData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  // Load saved data from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      const savedStep = localStorage.getItem(STORAGE_STEP_KEY);
+
+      if (savedData) {
+        setSurveyData(JSON.parse(savedData));
+      }
+      if (savedStep) {
+        setCurrentStep(parseInt(savedStep, 10));
+      }
+    } catch (error) {
+      console.error("Error loading saved survey data:", error);
+    }
+  }, []);
+
+  // Save data to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyData));
+    } catch (error) {
+      console.error("Error saving survey data:", error);
+    }
+  }, [surveyData]);
+
+  // Save current step to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_STEP_KEY, currentStep.toString());
+    } catch (error) {
+      console.error("Error saving survey step:", error);
+    }
+  }, [currentStep]);
 
   const updateBusinessInfo = (field: keyof SurveyData["businessInfo"], value: string) => {
     setSurveyData((prev) => ({
@@ -217,7 +420,25 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
     });
   };
 
+  const validateEmail = (email: string): boolean => {
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
+
   const handleNext = () => {
+    // Validate email on step 1 before proceeding
+    if (currentStep === 1 && !validateEmail(surveyData.businessInfo.email)) {
+      return;
+    }
     if (currentStep < 6) setCurrentStep(currentStep + 1);
   };
 
@@ -226,20 +447,36 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
   };
 
   const handleSubmit = async () => {
+    // Final email validation before submission
+    if (!validateEmail(surveyData.businessInfo.email)) {
+      setCurrentStep(1); // Go back to first step to fix email
+      return;
+    }
+
     setIsSubmitting(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log("Survey Data:", surveyData);
+
+    // Clear localStorage after successful submission
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_STEP_KEY);
+    } catch (error) {
+      console.error("Error clearing survey data:", error);
+    }
+
     setIsSubmitting(false);
     onOpenChange(false);
     setCurrentStep(1);
     setSurveyData(initialSurveyData);
+    setEmailError("");
   };
 
   const handleClose = () => {
+    // Don't clear localStorage on close - keep data for later
+    setEmailError("");
     onOpenChange(false);
-    setCurrentStep(1);
-    setSurveyData(initialSurveyData);
   };
 
   return (
@@ -297,7 +534,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
           {currentStep === 1 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="companyName">Company or Startup Name *</Label>
+                <Label htmlFor="companyName">Company or Startup Name</Label>
                 <Input
                   id="companyName"
                   placeholder="Enter your company name"
@@ -307,18 +544,25 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="companyEmail">Company Email *</Label>
+                <Label htmlFor="email">Company Email *</Label>
                 <Input
                   id="email"
+                  type="email"
                   placeholder="Enter your company email"
                   value={surveyData.businessInfo.email}
-                  onChange={(e) => updateBusinessInfo("email", e.target.value)}
+                  onChange={(e) => {
+                    updateBusinessInfo("email", e.target.value);
+                    if (emailError) setEmailError("");
+                  }}
+                  className={emailError ? "border-red-500" : ""}
                 />
+                {emailError && (
+                  <p className="text-sm text-red-500">{emailError}</p>
+                )}
               </div>
 
-
               <div className="space-y-2">
-                <Label>Business Stage *</Label>
+                <Label>Business Stage</Label>
                 <Select
                   value={surveyData.businessInfo.businessStage}
                   onValueChange={(value) => updateBusinessInfo("businessStage", value)}
@@ -327,27 +571,23 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select your business stage" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="idea">Idea Stage</SelectItem>
-                    <SelectItem value="mvp">MVP / Prototype</SelectItem>
-                    <SelectItem value="live">Live Product</SelectItem>
-                    <SelectItem value="scaling">Scaling</SelectItem>
+                    {BUSINESS_STAGE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label>Company Size *</Label>
+                <Label>Company Size</Label>
                 <RadioGroup
                   value={surveyData.businessInfo.companySize}
                   onValueChange={(value) => updateBusinessInfo("companySize", value)}
                   className="grid grid-cols-2 gap-4"
                 >
-                  {[
-                    { value: "solo", label: "Solo Founder" },
-                    { value: "2-5", label: "2-5 People" },
-                    { value: "6-20", label: "6-20 People" },
-                    { value: "20+", label: "20+ People" },
-                  ].map((option) => (
+                  {COMPANY_SIZE_OPTIONS.map((option) => (
                     <div key={option.value} className="flex items-center space-x-2">
                       <RadioGroupItem value={option.value} id={`size-${option.value}`} />
                       <Label htmlFor={`size-${option.value}`} className="cursor-pointer">
@@ -359,7 +599,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Primary Target Market *</Label>
+                <Label>Primary Target Market</Label>
                 <Select
                   value={surveyData.businessInfo.targetMarket}
                   onValueChange={(value) => updateBusinessInfo("targetMarket", value)}
@@ -368,18 +608,17 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select target market" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="global">Global</SelectItem>
-                    <SelectItem value="north_america">North America</SelectItem>
-                    <SelectItem value="europe">Europe</SelectItem>
-                    <SelectItem value="asia_pacific">Asia Pacific</SelectItem>
-                    <SelectItem value="middle_east">Middle East</SelectItem>
-                    <SelectItem value="latin_america">Latin America</SelectItem>
+                    {TARGET_MARKET_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label>Type of VPN Business *</Label>
+                <Label>Type of VPN Business</Label>
                 <Select
                   value={surveyData.businessInfo.vpnBusinessType}
                   onValueChange={(value) => updateBusinessInfo("vpnBusinessType", value)}
@@ -388,10 +627,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select VPN business type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="consumer">Consumer VPN App</SelectItem>
-                    <SelectItem value="enterprise">Enterprise VPN</SelectItem>
-                    <SelectItem value="white_label">White-Label Solution</SelectItem>
-                    <SelectItem value="reseller">Reseller / MSP</SelectItem>
+                    {VPN_BUSINESS_TYPE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -402,18 +642,13 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
           {currentStep === 2 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label>Platform Type * (Select all that apply)</Label>
+                <Label>Platform Type (Select all that apply)</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { value: "android", label: "Android" },
-                    { value: "ios", label: "iOS" },
-                    { value: "web", label: "Web" },
-                    { value: "desktop", label: "Desktop" },
-                  ].map((platform) => (
+                  {PLATFORM_OPTIONS.map((platform) => (
                     <div key={platform.value} className="flex items-center space-x-2">
                       <Checkbox
                         id={`platform-${platform.value}`}
-                        checked={surveyData.applicationDetails.platforms.includes(platform.value)}
+                        checked={surveyData.applicationDetails.platforms?.includes(platform.value)}
                         onCheckedChange={() =>
                           toggleArrayValue("applicationDetails", "platforms", platform.value)
                         }
@@ -427,7 +662,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Estimated Monthly Active Users *</Label>
+                <Label>Estimated Monthly Active Users</Label>
                 <Select
                   value={surveyData.applicationDetails.monthlyActiveUsers}
                   onValueChange={(value) => updateApplicationDetails("monthlyActiveUsers", value)}
@@ -436,11 +671,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select estimated users" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0-1000">0 - 1,000</SelectItem>
-                    <SelectItem value="1000-10000">1,000 - 10,000</SelectItem>
-                    <SelectItem value="10000-50000">10,000 - 50,000</SelectItem>
-                    <SelectItem value="50000-100000">50,000 - 100,000</SelectItem>
-                    <SelectItem value="100000+">100,000+</SelectItem>
+                    {MONTHLY_ACTIVE_USERS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -455,17 +690,17 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select expected growth" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0-25">0% - 25%</SelectItem>
-                    <SelectItem value="25-50">25% - 50%</SelectItem>
-                    <SelectItem value="50-100">50% - 100%</SelectItem>
-                    <SelectItem value="100-200">100% - 200%</SelectItem>
-                    <SelectItem value="200+">200%+</SelectItem>
+                    {EXPECTED_GROWTH_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label>Planned Launch Timeline *</Label>
+                <Label>Planned Launch Timeline</Label>
                 <Select
                   value={surveyData.applicationDetails.launchTimeline}
                   onValueChange={(value) => updateApplicationDetails("launchTimeline", value)}
@@ -474,11 +709,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select launch timeline" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="immediate">Immediate</SelectItem>
-                    <SelectItem value="30_days">Within 30 days</SelectItem>
-                    <SelectItem value="60_days">Within 60 days</SelectItem>
-                    <SelectItem value="90_days">Within 90 days</SelectItem>
-                    <SelectItem value="6_months">Within 6 months</SelectItem>
+                    {LAUNCH_TIMELINE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -502,7 +737,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label>Initial Number of VPN Servers Required *</Label>
+                <Label>Initial Number of VPN Servers Required</Label>
                 <Select
                   value={surveyData.infrastructure.initialServers}
                   onValueChange={(value) => updateInfrastructure("initialServers", value)}
@@ -511,30 +746,23 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select number of servers" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1-3">1 - 3 servers</SelectItem>
-                    <SelectItem value="3-5">3 - 5 servers</SelectItem>
-                    <SelectItem value="5-10">5 - 10 servers</SelectItem>
-                    <SelectItem value="10-20">10 - 20 servers</SelectItem>
-                    <SelectItem value="20+">20+ servers</SelectItem>
+                    {INITIAL_SERVERS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label>Preferred Server Regions * (Select all that apply)</Label>
+                <Label>Preferred Server Regions (Select all that apply)</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { value: "us-east", label: "US East" },
-                    { value: "us-west", label: "US West" },
-                    { value: "eu-west", label: "EU West" },
-                    { value: "eu-central", label: "EU Central" },
-                    { value: "asia-east", label: "Asia East" },
-                    { value: "asia-southeast", label: "Asia Southeast" },
-                  ].map((region) => (
+                  {SERVER_REGIONS_OPTIONS.map((region) => (
                     <div key={region.value} className="flex items-center space-x-2">
                       <Checkbox
                         id={`region-${region.value}`}
-                        checked={surveyData.infrastructure.regions.includes(region.value)}
+                        checked={surveyData.infrastructure.regions?.includes(region.value)}
                         onCheckedChange={() =>
                           toggleArrayValue("infrastructure", "regions", region.value)
                         }
@@ -548,7 +776,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Expected Bandwidth per Server *</Label>
+                <Label>Expected Bandwidth per Server</Label>
                 <Select
                   value={surveyData.infrastructure.bandwidthPerServerMbps}
                   onValueChange={(value) => updateInfrastructure("bandwidthPerServerMbps", value)}
@@ -557,11 +785,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select bandwidth" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="100">100 Mbps</SelectItem>
-                    <SelectItem value="500">500 Mbps</SelectItem>
-                    <SelectItem value="1000">1 Gbps</SelectItem>
-                    <SelectItem value="5000">5 Gbps</SelectItem>
-                    <SelectItem value="10000">10 Gbps</SelectItem>
+                    {BANDWIDTH_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -580,34 +808,25 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>High Availability Requirement *</Label>
+                <Label>High Availability Requirement</Label>
                 <RadioGroup
                   value={surveyData.infrastructure.availabilityTier}
                   onValueChange={(value) => updateInfrastructure("availabilityTier", value)}
                   className="space-y-3"
                 >
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="standard" id="tier-standard" />
-                    <div>
-                      <Label htmlFor="tier-standard" className="cursor-pointer font-medium">
-                        Standard (99.9% uptime)
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Suitable for most applications
-                      </p>
+                  {AVAILABILITY_TIER_OPTIONS.map((option) => (
+                    <div key={option.value} className="flex items-start space-x-2">
+                      <RadioGroupItem value={option.value} id={`tier-${option.value}`} />
+                      <div>
+                        <Label htmlFor={`tier-${option.value}`} className="cursor-pointer font-medium">
+                          {option.label}
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          {option.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="enterprise" id="tier-enterprise" />
-                    <div>
-                      <Label htmlFor="tier-enterprise" className="cursor-pointer font-medium">
-                        Enterprise (99.99% uptime)
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Multi-zone redundancy with failover
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </RadioGroup>
               </div>
             </div>
@@ -617,18 +836,13 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
           {currentStep === 4 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label>Preferred VPN Protocols * (Select all that apply)</Label>
+                <Label>Preferred VPN Protocols (Select all that apply)</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { value: "wireguard", label: "WireGuard" },
-                    { value: "openvpn", label: "OpenVPN" },
-                    { value: "ikev2", label: "IKEv2" },
-                    { value: "l2tp", label: "L2TP/IPSec" },
-                  ].map((protocol) => (
+                  {VPN_PROTOCOLS_OPTIONS.map((protocol) => (
                     <div key={protocol.value} className="flex items-center space-x-2">
                       <Checkbox
                         id={`protocol-${protocol.value}`}
-                        checked={surveyData.security.vpnProtocols.includes(protocol.value)}
+                        checked={surveyData.security.vpnProtocols?.includes(protocol.value)}
                         onCheckedChange={() =>
                           toggleArrayValue("security", "vpnProtocols", protocol.value)
                         }
@@ -642,45 +856,25 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Logging Policy *</Label>
+                <Label>Logging Policy</Label>
                 <RadioGroup
                   value={surveyData.security.loggingPolicy}
                   onValueChange={(value) => updateSecurity("loggingPolicy", value)}
                   className="space-y-3"
                 >
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="no_logs" id="log-none" />
-                    <div>
-                      <Label htmlFor="log-none" className="cursor-pointer font-medium">
-                        No Logs
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Zero logging of user activity
-                      </p>
+                  {LOGGING_POLICY_OPTIONS.map((option) => (
+                    <div key={option.value} className="flex items-start space-x-2">
+                      <RadioGroupItem value={option.value} id={`log-${option.value}`} />
+                      <div>
+                        <Label htmlFor={`log-${option.value}`} className="cursor-pointer font-medium">
+                          {option.label}
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          {option.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="minimal_logs" id="log-minimal" />
-                    <div>
-                      <Label htmlFor="log-minimal" className="cursor-pointer font-medium">
-                        Minimal Logs
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Connection timestamps only
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="custom" id="log-custom" />
-                    <div>
-                      <Label htmlFor="log-custom" className="cursor-pointer font-medium">
-                        Custom
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Define your own logging policy
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </RadioGroup>
               </div>
 
@@ -700,16 +894,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               <div className="space-y-2">
                 <Label>Compliance Requirements (Select all that apply)</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { value: "gdpr", label: "GDPR" },
-                    { value: "hipaa", label: "HIPAA" },
-                    { value: "soc2", label: "SOC 2" },
-                    { value: "none", label: "None" },
-                  ].map((compliance) => (
+                  {COMPLIANCE_OPTIONS.map((compliance) => (
                     <div key={compliance.value} className="flex items-center space-x-2">
                       <Checkbox
                         id={`compliance-${compliance.value}`}
-                        checked={surveyData.security.compliance.includes(compliance.value)}
+                        checked={surveyData.security.compliance?.includes(compliance.value)}
                         onCheckedChange={() =>
                           toggleArrayValue("security", "compliance", compliance.value)
                         }
@@ -728,50 +917,30 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
           {currentStep === 5 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label>Preferred Pricing Model *</Label>
+                <Label>Preferred Pricing Model</Label>
                 <RadioGroup
                   value={surveyData.billing.pricingModel}
                   onValueChange={(value) => updateBilling("pricingModel", value)}
                   className="space-y-3"
                 >
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="pay_as_you_go" id="price-payg" />
-                    <div>
-                      <Label htmlFor="price-payg" className="cursor-pointer font-medium">
-                        Pay as You Go
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Pay only for what you use
-                      </p>
+                  {PRICING_MODEL_OPTIONS.map((option) => (
+                    <div key={option.value} className="flex items-start space-x-2">
+                      <RadioGroupItem value={option.value} id={`price-${option.value}`} />
+                      <div>
+                        <Label htmlFor={`price-${option.value}`} className="cursor-pointer font-medium">
+                          {option.label}
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          {option.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="monthly" id="price-monthly" />
-                    <div>
-                      <Label htmlFor="price-monthly" className="cursor-pointer font-medium">
-                        Monthly Subscription
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Fixed monthly pricing
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-2">
-                    <RadioGroupItem value="custom" id="price-custom" />
-                    <div>
-                      <Label htmlFor="price-custom" className="cursor-pointer font-medium">
-                        Custom / Enterprise
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Tailored pricing for your needs
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </RadioGroup>
               </div>
 
               <div className="space-y-2">
-                <Label>Estimated Monthly Infrastructure Budget (USD) *</Label>
+                <Label>Estimated Monthly Infrastructure Budget (USD)</Label>
                 <Select
                   value={surveyData.billing.monthlyBudgetUsd}
                   onValueChange={(value) => updateBilling("monthlyBudgetUsd", value)}
@@ -780,11 +949,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select budget range" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0-100">$0 - $100</SelectItem>
-                    <SelectItem value="100-500">$100 - $500</SelectItem>
-                    <SelectItem value="500-1000">$500 - $1,000</SelectItem>
-                    <SelectItem value="1000-5000">$1,000 - $5,000</SelectItem>
-                    <SelectItem value="5000+">$5,000+</SelectItem>
+                    {MONTHLY_BUDGET_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -818,7 +987,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Level of Technical Support Required *</Label>
+                <Label>Level of Technical Support Required</Label>
                 <Select
                   value={surveyData.billing.supportLevel}
                   onValueChange={(value) => updateBilling("supportLevel", value)}
@@ -827,10 +996,11 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                     <SelectValue placeholder="Select support level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="community">Community / Self-Service</SelectItem>
-                    <SelectItem value="standard">Standard (Email Support)</SelectItem>
-                    <SelectItem value="priority">Priority (24h Response)</SelectItem>
-                    <SelectItem value="premium">Premium (Dedicated Support)</SelectItem>
+                    {SUPPORT_LEVEL_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -842,7 +1012,7 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
             <div className="space-y-6">
               <div className="space-y-4">
                 <Label className="text-base font-medium">Future Requirements</Label>
-                
+
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="whiteLabel"
