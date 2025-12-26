@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Rocket } from "lucide-react";
 import { SurveyModal } from "./SurveyModal";
 
 export function CTASection() {
@@ -18,36 +18,32 @@ export function CTASection() {
         <div className="mx-auto max-w-3xl text-center">
           {/* Icon */}
           <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-            <Zap className="h-8 w-8 text-primary" />
+            <Rocket className="h-8 w-8 text-primary" />
           </div>
 
           {/* Headline */}
           <h2 className="mb-6 text-3xl font-bold sm:text-4xl lg:text-5xl">
-            Ready to Launch Your{" "}
-            <span className="gradient-text">VPN Infrastructure?</span>
+            Take the Fast Path to{" "}
+            <span className="gradient-text">Production-Ready VPN Infrastructure</span>
           </h2>
 
           {/* Description */}
           <p className="mx-auto mb-10 max-w-xl text-lg text-muted-foreground">
-            Join hundreds of VPN apps powered by our platform. Deploy your first 
-            server in under 60 seconds with our 14-day free trial.
+            Stop spending months building infrastructure that already exists. 
+            Use a platform designed to help you launch faster, operate reliably, 
+            and scale globally — without infrastructure chaos.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button variant="hero" size="xl" onClick={() => setSurveyOpen(true)}>
-              Start Your Free Trial
+              Explore the VPN Infrastructure Platform
               <ArrowRight className="h-5 w-5" />
             </Button>
             <Button variant="hero-outline" size="xl">
-              Schedule a Demo
+              View Platform Documentation
             </Button>
           </div>
-
-          {/* Trust Note */}
-          <p className="mt-8 text-sm text-muted-foreground">
-            No credit card required · 14-day free trial · Cancel anytime
-          </p>
         </div>
       </div>
 
