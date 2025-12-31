@@ -80,9 +80,9 @@ export function PricingSection() {
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={`relative flex flex-col border-border/50 ${
+              className={`relative flex flex-col border-border/50 shadow-lg shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-shadow ${
                 plan.popular
-                  ? "border-primary/50 shadow-lg shadow-primary/10 scale-105 lg:scale-110"
+                  ? "border-primary/50 shadow-lg shadow-primary/20 scale-105 lg:scale-110"
                   : "bg-card/50"
               }`}
             >

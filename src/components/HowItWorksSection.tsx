@@ -67,7 +67,7 @@ export function HowItWorksSection() {
                 </div>
 
                 {/* Icon */}
-                <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-border bg-card shadow-lg">
+                <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-border bg-card shadow-xl shadow-primary/15">
                   <step.icon className="h-7 w-7 text-primary" />
                 </div>
 

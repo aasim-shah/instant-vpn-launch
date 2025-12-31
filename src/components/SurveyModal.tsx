@@ -32,6 +32,9 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
+import { surveyService } from "@/services/surveyService";
+import { AxiosError } from "axios";
 
 interface SurveyModalProps {
   open: boolean;
@@ -454,23 +457,73 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
     }
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log("Survey Data:", surveyData);
-
-    // Clear localStorage after successful submission
+    
     try {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(STORAGE_STEP_KEY);
-    } catch (error) {
-      console.error("Error clearing survey data:", error);
-    }
+      // Call the API to submit the survey
+      const response = await surveyService.submitSurvey(surveyData);
+      
+      // Handle success
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Survey submitted successfully!", {
+          description: "Thank you for your interest. We'll be in touch soon.",
+        });
 
-    setIsSubmitting(false);
-    onOpenChange(false);
-    setCurrentStep(1);
-    setSurveyData(initialSurveyData);
-    setEmailError("");
+        // Clear localStorage after successful submission
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(STORAGE_STEP_KEY);
+        } catch (error) {
+          console.error("Error clearing survey data:", error);
+        }
+
+        // Reset form and close modal
+        setCurrentStep(1);
+        setSurveyData(initialSurveyData);
+        setEmailError("");
+        onOpenChange(false);
+      }
+    } catch (error) {
+      // Handle errors
+      console.error("Error submitting survey:", error);
+      
+      if (error instanceof AxiosError) {
+        if (error.response) {
+          // Server responded with error status
+          const errorMessage = error.response.data?.message || "Failed to submit survey";
+          const statusCode = error.response.status;
+          
+          if (statusCode === 400) {
+            toast.error("Validation Error", {
+              description: errorMessage || "Please check your information and try again.",
+            });
+          } else if (statusCode === 500) {
+            toast.error("Server Error", {
+              description: "Something went wrong on our end. Please try again later.",
+            });
+          } else {
+            toast.error("Submission Failed", {
+              description: errorMessage,
+            });
+          }
+        } else if (error.request) {
+          // Request was made but no response received
+          toast.error("Network Error", {
+            description: "Unable to reach the server. Please check your connection.",
+          });
+        } else {
+          // Something else went wrong
+          toast.error("Error", {
+            description: "An unexpected error occurred. Please try again.",
+          });
+        }
+      } else {
+        toast.error("Error", {
+          description: "Failed to submit survey. Please try again.",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {

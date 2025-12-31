@@ -15,9 +15,9 @@ export function CTASection() {
       </div>
 
       <div className="container relative mx-auto px-4">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-3xl text-center shadow-2xl shadow-primary/10 rounded-3xl p-12 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm">
           {/* Icon */}
-          <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+          <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 shadow-lg shadow-primary/20">
             <Rocket className="h-8 w-8 text-primary" />
           </div>
 

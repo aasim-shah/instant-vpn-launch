@@ -2,9 +2,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Globe, Zap, Shield } from "lucide-react";
 import { SurveyModal } from "./SurveyModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function HeroSection() {
   const [surveyOpen, setSurveyOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   return (
     <section className="relative min-h-screen overflow-hidden pt-16">
@@ -35,20 +43,20 @@ export function HeroSection() {
       <div className="container relative mx-auto flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-20">
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
-          <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-4 py-2 text-sm backdrop-blur-sm">
+          <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-4 py-2 text-sm backdrop-blur-sm shadow-lg shadow-primary/5">
             <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
             <span className="text-muted-foreground">Powered by 10+ infrastructure providers with worldwide presence</span>
           </div>
 
           {/* Headline */}
-          <h1 className="animate-fade-up animation-delay-200 mb-6 text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="animate-fade-up animation-delay-200 mb-6 text-3xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             What Takes Years to Build{" "}
             <span className="gradient-text">We Deliver in Hours</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="animate-fade-up animation-delay-400 mx-auto mb-8 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            A fully managed, end-to-end VPN infrastructure platform that handles everything — global provisioning, scaling, monitoring, reporting, dashboards, and APIs — so companies can launch and operate VPN-enabled products without building or operating the underlying infrastructure.
+          <p className="animate-fade-up animation-delay-400 mx-auto mb-8 max-w-2xl   text-muted-foreground sm:text-xl">
+            A fully managed, end-to-end VPN infrastructure platform that handles everything - global provisioning, scaling, monitoring, reporting, dashboards, and APIs.  so companies can launch and operate VPN-enabled products without building or operating the underlying infrastructure.
           </p>
 
           {/* CTAs */}
@@ -57,8 +65,8 @@ export function HeroSection() {
               Explore the Platform
               <ArrowRight className="h-5 w-5" />
             </Button>
-            <Button variant="hero-outline" size="xl">
-              View Documentation
+            <Button variant="hero-outline" size="xl" onClick={() => setVideoOpen(true)}>
+              Watch How It Works
             </Button>
           </div>
 
@@ -103,6 +111,41 @@ export function HeroSection() {
 
       {/* Survey Modal */}
       <SurveyModal open={surveyOpen} onOpenChange={setSurveyOpen} />
+
+      {/* Video Modal */}
+      <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
+        <DialogContent className="max-w-4xl p-0 m-0 w-full border-0">
+          <div className="relative w-full aspect-video rounded-lg p-0 m-0 overflow-hidden">
+            <button
+              onClick={() => setVideoOpen(false)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/90 hover:bg-black transition-colors"
+            >
+              <svg
+                className="h-6 w-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/k9T2eQhM4eY"
+              title="How It Works"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 left-0 right-0 top-0 bottom-0"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

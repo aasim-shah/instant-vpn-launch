@@ -36,10 +36,20 @@ export function PlatformOverviewSection() {
             A True VPN Infrastructure Platform{" "}
             <span className="gradient-text text-2xl block">(Not Just APIs or Servers)</span>
           </p>
+
           <p className="text-lg text-muted-foreground">
             Our platform is built for companies that need to run VPN infrastructure at scale, 
             without taking on the complexity, cost, and risk of building it themselves.
           </p>
+
+
+          <div className="w-full mt-10 flex justify-center">
+          <img 
+            src="flow.jpeg" 
+            alt="Description of image"
+            className="max-w-full w-full rounded-2xl"
+          />
+        </div>
         </div>
 
         {/* Main Content */}

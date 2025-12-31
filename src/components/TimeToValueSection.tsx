@@ -46,6 +46,15 @@ export function TimeToValueSection() {
             Building VPN infrastructure internally typically takes months or years. 
             Our platform compresses all of this into a few hours.
           </p>
+
+          {/* show image  */}
+          <div className="w-full rounded-2xl mt-10">
+          <img 
+            src="image2.jpeg" 
+            alt="How it works !"
+            className="max-w-full w-full rounded-2xl shadow-2xl shadow-primary/20 dark:shadow-primary/10"
+          />
+          </div>
         </div>
 
         {/* Main Content */}

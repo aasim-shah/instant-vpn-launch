@@ -77,7 +77,7 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <Card
               key={feature.title}
-              className="group card-hover border-border/50 bg-card/50 backdrop-blur-sm"
+              className="group card-hover border-border/50 bg-card/50 backdrop-blur-sm shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 transition-shadow"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <CardHeader className="pb-3">

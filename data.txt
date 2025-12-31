@@ -1,0 +1,174 @@
+const steps = [
+  { id: 1, title: "Business Info", icon: Building2 },
+  { id: 2, title: "Application", icon: Smartphone },
+  { id: 3, title: "Infrastructure", icon: Server },
+  { id: 4, title: "Security", icon: Shield },
+  { id: 5, title: "Billing", icon: CreditCard },
+  { id: 6, title: "Future Plans", icon: Rocket },
+];
+
+
+// Survey Data Constants
+const COMPANY_SIZE_OPTIONS = [
+  { value: "solo", label: "Solo Founder" },
+  { value: "2-5", label: "2-5 People" },
+  { value: "6-20", label: "6-20 People" },
+  { value: "20+", label: "20+ People" },
+];
+
+const BUSINESS_STAGE_OPTIONS = [
+  { value: "idea", label: "Idea Stage" },
+  { value: "mvp", label: "MVP / Prototype" },
+  { value: "live", label: "Live Product" },
+  { value: "scaling", label: "Scaling" },
+];
+
+const TARGET_MARKET_OPTIONS = [
+  { value: "global", label: "Global" },
+  { value: "north_america", label: "North America" },
+  { value: "europe", label: "Europe" },
+  { value: "asia_pacific", label: "Asia Pacific" },
+  { value: "middle_east", label: "Middle East" },
+  { value: "latin_america", label: "Latin America" },
+];
+
+const VPN_BUSINESS_TYPE_OPTIONS = [
+  { value: "consumer", label: "Consumer VPN App" },
+  { value: "enterprise", label: "Enterprise VPN" },
+  { value: "white_label", label: "White-Label Solution" },
+  { value: "reseller", label: "Reseller / MSP" },
+];
+
+const PLATFORM_OPTIONS = [
+  { value: "android", label: "Android" },
+  { value: "ios", label: "iOS" },
+  { value: "web", label: "Web" },
+  { value: "desktop", label: "Desktop" },
+];
+
+const MONTHLY_ACTIVE_USERS_OPTIONS = [
+  { value: "0-1000", label: "0 - 1,000" },
+  { value: "1000-10000", label: "1,000 - 10,000" },
+  { value: "10000-50000", label: "10,000 - 50,000" },
+  { value: "50000-100000", label: "50,000 - 100,000" },
+  { value: "100000+", label: "100,000+" },
+];
+
+const EXPECTED_GROWTH_OPTIONS = [
+  { value: "0-25", label: "0% - 25%" },
+  { value: "25-50", label: "25% - 50%" },
+  { value: "50-100", label: "50% - 100%" },
+  { value: "100-200", label: "100% - 200%" },
+  { value: "200+", label: "200%+" },
+];
+
+const LAUNCH_TIMELINE_OPTIONS = [
+  { value: "immediate", label: "Immediate" },
+  { value: "30_days", label: "Within 30 days" },
+  { value: "60_days", label: "Within 60 days" },
+  { value: "90_days", label: "Within 90 days" },
+  { value: "6_months", label: "Within 6 months" },
+];
+
+const INITIAL_SERVERS_OPTIONS = [
+  { value: "1-3", label: "1 - 3 servers" },
+  { value: "3-5", label: "3 - 5 servers" },
+  { value: "5-10", label: "5 - 10 servers" },
+  { value: "10-20", label: "10 - 20 servers" },
+  { value: "20+", label: "20+ servers" },
+];
+
+const SERVER_REGIONS_OPTIONS = [
+  { value: "us-east", label: "US East" },
+  { value: "us-west", label: "US West" },
+  { value: "eu-west", label: "EU West" },
+  { value: "eu-central", label: "EU Central" },
+  { value: "asia-east", label: "Asia East" },
+  { value: "asia-southeast", label: "Asia Southeast" },
+];
+
+const BANDWIDTH_OPTIONS = [
+  { value: "100", label: "100 Mbps" },
+  { value: "500", label: "500 Mbps" },
+  { value: "1000", label: "1 Gbps" },
+  { value: "5000", label: "5 Gbps" },
+  { value: "10000", label: "10 Gbps" },
+];
+
+const AVAILABILITY_TIER_OPTIONS = [
+  {
+    value: "standard",
+    label: "Standard (99.9% uptime)",
+    description: "Suitable for most applications",
+  },
+  {
+    value: "enterprise",
+    label: "Enterprise (99.99% uptime)",
+    description: "Multi-zone redundancy with failover",
+  },
+];
+
+const VPN_PROTOCOLS_OPTIONS = [
+  { value: "wireguard", label: "WireGuard" },
+  { value: "openvpn", label: "OpenVPN" },
+  { value: "ikev2", label: "IKEv2" },
+  { value: "l2tp", label: "L2TP/IPSec" },
+];
+
+const LOGGING_POLICY_OPTIONS = [
+  {
+    value: "no_logs",
+    label: "No Logs",
+    description: "Zero logging of user activity",
+  },
+  {
+    value: "minimal_logs",
+    label: "Minimal Logs",
+    description: "Connection timestamps only",
+  },
+  {
+    value: "custom",
+    label: "Custom",
+    description: "Define your own logging policy",
+  },
+];
+
+const COMPLIANCE_OPTIONS = [
+  { value: "gdpr", label: "GDPR" },
+  { value: "hipaa", label: "HIPAA" },
+  { value: "soc2", label: "SOC 2" },
+  { value: "none", label: "None" },
+];
+
+const PRICING_MODEL_OPTIONS = [
+  {
+    value: "pay_as_you_go",
+    label: "Pay as You Go",
+    description: "Pay only for what you use",
+  },
+  {
+    value: "monthly",
+    label: "Monthly Subscription",
+    description: "Fixed monthly pricing",
+  },
+  {
+    value: "custom",
+    label: "Custom / Enterprise",
+    description: "Tailored pricing for your needs",
+  },
+];
+
+const MONTHLY_BUDGET_OPTIONS = [
+  { value: "0-100", label: "$0 - $100" },
+  { value: "100-500", label: "$100 - $500" },
+  { value: "500-1000", label: "$500 - $1,000" },
+  { value: "1000-5000", label: "$1,000 - $5,000" },
+  { value: "5000+", label: "$5,000+" },
+];
+
+const SUPPORT_LEVEL_OPTIONS = [
+  { value: "community", label: "Community / Self-Service" },
+  { value: "standard", label: "Standard (Email Support)" },
+  { value: "priority", label: "Priority (24h Response)" },
+  { value: "premium", label: "Premium (Dedicated Support)" },
+];
