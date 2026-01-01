@@ -56,8 +56,7 @@ export function HeroSection() {
 
           {/* Subheadline */}
           <p className="animate-fade-up animation-delay-400 mx-auto mb-8 max-w-2xl   text-muted-foreground sm:text-xl">
-            A fully managed, end-to-end VPN infrastructure platform that handles everything - global provisioning, scaling, monitoring, reporting, dashboards, and APIs.  so companies can launch and operate VPN-enabled products without building or operating the underlying infrastructure.
-          </p>
+          We run the VPN infrastructure. You run the product          </p>
 
           {/* CTAs */}
           <div className="animate-fade-up animation-delay-600 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">

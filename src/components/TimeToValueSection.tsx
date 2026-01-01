@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { 
   Network, 
   Globe, 
@@ -10,8 +11,16 @@ import {
   PiggyBank,
   ShieldAlert,
   TrendingUp,
-  ArrowRight
+  ArrowRight,
+  Play
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const buildChallenges = [
   { icon: Network, text: "Network architecture and protocol decisions" },
@@ -30,6 +39,8 @@ const businessBenefits = [
 ];
 
 export function TimeToValueSection() {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
   return (
     <section className="relative py-24 lg:py-32">
       <div className="container mx-auto px-4">
@@ -47,21 +58,65 @@ export function TimeToValueSection() {
             Our platform compresses all of this into a few hours.
           </p>
 
-          {/* show image  */}
-          <div className="w-full rounded-2xl mt-10">
-          <img 
-            src="image2.jpeg" 
-            alt="How it works !"
-            className="max-w-full w-full rounded-2xl shadow-2xl shadow-primary/20 dark:shadow-primary/10"
-          />
+          {/* show image with hover effect */}
+          <div className="w-full rounded-2xl mt-10 group relative cursor-pointer overflow-hidden">
+            <img 
+              src="image2.jpeg" 
+              alt="How it works !"
+              className="max-w-full w-full rounded-2xl shadow-2xl shadow-primary/20 dark:shadow-primary/10 transition-transform duration-300 group-hover:scale-105"
+            />
+            {/* Hover Overlay */}
+            <div className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+              <Button
+                onClick={() => setIsVideoOpen(true)}
+                size="lg"
+                className="gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                <Play className="h-5 w-5" />
+                Watch how it works!
+              </Button>
+            </div>
           </div>
         </div>
 
+        {/* Video Modal */}
+        <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
+          <DialogContent className="max-w-4xl p-0 m-0 w-full border-0">
+            <div className="relative w-full aspect-video rounded-lg p-0 m-0 overflow-hidden">
+              <button
+                onClick={() => setIsVideoOpen(false)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/90 hover:bg-black transition-colors"
+              >
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/k9T2eQhM4eY"
+                title="How It Works"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 left-0 right-0 top-0 bottom-0"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Main Content */}
-        <div className="mx-auto max-w-6xl">
-          {/* Two Column Layout */}
+        {/* <div className="mx-auto max-w-6xl">
           <div className="grid gap-8 lg:grid-cols-2">
-            {/* Left: What Building Internally Involves */}
             <div className="rounded-2xl border border-border/50 bg-card/50 p-8 backdrop-blur-sm">
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/10">
@@ -84,7 +139,6 @@ export function TimeToValueSection() {
               </div>
             </div>
 
-            {/* Right: What This Means for Your Business */}
             <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-8">
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -113,7 +167,7 @@ export function TimeToValueSection() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

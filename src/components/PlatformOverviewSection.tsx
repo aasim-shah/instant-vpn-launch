@@ -28,16 +28,16 @@ export function PlatformOverviewSection() {
     <section className="relative py-24 lg:py-32">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center">
+        <div className=" mb-16 text-center">
           <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-wider text-primary">
             Platform Overview
           </span>
-          <p className="mb-6 text-3xl font-bold sm:text-3xl lg:text-4xl">
+          <p className="mb-6 text-3xl max-w-3xl mx-auto font-bold sm:text-3xl lg:text-4xl">
             A True VPN Infrastructure Platform{" "}
             <span className="gradient-text text-2xl block">(Not Just APIs or Servers)</span>
           </p>
 
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg  max-w-3xl mx-auto text-muted-foreground">
             Our platform is built for companies that need to run VPN infrastructure at scale, 
             without taking on the complexity, cost, and risk of building it themselves.
           </p>
@@ -53,8 +53,7 @@ export function PlatformOverviewSection() {
         </div>
 
         {/* Main Content */}
-        <div className="mx-auto max-w-6xl">
-          {/* Description Card */}
+        {/* <div className="mx-auto max-w-6xl">
           <div className="mb-12 rounded-2xl border border-border/50 bg-card/50 p-8 backdrop-blur-sm">
             <p className="text-lg text-muted-foreground leading-relaxed">
               Instead of stitching together cloud providers, writing orchestration logic, building dashboards, 
@@ -63,7 +62,6 @@ export function PlatformOverviewSection() {
             </p>
           </div>
 
-          {/* Features Grid */}
           <div className="mb-12">
             <h3 className="mb-8 text-xl font-semibold text-center">The platform includes:</h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -81,7 +79,6 @@ export function PlatformOverviewSection() {
             </div>
           </div>
 
-          {/* Bottom Statement */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-center">
             {["Everything is integrated", "Everything is managed", "Everything is designed for production use"].map((text) => (
               <div key={text} className="flex items-center gap-2">
@@ -90,7 +87,7 @@ export function PlatformOverviewSection() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
