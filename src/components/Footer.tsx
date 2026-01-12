@@ -39,7 +39,7 @@ export function Footer() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                 <Shield className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">VPNCloud</span>
+              <span className="text-xl font-bold">Fyreway</span>
             </a>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               The fastest way to launch production-ready VPN infrastructure for mobile 
@@ -90,10 +90,10 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} VPNCloud. All rights reserved.
+            © {new Date().getFullYear()} Fyreway. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
-            Made with ❤️ for VPN developers worldwide
+            Built with <a href="https://aasimshah.com">❤️</a>
           </p>
         </div>
       </div>

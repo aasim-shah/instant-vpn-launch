@@ -43,7 +43,7 @@ export function PlatformOverviewSection() {
           </p>
 
 
-          <div className="w-full mt-10 flex justify-center">
+          <div className="w-10/12 mx-auto mt-10 flex justify-center">
           <img 
             src="flow.jpeg" 
             alt="Description of image"

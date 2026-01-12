@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Infrastructure from "./pages/Infrastructure";
 import ShowDetails from "./pages/show-details";
 
+
 const queryClient = new QueryClient();
 
 const App = () => (

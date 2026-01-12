@@ -15,6 +15,8 @@ import { FAQSection } from "@/components/FAQSection";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
 import GlobalServerMap from "@/components/MapSVG";
+import { ChatbotWidget } from 'fyrebot-widget';
+
 
 const Index = () => {
   return (
@@ -22,21 +24,28 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
-        <PlatformOverviewSection />
-        <CommercialAbstractionSection />
+        <TargetAudienceSection /> 
         <TimeToValueSection />
-        <ExperienceSection />
-        <ScalePerformanceSection />
-        <TargetAudienceSection />
         <OutcomesSection />
-        <GlobalServerMap />
+        <CommercialAbstractionSection />
+        <PlatformOverviewSection />
         <HowItWorksSection />
-        <FeaturesSection />
-        <UseCasesSection />
-        <PricingSection />
-        <FAQSection />
         <CTASection />
+        <FeaturesSection />
+        <ScalePerformanceSection />
+        <GlobalServerMap />
+        <UseCasesSection />
+        <ExperienceSection />
+        <PricingSection />
+
+        <FAQSection />
       </main>
+      <ChatbotWidget 
+        apiKey={'sk_FBCYeaNQVFsRwIIyGHiAHuK8TuClsvES'}
+        apiUrl='http://localhost:9002/api'
+        title='Ask About Fyreway'
+        primaryColor="#10b5cb"
+      />
       <Footer />
     </div>
   );

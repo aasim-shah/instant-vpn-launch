@@ -65,7 +65,7 @@ export function HeroSection() {
               <ArrowRight className="h-5 w-5" />
             </Button>
             <Button variant="hero-outline" size="xl" onClick={() => setVideoOpen(true)}>
-              Watch How It Works
+             DIY vs US
             </Button>
           </div>
 
