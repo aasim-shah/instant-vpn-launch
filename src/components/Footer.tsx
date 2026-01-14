@@ -1,4 +1,4 @@
-import { Shield, Github, Twitter, Linkedin } from "lucide-react";
+import { Shield, Github, Twitter, Linkedin, Mail } from "lucide-react";
 
 const footerLinks = {
   Product: [
@@ -46,6 +46,13 @@ export function Footer() {
               apps and SaaS products.
             </p>
             <div className="mt-6 flex gap-4">
+              <a
+                href="mailto:info@fyreway.com"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                title="Email us"
+              >
+                <Mail className="h-5 w-5" />
+              </a>
               <a
                 href="#"
                 className="text-muted-foreground transition-colors hover:text-foreground"

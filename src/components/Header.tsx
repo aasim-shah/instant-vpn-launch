@@ -51,13 +51,17 @@ export function Header() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto px-4">
-          <nav className="flex h-16 items-center justify-between">
+          <nav className="flex h-24 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              {/* <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                 <Shield className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">Fyreway</span>
+              <span className="text-xl font-bold">FyreWay</span> */}
+
+             <div className="w-24 h-24 flex justify-center items-center">
+             <img src="/logo.png" className="w-full h-full" alt="FyreWay Logo" />
+             </div>
             </Link>
 
             {/* Desktop Navigation */}

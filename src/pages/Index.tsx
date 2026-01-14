@@ -13,6 +13,7 @@ import { UseCasesSection } from "@/components/UseCasesSection";
 import { PricingSection } from "@/components/PricingSection";
 import { FAQSection } from "@/components/FAQSection";
 import { CTASection } from "@/components/CTASection";
+import { FinalCTASection } from "@/components/FinalCTASection";
 import { Footer } from "@/components/Footer";
 import GlobalServerMap from "@/components/MapSVG";
 import { ChatbotWidget } from 'fyrebot-widget';
@@ -39,12 +40,14 @@ const Index = () => {
         <PricingSection />
 
         <FAQSection />
+        <FinalCTASection />
       </main>
       <ChatbotWidget 
         apiKey={'sk_FBCYeaNQVFsRwIIyGHiAHuK8TuClsvES'}
-        apiUrl='http://localhost:9002/api'
-        title='Ask About Fyreway'
+        apiUrl='http://167.172.17.109:9002/api'
+        title='Ask About FyreWay'
         primaryColor="#10b5cb"
+        
       />
       <Footer />
     </div>

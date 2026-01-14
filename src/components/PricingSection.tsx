@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, MessageSquare } from "lucide-react";
 
 const plans = [
   {
@@ -75,60 +75,32 @@ export function PricingSection() {
           </p>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <Card
-              key={plan.name}
-              className={`relative flex flex-col border-border/50 shadow-lg shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-shadow ${
-                plan.popular
-                  ? "border-primary/50 shadow-lg shadow-primary/20 scale-105 lg:scale-110"
-                  : "bg-card/50"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-              
-              <CardHeader className="text-center">
-                <CardTitle className="text-xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.period}</span>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="flex flex-1 flex-col">
-                <ul className="mb-8 flex-1 space-y-3">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <Check className="h-4 w-4 shrink-0 text-primary" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Button
-                  variant={plan.popular ? "hero" : "outline"}
-                  className="w-full"
-                >
-                  {plan.cta}
-                  <ArrowRight className="h-4 w-4" />
+        {/* Contact for Pricing Section */}
+        <div className="mx-auto max-w-2xl">
+          <Card className="border-border/50 shadow-lg shadow-primary/5 bg-gradient-to-br from-primary/5 to-transparent">
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <MessageSquare className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-2xl">Custom Pricing Available</CardTitle>
+              <CardDescription className="mt-2 text-base">
+                Need a tailored solution? Contact us for personalized pricing based on your specific requirements.
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="flex flex-col gap-4 sm:flex-row sm:justify-center sm:gap-3">
+              <a href="mailto:info@fyreway.com">
+                <Button variant="hero" size="lg">
+                  Contact Sales
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
-              </CardContent>
-            </Card>
-          ))}
+              </a>
+              <Button variant="hero-outline" size="lg">
+                Schedule Demo
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-
-        {/* Trust Note */}
-        <p className="mt-12 text-center text-sm text-muted-foreground">
-          All plans include a 14-day free trial. No credit card required.
-        </p>
       </div>
     </section>
   );

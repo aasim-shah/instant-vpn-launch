@@ -41,7 +41,7 @@ export function TargetAudienceSection() {
         {/* Section Header */}
         <div className="mx-auto mb-16 max-w-3xl text-center">
           <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-wider text-primary">
-            Who It's For
+          Intended Audience
           </span>
           <h2 className="mb-6 text-3xl font-bold sm:text-4xl lg:text-5xl">
             Who This Platform Is{" "}

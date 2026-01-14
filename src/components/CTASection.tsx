@@ -37,7 +37,7 @@ export function CTASection() {
           {/* CTAs */}
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button variant="hero" size="xl" onClick={() => setSurveyOpen(true)}>
-              Explore the VPN Infrastructure Platform
+              Explore FyreWay Platform
               <ArrowRight className="h-5 w-5" />
             </Button>
             <Button variant="hero-outline" size="xl">
