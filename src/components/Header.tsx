@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { Menu, X, Shield, LogOut, User, Settings } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +26,29 @@ const baseNavLinks = [
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    // Check initial theme
+    const isDark = document.documentElement.classList.contains("dark");
+    setIsDarkTheme(isDark);
+
+    // Listen for theme changes
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkTheme(isDark);
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Add Infrastructure link only if authenticated
   const navLinks = isAuthenticated
@@ -54,14 +75,13 @@ export function Header() {
           <nav className="flex h-24 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              {/* <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                <Shield className="h-5 w-5 text-primary-foreground" />
+              <div className="w-24 h-24 flex justify-center items-center">
+                <img 
+                  src={isDarkTheme ? "/logo.png" : "/logo-dark.png"} 
+                  className="w-full h-full" 
+                  alt="FyreWay Logo" 
+                /> 
               </div>
-              <span className="text-xl font-bold">FyreWay</span> */}
-
-             <div className="w-24 h-24 flex justify-center items-center">
-             <img src="/logo.png" className="w-full h-full" alt="FyreWay Logo" />
-             </div>
             </Link>
 
             {/* Desktop Navigation */}

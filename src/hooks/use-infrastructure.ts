@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { generateUUID } from '@/lib/utils';
 import {
   InfrastructureState,
   VPNServer,
@@ -252,7 +253,7 @@ export function useInfrastructure() {
       isDeploying: true,
       deploymentProgress: 0,
       deploymentStatus: 'Initializing deployment...',
-      deploymentId: crypto.randomUUID(),
+      deploymentId: generateUUID(),
     }));
   }, []);
 

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Shield, Github, Twitter, Linkedin, Mail } from "lucide-react";
 
 const footerLinks = {
@@ -29,6 +30,27 @@ const footerLinks = {
 };
 
 export function Footer() {
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  useEffect(() => {
+    // Check initial theme
+    const isDark = document.documentElement.classList.contains("dark");
+    setIsDarkTheme(isDark);
+
+    // Listen for theme changes
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkTheme(isDark);
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <footer className="border-t border-border bg-card/50">
       <div className="container mx-auto px-4 py-16">
@@ -36,10 +58,14 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <a href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                <Shield className="h-5 w-5 text-primary-foreground" />
+              <div className="w-20 h-20 flex justify-center items-center">
+                <img 
+                  src={isDarkTheme ? "/logo.png" : "/logo-dark.png"} 
+                  className="w-full h-full" 
+                  alt="FyreWay Logo" 
+                /> 
               </div>
-              <span className="text-xl font-bold">Fyreway</span>
+              {/* <span className="text-xl mt-0 font-bold">FyreWay</span> */}
             </a>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               The fastest way to launch production-ready VPN infrastructure for mobile 

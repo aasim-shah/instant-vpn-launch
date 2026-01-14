@@ -1,4 +1,5 @@
 // Infrastructure Types based on INFRASTRUCTURE_DOCUMENTATION.md
+import { generateUUID } from '@/lib/utils';
 
 // ============ Common Types ============
 export type ServerStatus = 'active' | 'inactive' | 'deploying' | 'error' | 'pending';
@@ -150,7 +151,7 @@ export interface InfrastructureState {
 
 // Initial state factory functions
 export const createInitialVPNServer = (): VPNServer => ({
-  id: crypto.randomUUID(),
+  id: generateUUID(),
   environment: 'dev',
   size: 's-2vcpu-4gb',
   region: 'nyc1',
@@ -171,7 +172,7 @@ export const createInitialVPNConfig = (): VPNDeploymentConfig => ({
 });
 
 export const createInitialRedisNode = (role: RedisNodeRole, region: string): RedisNode => ({
-  id: crypto.randomUUID(),
+  id: generateUUID(),
   role,
   size: role === 'sentinel' ? 's-1vcpu-1gb' : 's-2vcpu-4gb',
   region,
@@ -194,7 +195,7 @@ export const createInitialRedisConfig = (): RedisClusterConfig => ({
 });
 
 export const createInitialKafkaNode = (type: KafkaNodeType, region: string): KafkaNode => ({
-  id: crypto.randomUUID(),
+  id: generateUUID(),
   name: '',
   type,
   template: type === 'template' ? 'small' : undefined,
