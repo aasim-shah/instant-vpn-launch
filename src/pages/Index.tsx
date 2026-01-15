@@ -46,6 +46,8 @@ const Index = () => {
         apiKey={'sk_FBCYeaNQVFsRwIIyGHiAHuK8TuClsvES'}
         apiUrl='https://api.fyreway.com/api'
         title='Ask About FyreWay'
+        subtitle="I'm here to help!" // short
+      
         primaryColor="#10b5cb"
         // suggestedQuestions={
         //   [
