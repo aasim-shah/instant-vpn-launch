@@ -1,7 +1,7 @@
 import { api } from '@/lib/api';
 
-const AUTH_API_URL = 'http://152.42.192.113:8000/api/v1/website';
-const LOGIN_API_URL = 'http://152.42.192.113:8000/api/v1/auth';
+const AUTH_API_URL = 'https://rbac-api.fyreway.com/api/v1/website';
+const LOGIN_API_URL = 'https://rbac-api.fyreway.com/api/v1/auth';
 
 // const AUTH_API_URL = 'http://192.168.18.68:8000/api/v1/website';
 // const LOGIN_API_URL = 'http://192.168.18.68:8000/api/v1/auth';
