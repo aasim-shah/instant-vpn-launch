@@ -77,11 +77,9 @@ export function PricingSection() {
 
         {/* Contact for Pricing Section */}
         <div className="mx-auto max-w-2xl">
-          <Card className="border-border/50 shadow-lg shadow-primary/5 bg-gradient-to-br from-primary/5 to-transparent">
+          <Card className="">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <MessageSquare className="h-6 w-6 text-primary" />
-              </div>
+             
               <CardTitle className="text-2xl">Custom Pricing Available</CardTitle>
               <CardDescription className="mt-2 text-base">
                 Need a tailored solution? Contact us for personalized pricing based on your specific requirements.
@@ -95,9 +93,7 @@ export function PricingSection() {
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </a>
-              <Button variant="hero-outline" size="lg">
-                Schedule Demo
-              </Button>
+             
             </CardContent>
           </Card>
         </div>

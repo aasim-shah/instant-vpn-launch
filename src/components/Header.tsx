@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { Menu, X, Shield, LogOut, User, Settings } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 import {
   DropdownMenu,
@@ -20,8 +20,34 @@ const baseNavLinks = [
   { href: "#features", label: "Features", type: "hash" },
   { href: "#how-it-works", label: "How It Works", type: "hash" },
   { href: "#pricing", label: "Pricing", type: "hash" },
+  { href: "/about", label: "About Us", type: "route" },
   { href: "#faq", label: "FAQ", type: "hash" },
 ];
+
+const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string, navigate: any, isHomePage: boolean) => {
+  if (href.startsWith('#')) {
+    e.preventDefault();
+    const id = href.substring(1);
+    
+    if (!isHomePage) {
+      // If not on home page, navigate to home first with hash
+      navigate('/' + href);
+      // Use setTimeout to ensure navigation completes before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // If already on home page, just scroll
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
+};
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,6 +55,7 @@ export function Header() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
 
   useEffect(() => {
@@ -55,7 +82,7 @@ export function Header() {
     ? [
         ...baseNavLinks.slice(0, 3),
         { href: "/infrastructure", label: "Infrastructure", type: "route" },
-        baseNavLinks[3],
+        ...baseNavLinks.slice(3),
       ]
     : baseNavLinks;
 
@@ -77,7 +104,7 @@ export function Header() {
             <Link to="/" className="flex items-center gap-2">
               <div className="w-24 h-24 flex justify-center items-center">
                 <img 
-                  src={isDarkTheme ? "/logo.png" : "/logo-dark.png"} 
+                  src={isDarkTheme ? "/white.png" : "/black.png"} 
                   className="w-full h-full" 
                   alt="FyreWay Logo" 
                 /> 
@@ -101,7 +128,8 @@ export function Header() {
                 return (
                   <a
                     key={link.href}
-                    href={isHomePage ? link.href : `/${link.href}`}
+                    href={link.href}
+                    onClick={(e) => handleHashNavigation(e, link.href, navigate, isHomePage)}
                     className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {link.label}
@@ -177,9 +205,12 @@ export function Header() {
                   return (
                     <a
                       key={link.href}
-                      href={isHomePage ? link.href : `/${link.href}`}
+                      href={link.href}
+                      onClick={(e) => {
+                        handleHashNavigation(e, link.href, navigate, isHomePage);
+                        setIsMenuOpen(false);
+                      }}
                       className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                      onClick={() => setIsMenuOpen(false)}
                     >
                       {link.label}
                     </a>

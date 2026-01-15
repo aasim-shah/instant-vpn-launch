@@ -1,43 +1,59 @@
 import { useEffect, useState } from "react";
-import { Shield, Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Mail, Twitter, Github, Linkedin } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const footerLinks = {
-  Product: [
+  Platform: [
     { label: "Features", href: "#features" },
+    { label: "How It Works", href: "#how-it-works" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Documentation", href: "#" },
-    { label: "API Reference", href: "#" },
-    { label: "Status", href: "#" },
+    { label: "Use Cases", href: "#use-cases" },
   ],
   Company: [
-    { label: "About", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Press", href: "#" },
+    { label: "About Us", href: "/about" },
+    // { label: "Infrastructure", href: "/infrastructure" },
   ],
-  Resources: [
-    { label: "Community", href: "#" },
-    { label: "Help Center", href: "#" },
-    { label: "Partners", href: "#" },
-    { label: "Guides", href: "#" },
+  Support: [
+    { label: "FAQ", href: "#faq" },
+    { label: "Contact", href: "mailto:info@fyreway.com" },
   ],
-  Legal: [
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
-    { label: "Security", href: "#" },
-    { label: "Cookies", href: "#" },
-  ],
+};
+
+const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string, navigate: any, isHomePage: boolean) => {
+  if (href.startsWith('#')) {
+    e.preventDefault();
+    const id = href.substring(1);
+    
+    if (!isHomePage) {
+      // If not on home page, navigate to home first with hash
+      navigate('/' + href);
+      // Use setTimeout to ensure navigation completes before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // If already on home page, just scroll
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
 };
 
 export function Footer() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
-    // Check initial theme
     const isDark = document.documentElement.classList.contains("dark");
     setIsDarkTheme(isDark);
 
-    // Listen for theme changes
     const observer = new MutationObserver(() => {
       const isDark = document.documentElement.classList.contains("dark");
       setIsDarkTheme(isDark);
@@ -54,18 +70,17 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-card/50">
       <div className="container mx-auto px-4 py-16">
-        <div className="grid gap-12 lg:grid-cols-6">
+        <div className="grid gap-12 lg:grid-cols-5">
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <a href="/" className="flex items-center gap-2">
               <div className="w-20 h-20 flex justify-center items-center">
                 <img 
-                  src={isDarkTheme ? "/logo.png" : "/logo-dark.png"} 
+                  src={isDarkTheme ? "/white.png" : "/black.png"} 
                   className="w-full h-full" 
                   alt="FyreWay Logo" 
                 /> 
               </div>
-              {/* <span className="text-xl mt-0 font-bold">FyreWay</span> */}
             </a>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               The fastest way to launch production-ready VPN infrastructure for mobile 
@@ -82,18 +97,21 @@ export function Footer() {
               <a
                 href="#"
                 className="text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
                 href="#"
                 className="text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Github"
               >
                 <Github className="h-5 w-5" />
               </a>
               <a
                 href="#"
                 className="text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
@@ -107,12 +125,29 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                    </a>
+                    {link.href.startsWith('/') ? (
+                      <Link
+                        to={link.href}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : link.href.startsWith('mailto:') ? (
+                      <a
+                        href={link.href}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <a
+                        href={link.href}
+                        onClick={(e) => handleHashNavigation(e, link.href, navigate, isHomePage)}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -126,7 +161,7 @@ export function Footer() {
             © {new Date().getFullYear()} Fyreway. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
-            Built with <a href="https://aasimshah.com">❤️</a>
+            Built with ❤️
           </p>
         </div>
       </div>

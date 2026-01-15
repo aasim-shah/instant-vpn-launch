@@ -44,7 +44,7 @@ const Index = () => {
       </main>
       <ChatbotWidget 
         apiKey={'sk_FBCYeaNQVFsRwIIyGHiAHuK8TuClsvES'}
-        apiUrl='http://167.172.17.109:9002/api'
+        apiUrl='https://api.fyreway.com/api'
         title='Ask About FyreWay'
         primaryColor="#10b5cb"
         
