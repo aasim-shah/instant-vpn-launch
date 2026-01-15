@@ -133,15 +133,17 @@ export function HeroSection() {
                 />
               </svg>
             </button>
-            <iframe
+            {/* <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/k9T2eQhM4eY"
+              src="https://youtu.be/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD"
               title="How It Works"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="absolute inset-0 left-0 right-0 top-0 bottom-0"
-            />
+            /> */}
+
+<iframe width="100%" height="100%" src="https://www.youtube.com/embed/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe>
           </div>
         </DialogContent>
       </Dialog>

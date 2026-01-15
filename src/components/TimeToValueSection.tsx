@@ -73,7 +73,7 @@ export function TimeToValueSection() {
                 className="gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 <Play className="h-5 w-5" />
-                Watch how it works!
+                DIY vs US
               </Button>
             </div>
           </div>
@@ -101,15 +101,8 @@ export function TimeToValueSection() {
                   />
                 </svg>
               </button>
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/k9T2eQhM4eY"
-                title="How It Works"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 left-0 right-0 top-0 bottom-0"
-              />
+              <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe>
+
             </div>
           </DialogContent>
         </Dialog>

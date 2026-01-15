@@ -527,7 +527,7 @@ VIDEO CONTENT
 The platform includes an embedded YouTube video demonstration.
 
 Video Title: "How It Works"
-Video URL: https://www.youtube.com/embed/k9T2eQhM4eY
+Video URL: https://youtu.be/EcK5_QOui5s
 Access: Click "DIY vs US" button on hero section
 Display: Modal dialog with full-width embedded iframe
 Features: Accelerometer, autoplay, clipboard-write, encrypted-media, gyroscope, picture-in-picture enabled
