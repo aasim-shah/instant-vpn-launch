@@ -47,13 +47,13 @@ const Index = () => {
         apiUrl='https://api.fyreway.com/api'
         title='Ask About FyreWay'
         primaryColor="#10b5cb"
-        suggestedQuestions={
-          [
-            { id: "1", question: "What services do you offer?" },
-            { id: "2", question: "How quickly can I deploy VPN servers?" },
-            { id: "3", question: "How can I contact support?" },
-          ]
-        }
+        // suggestedQuestions={
+        //   [
+        //     { id: "1", question: "What services do you offer?" },
+        //     { id: "2", question: "How quickly can I deploy VPN servers?" },
+        //     { id: "3", question: "How can I contact support?" },
+        //   ]
+        // }
         
       />
       <Footer />

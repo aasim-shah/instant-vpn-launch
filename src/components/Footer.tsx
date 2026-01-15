@@ -160,9 +160,9 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Fyreway. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
+          {/* <p className="text-sm text-muted-foreground">
             Built with ❤️
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>

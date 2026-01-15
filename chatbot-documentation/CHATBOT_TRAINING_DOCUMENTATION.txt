@@ -569,7 +569,6 @@ Legal Links:
 - Cookies (placeholder: #)
 
 Copyright: © 2026 Fyreway. All rights reserved.
-Attribution: Built with ❤️ (links to https://aasimshah.com)
 
 TECHNICAL SPECIFICATIONS
 =========================
