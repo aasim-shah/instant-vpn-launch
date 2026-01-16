@@ -1,10 +1,7 @@
 import { api } from '@/lib/api';
 
-const AUTH_API_URL = 'https://rbac-api.fyreway.com/api/v1/website';
-const LOGIN_API_URL = 'https://rbac-api.fyreway.com/api/v1/auth';
+const RBAC_API_URL = `${import.meta.env.VITE_RBAC_API_URL}` || 'https://rbac-api.fyreway.com/api/v1';;
 
-// const AUTH_API_URL = 'http://192.168.18.68:8000/api/v1/website';
-// const LOGIN_API_URL = 'http://192.168.18.68:8000/api/v1/auth';
 
 export interface RegisterData {
   name: string;
@@ -84,41 +81,18 @@ export const authService = {
   // Register new customer
   register: async (data: RegisterData): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>(
-      `${AUTH_API_URL}/register-customer`,
+      `${RBAC_API_URL}/api/v1/website/register-customer`,
       data
     );
     
-    // Handle different response structures
-    const responseData = response.data;
-    
-    // Store token if registration successful
-    if (responseData.success && responseData.body) {
-      const token = responseData.body.accessToken || responseData.body.token;
-      const user = responseData.body.user || responseData.body.customer;
-      
-      if (token && user) {
-        localStorage.setItem('auth_token', token);
-        
-        // Store user data - handle both user and customer response structures
-        const userData = {
-          id: user._id || (user as any).id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone?.toString(),
-          location: user.location,
-        };
-        
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
-    }
-    
-    return responseData;
+    // Just return the response, let the caller handle token storage
+    return response.data;
   },
 
   // Login user
   login: async (data: LoginData): Promise<LoginResponse> => {
     const response = await api.post<LoginResponse>(
-      `${LOGIN_API_URL}/login`,
+      `${RBAC_API_URL}/api/v1/auth/login`,
       data
     );
     

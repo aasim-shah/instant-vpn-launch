@@ -689,6 +689,12 @@ export default function Infrastructure() {
       
       toast.success("Infrastructure configuration submitted successfully!");
       console.log("API Response:", response.data);
+      
+      // Reset form after successful submission
+      infrastructure.resetState();
+      setCurrentStep(1);
+      setSkipRedis(false);
+      setSkipKafka(false);
     } catch (error: any) {
       console.error("Submission error:", error);
       toast.error(error?.response?.data?.message || "Failed to submit infrastructure configuration");

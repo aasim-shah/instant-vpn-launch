@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://infra-api.fyreway.com';
+const API_BASE_URL = import.meta.env.VITE_INFRASTRUCTURE_API_BASE_URL || 'https://infra-api.fyreway.com';
 const API_TIMEOUT = 30000; // 30 seconds
 
 // Create axios instance with default config

@@ -71,41 +71,50 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
 
     try {
       const response = await authService.register(signupData);
+      console.log("Registration response:", response);
 
       if (response.success) {
-        // Handle success response
-        const customer = response.body?.customer;
-        const token = response.body?.token;
+        // Handle success response - the actual structure has user and accessToken in body
+        const user = response.body?.user;
+        const token = response.body?.accessToken;
         
-        if (customer && token) {
+        console.log("User:", user);
+        console.log("Token:", token);
+        
+        if (user && token) {
+          // Prepare user data for auth context
+          const userData = {
+            id: user._id ||  '',
+            name: user.name,
+            email: user.email,
+            phone: user.phone?.toString() || '',
+            location: user.location || '',
+          };
+          
+          console.log("Logging in with user data:", userData);
+          
           // Update auth context with user data
-          loginContext({
-            id: customer._id || customer.id || '',
-            name: customer.name,
-            email: customer.email,
-            phone: customer.phone?.toString(),
-            website: customer.website,
-            location: customer.location,
-          }, token);
+          loginContext(userData, token);
           
           toast.success("Account created successfully! Welcome aboard! 🎉");
-        } else {
-          toast.success(response.message || "Account created successfully!");
-        }
-        
-        // Reset form
-        setSignupData({
-          name: "",
-          email: "",
-          password: "",
-          phone: "",
-          website: "",
-          location: "",
-        });
+          
+          // Reset form
+          setSignupData({
+            name: "",
+            email: "",
+            password: "",
+            phone: "",
+            website: "",
+            location: "",
+          });
 
-        // Close modal and notify success
-        onClose();
-        onSuccess?.();
+          // Close modal and notify success
+          onClose();
+          onSuccess?.();
+        } else {
+          console.error("Missing user or token in response");
+          toast.error("Registration succeeded but login failed. Please try logging in manually.");
+        }
       } else {
         // Handle error response from API
         const errorMessage = response.error || response.message || "Registration failed. Please try again.";
