@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { PlatformOverviewSection } from "@/components/PlatformOverviewSection";
@@ -17,9 +19,24 @@ import { FinalCTASection } from "@/components/FinalCTASection";
 import { Footer } from "@/components/Footer";
 import GlobalServerMap from "@/components/MapSVG";
 import { ChatbotWidget } from 'fyrebot-widget';
+import { AuthModal } from "@/components/AuthModal";
+import { toast } from "sonner";
 
 
 const Index = () => {
+  const location = useLocation();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if we were redirected from a protected route
+    if (location.state?.showLoginModal) {
+      setIsAuthModalOpen(true);
+      toast.info("Please sign in to access this page");
+      // Clear the state to avoid showing modal on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -59,6 +76,20 @@ const Index = () => {
         
       />
       <Footer />
+      
+      {/* Auth Modal for protected route redirects */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={() => {
+          // Redirect to the originally requested page if available
+          const from = location.state?.from?.pathname;
+          if (from && from !== '/') {
+            window.location.href = from;
+          }
+        }}
+        defaultTab="login"
+      />
     </div>
   );
 };

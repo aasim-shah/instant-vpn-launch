@@ -2,7 +2,6 @@ import { api } from '@/lib/api';
 
 const RBAC_API_URL = `${import.meta.env.VITE_RBAC_API_URL}` || 'https://rbac-api.fyreway.com/api/v1';;
 
-
 export interface RegisterData {
   name: string;
   email: string;
@@ -37,6 +36,7 @@ export interface User {
     status: string;
   }>;
   status?: string;
+  isEmailVerified?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -69,12 +69,25 @@ export interface LoginResponse {
     token?: string;
     accessToken?: string;
     user?: User;
+    message?: string;
   };
   data?: {
     token?: string;
     accessToken?: string;
     user?: User;
   };
+}
+
+export interface VerifyEmailResponse {
+  success: boolean;
+  message?: string;
+  error?: string | null;
+}
+
+export interface ResendVerificationResponse {
+  success: boolean;
+  message?: string;
+  error?: string | null;
 }
 
 export const authService = {
@@ -117,6 +130,24 @@ export const authService = {
     }
     
     return responseData;
+  },
+
+  // Verify email with token
+  verifyEmail: async (token: string): Promise<VerifyEmailResponse> => {
+    const response = await api.post<VerifyEmailResponse>(
+      `${RBAC_API_URL}/api/v1/auth/verify-email`,
+      { token }
+    );
+    return response.data;
+  },
+
+  // Resend verification email
+  resendVerification: async (email: string): Promise<ResendVerificationResponse> => {
+    const response = await api.post<ResendVerificationResponse>(
+      `${RBAC_API_URL}/api/v1/auth/resend-verification`,
+      { email }
+    );
+    return response.data;
   },
 
   // Get current user
