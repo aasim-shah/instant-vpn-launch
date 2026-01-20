@@ -484,7 +484,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         </button>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Must be at least 6 characters long
+                        Must be at least 8 characters long, including uppercase, lowercase, number, and special character.
                       </p>
                     </div>
 

@@ -11,6 +11,7 @@ import Infrastructure from "./pages/Infrastructure";
 import ShowDetails from "./pages/show-details";
 import AboutUs from "./pages/AboutUs";
 import VerifyEmail from "./pages/verify-email";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             />
             <Route path="/detailed-logs" element={<ShowDetails/>} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             
             <Route path="*" element={<NotFound />} />

@@ -21,6 +21,7 @@ const baseNavLinks = [
   { href: "#how-it-works", label: "How It Works", type: "hash" },
   { href: "#pricing", label: "Pricing", type: "hash" },
   { href: "/about", label: "About Us", type: "route" },
+  { href: "/contact", label: "Contact", type: "route" },
   { href: "#faq", label: "FAQ", type: "hash" },
 ];
 
