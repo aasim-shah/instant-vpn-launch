@@ -64,7 +64,7 @@ const Index = () => {
         apiUrl='https://api.fyreway.com/api'
         title='Ask About FyreWay'
         subtitle="I'm here to help!" // short
-      
+        enableContactSupport={true}  // New prop!
         primaryColor="#10b5cb"
         // suggestedQuestions={
         //   [
