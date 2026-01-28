@@ -1,0 +1,136 @@
+import { useParams, Link, Navigate } from 'react-router-dom';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Calendar, ArrowLeft, Mail } from 'lucide-react';
+import { newsletters } from '@/content/newsletterData';
+
+export default function NewsletterDetail() {
+  const { slug } = useParams<{ slug: string }>();
+  const newsletter = newsletters.find(n => n.slug === slug);
+
+  if (!newsletter) {
+    return <Navigate to="/newsletter" replace />;
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main>
+        {/* Header Section */}
+        <section className="relative overflow-hidden pt-32 pb-12 border-b border-border">
+          <div className="hero-grid absolute inset-0 opacity-50" />
+          
+          <div className="container relative mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <Button variant="ghost" size="sm" asChild className="mb-6">
+                <Link to="/newsletter">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Newsletters
+                </Link>
+              </Button>
+
+              <div className="mb-4 flex flex-wrap gap-2">
+                <span className="px-4 py-2 text-sm rounded-full bg-primary/20 text-primary border border-primary/30">
+                  {newsletter.category}
+                </span>
+                {newsletter.tags.map(tag => (
+                  <span key={tag} className="px-4 py-2 text-sm rounded-full bg-muted/50 text-muted-foreground border border-border">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl">
+                {newsletter.title}
+              </h1>
+
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>
+                    {new Date(newsletter.date).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Image */}
+        {newsletter.image && (
+          <section className="border-b border-border">
+            <div className="container mx-auto px-4 py-8">
+              <div className="mx-auto max-w-4xl">
+                <img
+                  src={newsletter.image}
+                  alt={newsletter.title}
+                  className="w-full rounded-lg object-cover aspect-video"
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Content Section */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <div className="grid gap-12 lg:grid-cols-[1fr,300px]">
+                {/* Main Content */}
+                <article className="prose prose-slate dark:prose-invert max-w-none">
+                  <div className="whitespace-pre-wrap leading-relaxed">
+                    {newsletter.content}
+                  </div>
+                </article>
+
+                {/* Sidebar */}
+                <aside className="space-y-6">
+                  {/* Subscribe CTA */}
+                  <Card className="p-6 sticky top-24">
+                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <Mail className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="mb-2 font-semibold">Never Miss an Update</h3>
+                    <p className="mb-4 text-sm text-muted-foreground">
+                      Get the latest product updates and news delivered to your inbox monthly.
+                    </p>
+                    <Button className="w-full" asChild>
+                      <Link to="/newsletter/subscribe">
+                        Subscribe Now
+                      </Link>
+                    </Button>
+                  </Card>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* More Newsletters */}
+        <section className="py-20 border-t border-border bg-card/50">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-6xl text-center">
+              <h2 className="mb-4 text-3xl font-bold">Explore More Editions</h2>
+              <p className="mb-8 text-muted-foreground">
+                Browse our archive of past newsletters
+              </p>
+              <Button size="lg" asChild>
+                <Link to="/newsletter">View All Newsletters</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

@@ -7,15 +7,23 @@ const footerLinks = {
     { label: "Features", href: "#features" },
     { label: "How It Works", href: "#how-it-works" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Use Cases", href: "#use-cases" },
+    { label: "Platform Overview", href: "/platform" },
+  ],
+  Resources: [
+    { label: "Blog", href: "/blog" },
+    { label: "Newsletter", href: "/newsletter" },
+    { label: "Case Studies", href: "/case-studies" },
+    { label: "Content Hub", href: "/content" },
+  ],
+  Community: [
+    { label: "Discord", href: "/community/discord" },
+    { label: "Our Team", href: "/community/team" },
+    { label: "Partners", href: "/partners" },
   ],
   Company: [
     { label: "About Us", href: "/about" },
-    // { label: "Infrastructure", href: "/infrastructure" },
-  ],
-  Support: [
+    { label: "Contact", href: "/contact" },
     { label: "FAQ", href: "#faq" },
-    { label: "Contact", href: "mailto:info@fyreway.com" },
   ],
 };
 
@@ -70,7 +78,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-card/50">
       <div className="container mx-auto px-4 py-16">
-        <div className="grid gap-12 lg:grid-cols-5">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-6">
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <a href="/" className="flex items-center gap-2">

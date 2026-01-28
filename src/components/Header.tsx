@@ -20,9 +20,11 @@ const baseNavLinks = [
   { href: "#features", label: "Features", type: "hash" },
   { href: "#how-it-works", label: "How It Works", type: "hash" },
   { href: "#pricing", label: "Pricing", type: "hash" },
-  { href: "/about", label: "About Us", type: "route" },
+  { href: "/platform", label: "Platform", type: "route" },
+  { href: "/content", label: "Resources", type: "route" },
+  { href: "/community", label: "Community", type: "route" },
+  { href: "/about", label: "About", type: "route" },
   { href: "/contact", label: "Contact", type: "route" },
-  { href: "#faq", label: "FAQ", type: "hash" },
 ];
 
 const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string, navigate: any, isHomePage: boolean) => {
