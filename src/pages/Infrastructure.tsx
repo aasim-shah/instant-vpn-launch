@@ -94,7 +94,7 @@ function VPNServerForm({ infrastructure }: { infrastructure: ReturnType<typeof u
 
         <div className="space-y-4">
           {vpnConfig.servers.map((server, index) => (
-            <Card key={server.id} className="border-border/50">
+            <Card key={server.id} className="border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Server {index + 1}</CardTitle>
@@ -194,7 +194,7 @@ function RedisServerForm({ infrastructure }: { infrastructure: ReturnType<typeof
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {nodes.map((node, index) => (
-          <Card key={node.id} className="border-border/50 bg-secondary/20">
+          <Card key={node.id} className="border-border/50 bg-secondary/20 hover:shadow-md hover:border-foreground/10 transition-all">
             <CardContent className="p-3 space-y-3">
               <div className="flex items-center justify-between">
                 <Badge variant="outline" className="capitalize">
@@ -425,7 +425,7 @@ function KafkaServerForm({ infrastructure }: { infrastructure: ReturnType<typeof
         ) : (
           <div className="space-y-4">
             {kafkaConfig.nodes.map((node, index) => (
-              <Card key={node.id} className="border-border/50">
+              <Card key={node.id} className="border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -782,7 +782,7 @@ export default function Infrastructure() {
             </div>
 
             {/* Form Content */}
-            <Card className="border-border/50">
+            <Card className="border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center gap-2">
                   {currentStep === 1 && (

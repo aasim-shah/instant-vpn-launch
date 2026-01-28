@@ -115,7 +115,7 @@ const AboutUs = () => {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service, index) => (
-                <Card key={index} className="border-2 hover:border-primary/50 transition-colors">
+                <Card key={index} className="border-2 hover:border-foreground/20 hover:shadow-lg hover:-translate-y-0.5 transition-all">
                   <CardContent className="p-6">
                     <div className="mb-4 text-primary">
                       {service.icon}
@@ -150,7 +150,7 @@ const AboutUs = () => {
                   {atxPillars.map((pillar, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-3 p-4 rounded-lg bg-background/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-colors"
+                      className="flex items-center gap-3 p-4 rounded-lg bg-background/50 backdrop-blur-sm border border-border hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5 transition-all"
                     >
                       <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
                       <span className="font-medium text-sm">{pillar}</span>

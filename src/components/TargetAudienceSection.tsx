@@ -55,7 +55,7 @@ export function TargetAudienceSection() {
             {audiences.map((audience, index) => (
               <div
                 key={index}
-                className={`group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg ${
+                className={`group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-foreground/15 hover:shadow-lg ${
                   index === 4 ? "sm:col-span-2 lg:col-span-1" : ""
                 }`}
               >
@@ -63,7 +63,7 @@ export function TargetAudienceSection() {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                 
                 <div className="relative">
-                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors">
                     <audience.icon className="h-7 w-7" />
                   </div>
                   <h3 className="mb-3 text-xl font-bold">{audience.title}</h3>

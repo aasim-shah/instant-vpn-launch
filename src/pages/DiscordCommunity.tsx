@@ -123,7 +123,7 @@ export default function DiscordCommunity() {
               <h2 className="mb-8 text-3xl font-bold text-center">Community Channels</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 {channels.map((channel, index) => (
-                  <Card key={index} className="p-4">
+                  <Card key={index} className="p-4 hover:shadow-md hover:border-foreground/10 transition-all">
                     <div className="flex items-start gap-3">
                       <span className="px-3 py-1 text-xs rounded-full bg-primary/20 text-primary border border-primary/30 mt-1 whitespace-nowrap">
                         #{channel.name}

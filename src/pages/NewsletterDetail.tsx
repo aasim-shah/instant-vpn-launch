@@ -94,7 +94,7 @@ export default function NewsletterDetail() {
                 {/* Sidebar */}
                 <aside className="space-y-6">
                   {/* Subscribe CTA */}
-                  <Card className="p-6 sticky top-24">
+                  <Card className="p-6 sticky top-24 hover:shadow-lg hover:border-foreground/10 transition-all">
                     <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                       <Mail className="h-6 w-6 text-primary" />
                     </div>

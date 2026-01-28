@@ -68,9 +68,9 @@ export function PlatformOverviewSection() {
               {platformFeatures.map((feature, index) => (
                 <div
                   key={index}
-                  className="group flex items-start gap-4 rounded-xl border border-border/50 bg-card/50 p-5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card/80"
+                  className="group flex items-start gap-4 rounded-xl border border-border/50 bg-card/50 p-5 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-card/80 hover:shadow-md hover:shadow-primary/10"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors">
                     <feature.icon className="h-5 w-5" />
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">{feature.text}</p>

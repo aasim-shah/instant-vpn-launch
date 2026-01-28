@@ -129,7 +129,7 @@ export default function BlogDetail() {
                 {/* Sidebar */}
                 <aside className="space-y-6">
                   {/* Share */}
-                  <Card className="p-6 sticky top-24">
+                  <Card className="p-6 sticky top-24 hover:shadow-lg hover:border-foreground/10 transition-all">
                     <h3 className="mb-4 font-semibold flex items-center gap-2">
                       <Share2 className="h-4 w-4" />
                       Share
@@ -178,7 +178,7 @@ export default function BlogDetail() {
                 <h2 className="mb-8 text-3xl font-bold">Related Articles</h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {relatedPosts.map(relatedPost => (
-                    <Card key={relatedPost.slug} className="overflow-hidden group hover:shadow-lg transition-shadow">
+                    <Card key={relatedPost.slug} className="overflow-hidden group hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 hover:border-primary/50 transition-all">
                       <Link to={`/blog/${relatedPost.slug}`}>
                         {relatedPost.image && (
                           <div className="aspect-video overflow-hidden">

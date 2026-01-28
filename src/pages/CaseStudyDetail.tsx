@@ -62,7 +62,7 @@ export default function CaseStudyDetail() {
               {/* Results Highlights */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {caseStudy.results.map((result, index) => (
-                  <Card key={index} className="p-4 bg-card/50 backdrop-blur-sm">
+                  <Card key={index} className="p-4 bg-card/50 backdrop-blur-sm hover:shadow-md hover:border-foreground/10 transition-all">
                     <div className="flex items-start gap-2 mb-2">
                       <TrendingUp className="h-4 w-4 text-primary shrink-0 mt-1" />
                       <div className="text-sm text-muted-foreground">{result.metric}</div>
@@ -135,7 +135,7 @@ export default function CaseStudyDetail() {
               </div>
 
               {/* Testimonial */}
-              <Card className="relative overflow-hidden p-8 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
+              <Card className="relative overflow-hidden p-8 bg-gradient-to-br from-primary/5 to-transparent border-primary/20 hover:shadow-lg hover:border-foreground/10 transition-all">
                 <Quote className="absolute top-4 right-4 h-16 w-16 text-primary/10" />
                 <div className="relative">
                   <p className="mb-6 text-xl font-medium italic">
@@ -188,7 +188,7 @@ export default function CaseStudyDetail() {
                 <div className="grid gap-6 md:grid-cols-2">
                   {relatedCaseStudies.map(related => (
                     <Link key={related.slug} to={`/case-studies/${related.slug}`}>
-                      <Card className="group overflow-hidden transition-all hover:shadow-lg h-full">
+                      <Card className="group overflow-hidden transition-all hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 hover:border-primary/50 h-full">
                         {related.image && (
                           <div className="aspect-video overflow-hidden">
                             <img

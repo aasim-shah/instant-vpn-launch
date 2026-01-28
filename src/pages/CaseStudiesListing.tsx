@@ -57,7 +57,7 @@ export default function CaseStudiesListing() {
         </section>
 
         {/* Filter Section */}
-        <section className="py-8 border-b border-border bg-card/50">
+        <section className="py-8 border-b w-11/12 mx-auto border-border bg-card/50">
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
@@ -68,7 +68,7 @@ export default function CaseStudiesListing() {
                     className={`px-4 py-2 text-sm rounded-full transition-all ${
                       selectedIndustry === null
                         ? 'bg-primary/20 text-primary border border-primary/30'
-                        : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-border/80'
+                        : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-foreground/20 hover:shadow-sm'
                     }`}
                   >
                     All Industries
@@ -80,7 +80,7 @@ export default function CaseStudiesListing() {
                       className={`px-4 py-2 text-sm rounded-full transition-all ${
                         selectedIndustry === industry
                           ? 'bg-primary/20 text-primary border border-primary/30'
-                          : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-border/80'
+                          : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-foreground/20 hover:shadow-sm'
                       }`}
                     >
                       {industry}
@@ -96,7 +96,7 @@ export default function CaseStudiesListing() {
                     className={`px-4 py-2 text-sm rounded-full transition-all ${
                       selectedUseCase === null
                         ? 'bg-primary/20 text-primary border border-primary/30'
-                        : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-border/80'
+                        : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-foreground/20 hover:shadow-sm'
                     }`}
                   >
                     All Use Cases
@@ -108,7 +108,7 @@ export default function CaseStudiesListing() {
                       className={`px-4 py-2 text-sm rounded-full transition-all ${
                         selectedUseCase === useCase
                           ? 'bg-primary/20 text-primary border border-primary/30'
-                          : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-border/80'
+                          : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-foreground/20 hover:shadow-sm'
                       }`}
                     >
                       {useCase}
@@ -127,7 +127,7 @@ export default function CaseStudiesListing() {
               <div className="grid gap-8 md:grid-cols-2">
                 {filteredCaseStudies.map(caseStudy => (
                   <Link key={caseStudy.slug} to={`/case-studies/${caseStudy.slug}`}>
-                    <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 hover:border-primary/50 h-full">
+                    <Card className="group overflow-hidden transition-all hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 hover:border-primary/50 h-full">
                       {caseStudy.image && (
                         <div className="aspect-video overflow-hidden">
                           <img

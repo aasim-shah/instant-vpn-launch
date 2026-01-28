@@ -34,7 +34,7 @@ export function ContentCard({
   return (
     <Link to={href}>
       <Card className={cn(
-        'group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 hover:border-primary/50',
+        'group overflow-hidden transition-all hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 hover:border-primary/50',
         className
       )}>
         {image && (
@@ -115,12 +115,12 @@ interface FeatureCardProps {
 export function FeatureCard({ icon, title, description, href, className }: FeatureCardProps) {
   const content = (
     <Card className={cn(
-      'group relative overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 hover:border-primary/50',
+      'group relative overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/15 hover:-translate-y-0.5 hover:border-primary/40',
       href && 'cursor-pointer',
       className
     )}>
       <CardHeader>
-        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/50">
           {icon}
         </div>
         <CardTitle className="text-xl">{title}</CardTitle>
@@ -153,15 +153,15 @@ export function HubCard({ icon, title, description, href, count, className }: Hu
   return (
     <Link to={href}>
       <Card className={cn(
-        'group relative overflow-hidden transition-all hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 h-full',
+        'group relative overflow-hidden transition-all hover:shadow-2xl hover:shadow-primary/25 hover:-translate-y-1 hover:border-primary/60 h-full',
         className
       )}>
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <CardHeader className="relative">
-          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110">
+          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all">
             {icon}
           </div>
-          <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+          <CardTitle className="text-2xl transition-colors">
             {title}
           </CardTitle>
           <CardDescription className="text-base">{description}</CardDescription>

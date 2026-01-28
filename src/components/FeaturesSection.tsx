@@ -81,7 +81,7 @@ export function FeaturesSection() {
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <CardHeader className="pb-3">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/50">
                   <feature.icon className="h-6 w-6" />
                 </div>
                 <CardTitle className="text-lg">{feature.title}</CardTitle>

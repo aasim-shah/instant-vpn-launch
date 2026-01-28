@@ -204,7 +204,7 @@ const NestedObjectCard = ({ title, data, level = 0 }: { title: string; data: any
   // Handle arrays at top level
   if (Array.isArray(data)) {
     return (
-      <Card className="border-border/50">
+      <Card className="border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
             <div className={`p-2 rounded-lg bg-${getColor(title)}-500/10`}>
@@ -241,7 +241,7 @@ const NestedObjectCard = ({ title, data, level = 0 }: { title: string; data: any
   const status = data.status || data.enabled;
 
   return (
-    <Card className="border-border/50 hover:border-border transition-colors">
+    <Card className="border-border/50 hover:border-foreground/15 hover:shadow-md transition-all">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className={`p-2 rounded-lg bg-${color}-500/10`}>
@@ -348,7 +348,7 @@ const RenderObjectContent = ({ data, level = 0 }: { data: any; level?: number })
           </h4>
           <div className="grid iver gap-3">
             {items.map((item, index) => (
-              <div key={index} className="p-4 rounded-lg bg-secondary/30 border border-border/50 hover:bg-secondary/50 transition-colors">
+              <div key={index} className="p-4 rounded-lg bg-secondary/30 border border-border/50 hover:bg-secondary/50 hover:border-foreground/15 hover:shadow-sm transition-all">
                 <RenderObjectContent data={item} level={level + 1} />
               </div>
             ))}

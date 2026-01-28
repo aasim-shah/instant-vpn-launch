@@ -41,7 +41,7 @@ export function CommercialAbstractionSection() {
               {managedItems.map((item, index) => (
                 <div
                   key={index}
-                  className="group flex items-center gap-4 rounded-xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/30"
+                  className="group flex items-center gap-4 rounded-xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-foreground/15 hover:shadow-md"
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <item.icon className="h-6 w-6" />

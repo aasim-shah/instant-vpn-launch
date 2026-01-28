@@ -104,7 +104,7 @@ export default function AffiliateProgram() {
               <h2 className="mb-12 text-3xl font-bold text-center">Program Benefits</h2>
               <div className="grid gap-6 md:grid-cols-2">
                 {benefits.map((benefit, index) => (
-                  <Card key={index} className="p-6">
+                  <Card key={index} className="p-6 hover:shadow-lg hover:border-foreground/10 hover:-translate-y-0.5 transition-all">
                     <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       {benefit.icon}
                     </div>
@@ -139,7 +139,7 @@ export default function AffiliateProgram() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl">
               {status === 'success' ? (
-                <Card className="p-12 text-center">
+                <Card className="p-12 text-center hover:shadow-lg hover:border-foreground/10 transition-all">
                   <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
                     <CheckCircle2 className="h-8 w-8 text-green-500" />
                   </div>
@@ -161,7 +161,7 @@ export default function AffiliateProgram() {
                     </p>
                   </div>
 
-                  <Card className="p-8">
+                  <Card className="p-8 hover:shadow-lg hover:border-foreground/10 transition-all">
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium mb-2">

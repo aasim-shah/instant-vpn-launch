@@ -111,7 +111,7 @@ export default function TeamPage() {
           <div className="container mx-auto px-4">
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
               {team.map((member, index) => (
-                <Card key={index} className="p-6 group hover:shadow-lg transition-shadow">
+                <Card key={index} className="p-6 group hover:shadow-xl hover:shadow-primary/15 hover:-translate-y-1 hover:border-primary/40 transition-all">
                   <div className="flex flex-col items-center text-center mb-4">
                     <img
                       src={member.avatar}
@@ -160,7 +160,7 @@ export default function TeamPage() {
               <h2 className="mb-12 text-3xl font-bold text-center">Our Values</h2>
               <div className="grid gap-8 md:grid-cols-2">
                 {values.map((value, index) => (
-                  <Card key={index} className="p-6">
+                  <Card key={index} className="p-6 hover:shadow-lg hover:border-foreground/10 transition-all">
                     <h3 className="mb-3 text-xl font-semibold">{value.title}</h3>
                     <p className="text-muted-foreground">{value.description}</p>
                   </Card>

@@ -75,7 +75,7 @@ export default function BlogListing() {
         </section>
 
         {/* Filter Section */}
-        <section className="py-8 border-b border-border bg-card/50 sticky top-0 z-10 backdrop-blur-sm">
+        <section className="py-8 border-b border-border bg-card/50  z-10 backdrop-blur-sm">
           <div className="container mx-auto px-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               {/* Search */}
@@ -128,7 +128,7 @@ export default function BlogListing() {
                   className={`px-4 py-2 text-sm rounded-full transition-all ${
                     selectedCategory === category
                       ? 'bg-primary/20 text-primary border border-primary/30'
-                      : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-border/80'
+                      : 'bg-muted/50 text-muted-foreground border border-border hover:bg-muted hover:border-foreground/20 hover:shadow-sm'
                   }`}
                 >
                   {category}

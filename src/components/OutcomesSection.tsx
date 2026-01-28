@@ -51,7 +51,7 @@ export function OutcomesSection() {
                 key={index}
                 className="group text-center"
               >
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110">
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300">
                   <outcome.icon className="h-8 w-8" />
                 </div>
                 <h3 className="mb-3 text-xl font-bold">{outcome.title}</h3>

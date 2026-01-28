@@ -15,11 +15,11 @@ const footerLinks = {
     { label: "Case Studies", href: "/case-studies" },
     { label: "Content Hub", href: "/content" },
   ],
-  Community: [
-    { label: "Discord", href: "/community/discord" },
-    { label: "Our Team", href: "/community/team" },
-    { label: "Partners", href: "/partners" },
-  ],
+  // Community: [
+  //   { label: "Discord", href: "/community/discord" },
+  //   { label: "Our Team", href: "/community/team" },
+  //   { label: "Partners", href: "/partners" },
+  // ],
   Company: [
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },

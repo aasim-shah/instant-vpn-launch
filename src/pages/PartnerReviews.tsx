@@ -103,7 +103,7 @@ export default function PartnerReviews() {
                 {partners.map((partner, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-center p-6 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors"
+                    className="flex items-center justify-center p-6 rounded-lg border border-border bg-card hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5 transition-all"
                   >
                     <div className="text-center">
                       <div className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-lg">
@@ -125,7 +125,7 @@ export default function PartnerReviews() {
               <h2 className="mb-12 text-3xl font-bold text-center">What Our Partners Say</h2>
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {testimonials.map((testimonial, index) => (
-                  <Card key={index} className="relative p-6 hover:shadow-lg transition-shadow">
+                  <Card key={index} className="relative p-6 hover:shadow-xl hover:shadow-primary/15 hover:-translate-y-1 hover:border-primary/40 transition-all">
                     <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/10" />
                     <div className="relative">
                       <div className="mb-4 flex gap-1">
@@ -163,19 +163,19 @@ export default function PartnerReviews() {
             <div className="mx-auto max-w-5xl">
               <h2 className="mb-12 text-3xl font-bold text-center">By the Numbers</h2>
               <div className="grid gap-8 md:grid-cols-4">
-                <Card className="p-6 text-center">
+                <Card className="p-6 text-center hover:shadow-lg hover:border-foreground/10 hover:-translate-y-0.5 transition-all">
                   <div className="mb-2 text-4xl font-bold text-primary">500+</div>
                   <div className="text-sm text-muted-foreground">Active Customers</div>
                 </Card>
-                <Card className="p-6 text-center">
+                <Card className="p-6 text-center hover:shadow-lg hover:border-foreground/10 hover:-translate-y-0.5 transition-all">
                   <div className="mb-2 text-4xl font-bold text-primary">99.95%</div>
                   <div className="text-sm text-muted-foreground">Uptime SLA</div>
                 </Card>
-                <Card className="p-6 text-center">
+                <Card className="p-6 text-center hover:shadow-lg hover:border-foreground/10 hover:-translate-y-0.5 transition-all">
                   <div className="mb-2 text-4xl font-bold text-primary">10M+</div>
                   <div className="text-sm text-muted-foreground">Daily Connections</div>
                 </Card>
-                <Card className="p-6 text-center">
+                <Card className="p-6 text-center hover:shadow-lg hover:border-foreground/10 hover:-translate-y-0.5 transition-all">
                   <div className="mb-2 text-4xl font-bold text-primary">50+</div>
                   <div className="text-sm text-muted-foreground">Server Locations</div>
                 </Card>

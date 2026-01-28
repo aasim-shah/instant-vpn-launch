@@ -68,7 +68,7 @@ export default function CommunityHub() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl">
               <h2 className="mb-8 text-3xl font-bold text-center">Community Guidelines</h2>
-              <Card className="p-8">
+              <Card className="p-8 hover:shadow-lg hover:border-foreground/10 transition-all">
                 <p className="mb-6 text-muted-foreground">
                   Our community is built on respect, collaboration, and shared learning. 
                   Follow these simple guidelines to ensure a positive experience for everyone:

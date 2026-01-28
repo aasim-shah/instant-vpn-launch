@@ -154,7 +154,7 @@ export default function Contact() {
 
               {/* Contact Cards */}
               <div className="space-y-4">
-                <Card className="p-6 card-hover border-border/50">
+                <Card className="p-6 card-hover border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
                   <div className="flex items-start gap-4">
                     <div className="p-3 rounded-lg bg-primary/10 text-primary">
                       <Mail className="h-6 w-6" />
@@ -174,7 +174,7 @@ export default function Contact() {
                   </div>
                 </Card>
 
-                <Card className="p-6 card-hover border-border/50">
+                <Card className="p-6 card-hover border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
                   <div className="flex items-start gap-4">
                     <div className="p-3 rounded-lg bg-primary/10 text-primary">
                       <Phone className="h-6 w-6" />
@@ -194,7 +194,7 @@ export default function Contact() {
                   </div>
                 </Card>
 
-                <Card className="p-6 card-hover border-border/50">
+                <Card className="p-6 card-hover border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
                   <div className="flex items-start gap-4">
                     <div className="p-3 rounded-lg bg-primary/10 text-primary">
                       <MapPin className="h-6 w-6" />
@@ -218,7 +218,7 @@ export default function Contact() {
 
             {/* Right Side - Contact Form */}
             <div className="lg:col-span-3">
-              <Card className="p-8 border-border/50">
+              <Card className="p-8 border-border/50 hover:shadow-lg hover:border-foreground/10 transition-all">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
                     <MessageSquare className="h-6 w-6 text-primary" />

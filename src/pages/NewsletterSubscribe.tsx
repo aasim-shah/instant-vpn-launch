@@ -47,7 +47,7 @@ export default function NewsletterSubscribe() {
             <div className="mx-auto max-w-2xl">
               {status === 'success' ? (
                 // Success State
-                <Card className="p-12 text-center">
+                <Card className="p-12 text-center hover:shadow-lg hover:border-foreground/10 transition-all">
                   <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
                     <CheckCircle2 className="h-8 w-8 text-green-500" />
                   </div>
@@ -81,7 +81,7 @@ export default function NewsletterSubscribe() {
                     </p>
                   </div>
 
-                  <Card className="p-8">
+                  <Card className="p-8 hover:shadow-lg hover:border-foreground/10 transition-all">
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium mb-2">
