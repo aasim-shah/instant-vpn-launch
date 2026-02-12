@@ -14,8 +14,8 @@ import type {
 // ─── Configuration ──────────────────────────────────────────────────────────
 
 const CMS_API_BASE =
-  import.meta.env.VITE_RBAC_API_URL ||
-  'https://rbac-api.fyreway.com/api/v1';
+  import.meta.env.VITE_INFRASTRUCTURE_API_BASE_URL ||
+  'https://infra-api.fyreway.com';
 // "http://192.168.18.68:4000/api/v1";
 
 const CMS_PREFIX = `${CMS_API_BASE}/cms`;
