@@ -14,7 +14,7 @@ import type {
 // ─── Configuration ──────────────────────────────────────────────────────────
 
 const CMS_API_BASE =
-  import.meta.env.VITE_INFRASTRUCTURE_API_BASE_URL + "api/v1" ||
+  import.meta.env.VITE_INFRASTRUCTURE_API_BASE_URL + "/api/v1" ||
   'https://infra-api.fyreway.com/api/v1';
 // "http://192.168.18.68:4000/api/v1";
 
