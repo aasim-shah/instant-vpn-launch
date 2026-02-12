@@ -49,6 +49,7 @@ interface SurveyData {
     targetMarket?: string;
     vpnBusinessType?: string;
     email: string;
+    phoneNumber?: string;
   };
   applicationDetails: {
     platforms?: string[];
@@ -94,6 +95,7 @@ const initialSurveyData: SurveyData = {
     targetMarket: "",
     vpnBusinessType: "",
     email: "",
+    phoneNumber: "",
   },
   applicationDetails: {
     platforms: [],
@@ -612,6 +614,17 @@ export function SurveyModal({ open, onOpenChange }: SurveyModalProps) {
                 {emailError && (
                   <p className="text-sm text-red-500">{emailError}</p>
                 )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phoneNumber">Phone Number (Optional)</Label>
+                <Input
+                  id="phoneNumber"
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={surveyData.businessInfo.phoneNumber}
+                  onChange={(e) => updateBusinessInfo("phoneNumber", e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">

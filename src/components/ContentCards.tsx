@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { UserAvatar } from '@/components/ui/user-avatar';
 
 interface ContentCardProps {
   title: string;
@@ -88,13 +89,7 @@ export function ContentCard({
           </div>
           {author && (
             <div className="mt-4 flex items-center gap-2 pt-4 border-t">
-              {author.avatar && (
-                <img
-                  src={author.avatar}
-                  alt={author.name}
-                  className="h-8 w-8 rounded-full"
-                />
-              )}
+              <UserAvatar name={author.name} imageUrl={author.avatar} size="sm" />
               <span className="text-sm text-muted-foreground">{author.name}</span>
             </div>
           )}

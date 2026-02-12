@@ -4,8 +4,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePublishedFAQs } from "@/hooks/use-cms";
 
-const faqs = [
+// Fallback FAQs shown while the API is loading or if the request fails
+const fallbackFaqs = [
   {
     question: "How quickly can I deploy VPN servers?",
     answer: "Our platform provisions servers in under 10 seconds. Once you select your configuration and locations, your VPN infrastructure is ready to accept connections almost instantly.",
@@ -41,6 +44,13 @@ const faqs = [
 ];
 
 export function FAQSection() {
+  const { data: faqsResponse, isLoading } = usePublishedFAQs();
+
+  const apiFaqs = faqsResponse?.body;
+  const faqs =
+    apiFaqs && apiFaqs.length > 0
+      ? apiFaqs.map((f) => ({ question: f.question, answer: f.answer }))
+      : fallbackFaqs;
   return (
     <section id="faq" className="relative py-24 lg:py-32">
       <div className="container mx-auto px-4">
@@ -60,22 +70,32 @@ export function FAQSection() {
 
         {/* FAQ Accordion */}
         <div className="mx-auto max-w-4xl">
-          <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="rounded-xl border border-border/50 bg-card/50 px-6 backdrop-blur-sm shadow-lg shadow-primary/5 transition-shadow hover:shadow-xl hover:shadow-primary/10"
-              >
-                <AccordionTrigger className="py-5 text-left font-semibold hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="pb-5 text-muted-foreground">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {isLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="rounded-xl border border-border/50 bg-card/50 px-6 py-5">
+                  <Skeleton className="h-5 w-3/4" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Accordion type="single" collapsible className="space-y-4">
+              {faqs.map((faq, index) => (
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="rounded-xl border border-border/50 bg-card/50 px-6 backdrop-blur-sm shadow-lg shadow-primary/5 transition-shadow hover:shadow-xl hover:shadow-primary/10"
+                >
+                  <AccordionTrigger className="py-5 text-left font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 text-muted-foreground">
+                    <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
         </div>
       </div>
     </section>

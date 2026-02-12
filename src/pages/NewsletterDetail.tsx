@@ -1,18 +1,69 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Calendar, ArrowLeft, Mail } from 'lucide-react';
-import { newsletters } from '@/content/newsletterData';
-
+import { Skeleton } from '@/components/ui/skeleton';
+import { Calendar, ArrowLeft, Mail, AlertCircle } from 'lucide-react';
+import { useNewsletterBySlug } from '@/hooks/use-cms';import '@/styles/cms-content.css';
 export default function NewsletterDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const newsletter = newsletters.find(n => n.slug === slug);
 
-  if (!newsletter) {
+  const {
+    data: newsletterResponse,
+    isLoading,
+    isError,
+  } = useNewsletterBySlug(slug || '');
+
+  const newsletter = newsletterResponse?.body;
+
+  if (!isLoading && !newsletter && !isError) {
     return <Navigate to="/newsletter" replace />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-32 pb-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl space-y-6">
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-12 w-3/4" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="aspect-video w-full rounded-lg" />
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (isError || !newsletter) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-32 pb-20">
+          <div className="container mx-auto px-4 text-center">
+            <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+            <h1 className="mb-2 text-2xl font-bold">Newsletter Not Found</h1>
+            <p className="mb-6 text-muted-foreground">
+              The newsletter you're looking for doesn't exist or has been removed.
+            </p>
+            <Button asChild>
+              <Link to="/newsletter">Back to Newsletters</Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -34,9 +85,11 @@ export default function NewsletterDetail() {
               </Button>
 
               <div className="mb-4 flex flex-wrap gap-2">
-                <span className="px-4 py-2 text-sm rounded-full bg-primary/20 text-primary border border-primary/30">
-                  {newsletter.category}
-                </span>
+                {newsletter.categories?.map(cat => (
+                  <span key={cat} className="px-4 py-2 text-sm rounded-full bg-primary/20 text-primary border border-primary/30">
+                    {cat}
+                  </span>
+                ))}
                 {newsletter.tags.map(tag => (
                   <span key={tag} className="px-4 py-2 text-sm rounded-full bg-muted/50 text-muted-foreground border border-border">
                     {tag}
@@ -52,7 +105,7 @@ export default function NewsletterDetail() {
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
                   <span>
-                    {new Date(newsletter.date).toLocaleDateString('en-US', {
+                    {new Date(newsletter.publishedAt || newsletter.createdAt).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric'
@@ -65,12 +118,12 @@ export default function NewsletterDetail() {
         </section>
 
         {/* Featured Image */}
-        {newsletter.image && (
+        {newsletter.featuredImage && (
           <section className="border-b border-border">
             <div className="container mx-auto px-4 py-8">
               <div className="mx-auto max-w-4xl">
                 <img
-                  src={newsletter.image}
+                  src={newsletter.featuredImage}
                   alt={newsletter.title}
                   className="w-full rounded-lg object-cover aspect-video"
                 />
@@ -85,11 +138,10 @@ export default function NewsletterDetail() {
             <div className="mx-auto max-w-4xl">
               <div className="grid gap-12 lg:grid-cols-[1fr,300px]">
                 {/* Main Content */}
-                <article className="prose prose-slate dark:prose-invert max-w-none">
-                  <div className="whitespace-pre-wrap leading-relaxed">
-                    {newsletter.content}
-                  </div>
-                </article>
+                <div
+                  className="cms-content"
+                  dangerouslySetInnerHTML={{ __html: newsletter.content }}
+                />
 
                 {/* Sidebar */}
                 <aside className="space-y-6">

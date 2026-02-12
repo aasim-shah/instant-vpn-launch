@@ -3,22 +3,32 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ContentCard } from '@/components/ContentCards';
 import { Button } from '@/components/ui/button';
-import { Mail, ArrowRight } from 'lucide-react';
-import { newsletters } from '@/content/newsletterData';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { usePublishedNewsletters } from '@/hooks/use-cms';
 import { Link } from 'react-router-dom';
 
 export default function NewsletterListing() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
 
+  const {
+    data: newslettersResponse,
+    isLoading,
+    isError,
+    error,
+  } = usePublishedNewsletters({ limit: 50 });
+
+  const newsletters = newslettersResponse?.body?.data ?? [];
+
   const sortedNewsletters = useMemo(() => {
     const sorted = [...newsletters];
     sorted.sort((a, b) => {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
+      const dateA = new Date(a.publishedAt || a.createdAt).getTime();
+      const dateB = new Date(b.publishedAt || b.createdAt).getTime();
       return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
     return sorted;
-  }, [sortOrder]);
+  }, [newsletters, sortOrder]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,20 +96,53 @@ export default function NewsletterListing() {
         {/* Newsletters Grid */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {sortedNewsletters.map(newsletter => (
-                <ContentCard
-                  key={newsletter.slug}
-                  title={newsletter.title}
-                  excerpt={newsletter.excerpt}
-                  href={`/newsletter/${newsletter.slug}`}
-                  image={newsletter.image}
-                  date={newsletter.date}
-                  category={newsletter.category}
-                  tags={newsletter.tags}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-4 rounded-lg border border-border p-4">
+                    <Skeleton className="aspect-video w-full rounded-lg" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="text-center py-20">
+                <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+                <p className="text-lg text-muted-foreground">
+                  {(error as Error)?.message || 'Failed to load newsletters. Please try again later.'}
+                </p>
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : sortedNewsletters.length > 0 ? (
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {sortedNewsletters.map(newsletter => (
+                  <ContentCard
+                    key={newsletter.slug}
+                    title={newsletter.title}
+                    excerpt={newsletter.summary}
+                    href={`/newsletter/${newsletter.slug}`}
+                    image={newsletter.featuredImage}
+                    date={newsletter.publishedAt || newsletter.createdAt}
+                    category={newsletter.categories?.[0]}
+                    tags={newsletter.tags}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-lg text-muted-foreground">
+                  No newsletters available yet. Check back soon!
+                </p>
+              </div>
+            )}
           </div>
         </section>
 

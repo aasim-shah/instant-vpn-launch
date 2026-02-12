@@ -28,6 +28,8 @@ import TeamPage from "./pages/TeamPage";
 import PartnersHub from "./pages/PartnersHub";
 import AffiliateProgram from "./pages/AffiliateProgram";
 import PartnerReviews from "./pages/PartnerReviews";
+import CMSPage from "./pages/CMSPage";
+import PagesListing from "./pages/PagesListing";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +78,10 @@ const App = () => (
             <Route path="/partners" element={<PartnersHub />} />
             <Route path="/partners/affiliate" element={<AffiliateProgram />} />
             <Route path="/partners/reviews" element={<PartnerReviews />} />
+            
+            {/* Dynamic CMS Pages */}
+            <Route path="/pages" element={<PagesListing />} />
+            <Route path="/page/:slug" element={<CMSPage />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>

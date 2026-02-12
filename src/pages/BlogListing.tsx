@@ -1,52 +1,54 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ContentCard } from '@/components/ContentCards';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
-import { blogPosts } from '@/content/blogData';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Search, AlertCircle } from 'lucide-react';
+import { usePublishedBlogs, useBlogCategories } from '@/hooks/use-cms';
+import type { BlogCategory } from '@/types/cms';
 
 export default function BlogListing() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [page] = useState(1);
 
-  // Get unique categories
-  const categories = useMemo(() => {
-    const cats = Array.from(new Set(blogPosts.map(post => post.category)));
-    return cats.sort();
-  }, []);
+  // Fetch blogs from CMS API
+  const {
+    data: blogsResponse,
+    isLoading,
+    isError,
+    error,
+  } = usePublishedBlogs({
+    page,
+    limit: 50,
+    search: searchQuery || undefined,
+    category: (selectedCategory as BlogCategory) || undefined,
+  });
 
-  // Filter and sort posts
+  // Fetch categories from API
+  const { data: categoriesResponse } = useBlogCategories();
+
+  const blogs = blogsResponse?.body?.data ?? [];
+  const categories = categoriesResponse?.body ?? [];
+
+  // Sort posts client-side (API may not support sort direction)
   const filteredPosts = useMemo(() => {
-    let posts = [...blogPosts];
-
-    // Apply search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      posts = posts.filter(
-        post =>
-          post.title.toLowerCase().includes(query) ||
-          post.excerpt.toLowerCase().includes(query) ||
-          post.tags.some(tag => tag.toLowerCase().includes(query))
-      );
-    }
-
-    // Apply category filter
-    if (selectedCategory) {
-      posts = posts.filter(post => post.category === selectedCategory);
-    }
-
-    // Apply sort
-    posts.sort((a, b) => {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
+    const sorted = [...blogs];
+    sorted.sort((a, b) => {
+      const dateA = new Date(a.publishedAt || a.createdAt).getTime();
+      const dateB = new Date(b.publishedAt || b.createdAt).getTime();
       return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
+    return sorted;
+  }, [blogs, sortOrder]);
 
-    return posts;
-  }, [searchQuery, selectedCategory, sortOrder]);
+  const handleClearFilters = useCallback(() => {
+    setSearchQuery('');
+    setSelectedCategory(null);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -141,18 +143,44 @@ export default function BlogListing() {
         {/* Posts Grid */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            {filteredPosts.length > 0 ? (
+            {isLoading ? (
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-4 rounded-lg border border-border p-4">
+                    <Skeleton className="aspect-video w-full rounded-lg" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="text-center py-20">
+                <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+                <p className="text-lg text-muted-foreground">
+                  {(error as Error)?.message || 'Failed to load blog posts. Please try again later.'}
+                </p>
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : filteredPosts.length > 0 ? (
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {filteredPosts.map(post => (
                   <ContentCard
                     key={post.slug}
                     title={post.title}
-                    excerpt={post.excerpt}
+                    excerpt={post.summary}
                     href={`/blog/${post.slug}`}
-                    image={post.image}
-                    date={post.date}
-                    readingTime={post.readingTime}
-                    category={post.category}
+                    image={post.featuredImage}
+                    date={post.publishedAt || post.createdAt}
+                    readingTime={post.readTime ? `${post.readTime} min read` : undefined}
+                    category={post.categories?.[0]}
                     tags={post.tags}
                     author={post.author}
                   />
@@ -166,10 +194,7 @@ export default function BlogListing() {
                 <Button
                   variant="outline"
                   className="mt-4"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedCategory(null);
-                  }}
+                  onClick={handleClearFilters}
                 >
                   Clear Filters
                 </Button>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Mail, Twitter, Github, Linkedin } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { usePublishedPages } from "@/hooks/use-cms";
 
 const footerLinks = {
   Platform: [
@@ -15,11 +16,6 @@ const footerLinks = {
     { label: "Case Studies", href: "/case-studies" },
     { label: "Content Hub", href: "/content" },
   ],
-  // Community: [
-  //   { label: "Discord", href: "/community/discord" },
-  //   { label: "Our Team", href: "/community/team" },
-  //   { label: "Partners", href: "/partners" },
-  // ],
   Company: [
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
@@ -57,6 +53,10 @@ export function Footer() {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
+
+  // Fetch published CMS pages for the footer
+  const { data: pagesResponse } = usePublishedPages();
+  const cmsPages = pagesResponse?.body?.data ?? [];
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
@@ -161,6 +161,41 @@ export function Footer() {
               </ul>
             </div>
           ))}
+
+          {/* Dynamic CMS Pages Column */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold">Pages</h3>
+            <ul className="space-y-3">
+              {cmsPages.length > 0 ? (
+                cmsPages
+                  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                  .map((page) => (
+                    <li key={page._id}>
+                      <Link
+                        to={`/page/${page.slug}`}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {page.headerTitle}
+                      </Link>
+                    </li>
+                  ))
+              ) : (
+                <li>
+                  <span className="text-sm text-muted-foreground/50">
+                    Coming soon
+                  </span>
+                </li>
+              )}
+              <li>
+                <Link
+                  to="/pages"
+                  className="text-sm text-primary font-medium transition-colors hover:text-primary/80"
+                >
+                  View All →
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
         {/* Bottom Bar */}
