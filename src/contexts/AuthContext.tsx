@@ -1,5 +1,17 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authService } from '@/services/authService';
+
+// Inline lightweight auth helpers — avoids importing authService → api → axios (~30KB)
+const authHelpers = {
+  isAuthenticated: () => !!localStorage.getItem('auth_token'),
+  getCurrentUser: () => {
+    const s = localStorage.getItem('user');
+    return s ? JSON.parse(s) : null;
+  },
+  logout: () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+  },
+};
 
 interface User {
   id: string;
@@ -26,11 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check authentication status on mount
-    const authenticated = authService.isAuthenticated();
+    const authenticated = authHelpers.isAuthenticated();
     console.log("AuthProvider: Checking authentication on mount, authenticated:", authenticated);
     setIsAuthenticated(authenticated);
     if (authenticated) {
-      const currentUser = authService.getCurrentUser();
+      const currentUser = authHelpers.getCurrentUser();
       console.log("AuthProvider: Current user from storage:", currentUser);
       setUser(currentUser);
     }
@@ -47,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     console.log("AuthProvider: logout called");
-    authService.logout();
+    authHelpers.logout();
     setUser(null);
     setIsAuthenticated(false);
   };

@@ -1,7 +1,12 @@
 /* CMS Content Styles - Overrides Tailwind Reset */
 .cms-content {
-  color: inherit;
+  color: hsl(var(--foreground));
   line-height: 1.75;
+}
+
+/* Force all child elements to inherit theme colors */
+.cms-content * {
+  color: inherit !important;
 }
 
 .cms-content h1 {
@@ -10,6 +15,7 @@
   margin-top: 2rem;
   margin-bottom: 1rem;
   line-height: 1.2;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content h2 {
@@ -18,6 +24,7 @@
   margin-top: 1.75rem;
   margin-bottom: 0.875rem;
   line-height: 1.3;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content h3 {
@@ -26,6 +33,7 @@
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
   line-height: 1.4;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content h4 {
@@ -34,6 +42,7 @@
   margin-top: 1.25rem;
   margin-bottom: 0.625rem;
   line-height: 1.4;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content h5 {
@@ -42,6 +51,7 @@
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   line-height: 1.5;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content h6 {
@@ -50,15 +60,17 @@
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   line-height: 1.5;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content p {
   margin-bottom: 1.25rem;
   line-height: 1.75;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content a {
-  color: hsl(var(--primary));
+  color: hsl(var(--primary)) !important;
   text-decoration: underline;
   font-weight: 500;
   transition: opacity 0.2s;
@@ -71,11 +83,13 @@
 .cms-content strong,
 .cms-content b {
   font-weight: 600;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content em,
 .cms-content i {
   font-style: italic;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content ul,
@@ -95,6 +109,7 @@
 .cms-content li {
   margin-bottom: 0.5rem;
   line-height: 1.75;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content li > ul,
@@ -117,6 +132,7 @@
   border-radius: 0.25rem;
   font-size: 0.875em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content pre {
@@ -131,6 +147,7 @@
   background-color: transparent;
   padding: 0;
   border-radius: 0;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content img {
@@ -149,13 +166,13 @@
 .cms-content th,
 .cms-content td {
   border: 1px solid hsl(var(--border));
-  padding: 0.75rem;
-  text-align: left;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content th {
   background-color: hsl(var(--muted));
   font-weight: 600;
+  color: hsl(var(--foreground)) !important;
 }
 
 .cms-content hr {

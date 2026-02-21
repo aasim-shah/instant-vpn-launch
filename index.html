@@ -4,6 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- DNS Prefetch & Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.fyreway.com" />
+    
+    <!-- Critical inline styles for instant first paint -->
+    <style>
+      /* System font stack while Inter loads */
+      body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; background: #fff; color: #1e293b; }
+      /* Prevent layout shift */
+      #root { min-height: 100vh; }
+      /* Critical header styles for immediate paint */
+      .min-h-screen { min-height: 100vh; }
+      /* Skeleton for hero - prevents blank white page */
+      #root:empty::after {
+        content: '';
+        display: block;
+        height: 100vh;
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0a0f1e; color: #e2e8f0; }
+        #root:empty::after { background: linear-gradient(180deg, #0a0f1e 0%, #070c17 100%); }
+      }
+    </style>
+    
+    <!-- Load Inter font async (non-render-blocking) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
+    
     <!-- Primary Meta Tags -->
     <title>FyreWay - Launch VPN Infrastructure in Minutes | VPN Server Platform</title>
     <meta name="title" content="FyreWay - Launch VPN Infrastructure in Minutes | VPN Server Platform" />
@@ -28,14 +59,27 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#0891b2" />
     
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BTZG1CECC"></script>
+    <!-- Google tag (gtag.js) - Loaded after user interaction or idle -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-2BTZG1CECC');
+      
+      // Defer GA until the page is fully idle
+      function loadGA() {
+        if (window.__gaLoaded) return;
+        window.__gaLoaded = true;
+        gtag('js', new Date());
+        gtag('config', 'G-2BTZG1CECC');
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-2BTZG1CECC';
+        document.head.appendChild(s);
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGA, { timeout: 3000 });
+      } else {
+        setTimeout(loadGA, 3000);
+      }
     </script>
     
     <!-- Structured Data -->

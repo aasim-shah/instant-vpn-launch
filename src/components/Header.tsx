@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { Menu, X, Shield, LogOut, User, Settings } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
+// Lazy load AuthModal - 663 lines of code only needed on button click
+const AuthModal = lazy(() => import("@/components/AuthModal").then(m => ({ default: m.AuthModal })));
+
+// Lazy load DropdownMenu + icons only needed when authenticated
+const LazyProfileDropdown = lazy(() => import("@/components/ProfileDropdown"));
+
+// Lazy import toast so sonner is not in the critical bundle
+const showToast = (msg: string) => import("sonner").then(m => m.toast.success(msg));
 
 const baseNavLinks = [
   { href: "#features", label: "Features", type: "hash" },
@@ -35,18 +33,18 @@ const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: stri
     if (!isHomePage) {
       // If not on home page, navigate to home first with hash
       navigate('/' + href);
-      // Use setTimeout to ensure navigation completes before scrolling
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
     } else {
       // If already on home page, just scroll
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        const headerOffset = 100; // Account for fixed header height
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
       }
     }
   }
@@ -60,6 +58,27 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
+
+  // Handle scrolling to hash on page load or hash change
+  useEffect(() => {
+    if (location.hash && isHomePage) {
+      // Wait for page to render
+      setTimeout(() => {
+        const id = location.hash.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          const headerOffset = 100; // Account for fixed header height
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }, [location.hash, isHomePage]);
 
   useEffect(() => {
     // Check initial theme
@@ -90,12 +109,12 @@ export function Header() {
     : baseNavLinks;
 
   const handleAuthSuccess = () => {
-    toast.success("Welcome! You're now signed in.");
+    showToast("Welcome! You're now signed in.");
   };
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully");
+    showToast("Logged out successfully");
   };
 
   return (
@@ -109,7 +128,10 @@ export function Header() {
                 <img 
                   src={isDarkTheme ? "/white.png" : "/black.png"} 
                   className="w-full h-full" 
-                  alt="FyreWay Logo" 
+                  alt="FyreWay Logo"
+                  width="96"
+                  height="96"
+                  loading="eager"
                 /> 
               </div>
             </Link>
@@ -145,29 +167,9 @@ export function Header() {
             <div className="hidden items-center gap-3 md:flex">
               <ThemeToggle />
               {isAuthenticated && user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <User className="h-4 w-4" />
-                      Profile
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <div className="px-2 py-2 text-sm">
-                      <p className="font-medium text-foreground">{user.name}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                    </div>
-                    <DropdownMenuSeparator />
-                    
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Suspense fallback={<Button variant="outline" size="sm" className="gap-2">Profile</Button>}>
+                  <LazyProfileDropdown user={user} onLogout={handleLogout} />
+                </Suspense>
               ) : (
                 <Button size="sm" onClick={() => setIsAuthModalOpen(true)}>
                  Get In
@@ -235,7 +237,6 @@ export function Header() {
                           setIsMenuOpen(false);
                         }}
                       >
-                        <LogOut className="mr-2 h-4 w-4" />
                         Logout
                       </Button>
                     </>
@@ -257,12 +258,16 @@ export function Header() {
         </div>
       </header>
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={handleAuthSuccess}
-      />
+      {/* Auth Modal - lazy loaded */}
+      {isAuthModalOpen && (
+        <Suspense fallback={null}>
+          <AuthModal
+            isOpen={isAuthModalOpen}
+            onClose={() => setIsAuthModalOpen(false)}
+            onSuccess={handleAuthSuccess}
+          />
+        </Suspense>
+      )}
     </>
   );
 }

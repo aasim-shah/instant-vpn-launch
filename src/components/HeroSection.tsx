@@ -1,14 +1,11 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Globe, Zap, Shield } from "lucide-react";
-import { SurveyModal } from "./SurveyModal";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
+// Lazy load modals - only needed on button click
+const SurveyModal = lazy(() => import("./SurveyModal").then(m => ({ default: m.SurveyModal })));
+const Dialog = lazy(() => import("@/components/ui/dialog").then(m => ({ default: m.Dialog })));
+const DialogContent = lazy(() => import("@/components/ui/dialog").then(m => ({ default: m.DialogContent })));
 
 export function HeroSection() {
   const [surveyOpen, setSurveyOpen] = useState(false);
@@ -108,45 +105,43 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Survey Modal */}
-      <SurveyModal open={surveyOpen} onOpenChange={setSurveyOpen} />
+      {/* Survey Modal - lazy loaded */}
+      {surveyOpen && (
+        <Suspense fallback={null}>
+          <SurveyModal open={surveyOpen} onOpenChange={setSurveyOpen} />
+        </Suspense>
+      )}
 
-      {/* Video Modal */}
-      <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
-        <DialogContent className="max-w-4xl p-0 m-0 w-full border-0">
-          <div className="relative w-full aspect-video rounded-lg p-0 m-0 overflow-hidden">
-            <button
-              onClick={() => setVideoOpen(false)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/90 hover:bg-black transition-colors"
-            >
-              <svg
-                className="h-6 w-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            {/* <iframe
-              width="100%"
-              height="100%"
-              src="https://youtu.be/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD"
-              title="How It Works"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 left-0 right-0 top-0 bottom-0"
-            /> */}
-
-<iframe width="100%" height="100%" src="https://www.youtube.com/embed/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Video Modal - lazy loaded */}
+      {videoOpen && (
+        <Suspense fallback={null}>
+          <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
+            <DialogContent className="max-w-4xl p-0 m-0 w-full border-0">
+              <div className="relative w-full aspect-video rounded-lg p-0 m-0 overflow-hidden">
+                <button
+                  onClick={() => setVideoOpen(false)}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/90 hover:bg-black transition-colors"
+                >
+                  <svg
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </Suspense>
+      )}
     </section>
   );
 }

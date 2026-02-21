@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { 
-  Network, 
+  Network,
   Globe, 
   Scale, 
   AlertTriangle, 
   ShieldCheck, 
   Users,
-  Clock,
   Rocket,
   PiggyBank,
   ShieldAlert,
@@ -15,12 +14,29 @@ import {
   Play
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
+// Lazy load Dialog — only needed when user clicks play button
+const DialogWrapper = lazy(() => import("@/components/ui/dialog").then(m => {
+  const { Dialog, DialogContent } = m;
+  // Return a component that renders the video dialog
+  return { default: ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) => (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl p-0 m-0 w-full border-0">
+        <div className="relative w-full aspect-video rounded-lg p-0 m-0 overflow-hidden">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/90 hover:bg-black transition-colors"
+          >
+            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )};
+}));
 
 const buildChallenges = [
   { icon: Network, text: "Network architecture and protocol decisions" },
@@ -63,6 +79,10 @@ export function TimeToValueSection() {
             <img 
               src="image2.jpeg" 
               alt="How it works !"
+              width="1200"
+              height="675"
+              loading="eager"
+              fetchPriority="high"
               className="max-w-full w-full rounded-2xl shadow-2xl shadow-primary/20 dark:shadow-primary/10 transition-transform duration-300 group-hover:scale-105"
             />
             {/* Hover Overlay */}
@@ -79,33 +99,12 @@ export function TimeToValueSection() {
           </div>
         </div>
 
-        {/* Video Modal */}
-        <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
-          <DialogContent className="max-w-4xl p-0 m-0 w-full border-0">
-            <div className="relative w-full aspect-video rounded-lg p-0 m-0 overflow-hidden">
-              <button
-                onClick={() => setIsVideoOpen(false)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/90 hover:bg-black transition-colors"
-              >
-                <svg
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EcK5_QOui5s?si=w3QbOB4NHf7fi7ZD" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe>
-
-            </div>
-          </DialogContent>
-        </Dialog>
+        {/* Video Modal - lazy loaded */}
+        {isVideoOpen && (
+          <Suspense fallback={null}>
+            <DialogWrapper open={isVideoOpen} onOpenChange={setIsVideoOpen} />
+          </Suspense>
+        )}
 
         {/* Main Content */}
         {/* <div className="mx-auto max-w-6xl">

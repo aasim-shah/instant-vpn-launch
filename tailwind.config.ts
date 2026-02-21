@@ -2,7 +2,25 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    // Exclude unused UI wrappers from CSS scanning to reduce CSS bundle
+    "!./src/components/ui/chart.tsx",
+    "!./src/components/ui/calendar.tsx",
+    "!./src/components/ui/carousel.tsx",
+    "!./src/components/ui/input-otp.tsx",
+    "!./src/components/ui/resizable.tsx",
+    "!./src/components/ui/drawer.tsx",
+    "!./src/components/ui/command.tsx",
+    "!./src/components/ui/menubar.tsx",
+    "!./src/components/ui/context-menu.tsx",
+    "!./src/components/ui/hover-card.tsx",
+    "!./src/components/ui/navigation-menu.tsx",
+    "!./src/components/ui/sidebar.tsx",
+  ],
   prefix: "",
   theme: {
     container: {
