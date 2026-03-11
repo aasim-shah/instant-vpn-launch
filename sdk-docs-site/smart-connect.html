@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Smart Connect — FyreWay SDK Docs</title>
+<meta name="description" content="One-call optimal VPN server selection with configurable strategies.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css"><link rel="icon" href="https://fyreway.com/favicon.png"><meta name="theme-color" content="#0891b2">
+<script src="docs.js"></script>
+</head>
+<body>
+<div class="mobile-header"><button class="hamburger" id="hamburger">☰</button><span style="font-weight:700;font-size:15px">SDK Docs</span><button class="theme-toggle" id="themeToggleMobile">🌙</button></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="page-wrapper">
+<aside class="sidebar" id="sidebar"><div class="sidebar-header"><div class="sidebar-logo">F</div><span class="sidebar-brand">SDK Docs</span><span class="sidebar-version">v1.1.0</span></div><nav class="sidebar-nav"><div class="sidebar-section"><div class="sidebar-section-title">Guide</div>
+      <a class="sidebar-link" href="index.html"><span class="nav-num">↗</span> Overview</a>
+      <a class="sidebar-link" href="getting-started.html"><span class="nav-num">01</span> Getting Started</a>
+      <a class="sidebar-link" href="server-discovery.html"><span class="nav-num">02</span> Server Discovery</a>
+      <a class="sidebar-link" href="connection-lifecycle.html"><span class="nav-num">03</span> Connection Lifecycle</a>
+      <a class="sidebar-link active" href="smart-connect.html"><span class="nav-num">04</span> Smart Connect</a>
+      <a class="sidebar-link" href="error-handling.html"><span class="nav-num">05</span> Error Handling</a>
+      <a class="sidebar-link" href="ui-utilities.html"><span class="nav-num">06</span> UI Utilities</a>
+      <a class="sidebar-link" href="configuration.html"><span class="nav-num">07</span> Configuration</a>
+</div></nav><div class="sidebar-footer">© 2026 FyreWay · <a href="https://fyreway.com">fyreway.com</a></div></aside>
+<main class="main-content">
+<div class="top-bar"><div class="breadcrumb"><a href="https://fyreway.com">FyreWay</a><span class="sep">/</span><a href="index.html">SDK Docs</a><span class="sep">/</span><span>Smart Connect</span></div><button class="theme-toggle" id="themeToggle">🌙</button></div>
+<div class="content">
+
+<h1>Smart Connect</h1>
+<p class="page-description">One-call API that selects the optimal VPN server based on configurable strategies. No manual server selection logic needed.</p>
+
+<h2>How It Works</h2>
+<div class="mermaid-wrapper"><pre class="mermaid">
+flowchart TD
+    Start["smartConnect(criteria, strategy)"]
+    Fetch["Fetch available servers"]
+    Filter["Apply filters"]
+    Score["Score each server"]
+    Select["Select highest-scoring server"]
+    Result["Return SmartConnectResult"]
+    Start --> Fetch --> Filter --> Score --> Select --> Result
+</pre></div>
+
+<hr>
+
+<h2>Basic Usage</h2>
+<pre><code><span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">smartConnect</span>()) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        <span class="kw">val</span> server = result.data.server      <span class="cmt">// The selected Server</span>
+        <span class="kw">val</span> reason = result.data.reason      <span class="cmt">// "Balanced: best overall score"</span>
+        <span class="kw">val</span> score = result.data.score        <span class="cmt">// 0.0 – 1.0</span>
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<hr>
+
+<h2>Selection Strategies</h2>
+<table>
+  <thead><tr><th>Strategy</th><th>Best for</th><th>How it scores</th></tr></thead>
+  <tbody>
+    <tr><td><code>BALANCED</code></td><td>General use (default)</td><td>Weighted mix of load, latency, and capacity</td></tr>
+    <tr><td><code>LOWEST_LOAD</code></td><td>Maximum bandwidth</td><td>Fewest active connections</td></tr>
+    <tr><td><code>LOWEST_LATENCY</code></td><td>Gaming, real-time</td><td>Lowest ping</td></tr>
+    <tr><td><code>HIGHEST_CAPACITY</code></td><td>Peak hours</td><td>Most available slots</td></tr>
+    <tr><td><code>CLOSEST_LOCATION</code></td><td>Lowest latency (geo)</td><td>Geographic proximity</td></tr>
+  </tbody>
+</table>
+
+<pre><code><span class="cmt">// For gaming</span>
+sdk.<span class="fn">smartConnect</span>(strategy = <span class="type">SelectionStrategy</span>.LOWEST_LATENCY)
+
+<span class="cmt">// During peak hours</span>
+sdk.<span class="fn">smartConnect</span>(strategy = <span class="type">SelectionStrategy</span>.HIGHEST_CAPACITY)
+
+<span class="cmt">// For downloads</span>
+sdk.<span class="fn">smartConnect</span>(strategy = <span class="type">SelectionStrategy</span>.LOWEST_LOAD)</code></pre>
+
+<hr>
+
+<h2>Filtering with Criteria</h2>
+<pre><code><span class="kw">val</span> result = sdk.<span class="fn">smartConnect</span>(
+    criteria = <span class="type">SmartConnectCriteria</span>(
+        preferredCountry = <span class="str">"US"</span>,
+        preferredCity = <span class="str">"New York"</span>,
+        preferredRegion = <span class="str">"Virginia"</span>,
+        maxLatency = <span class="num">100</span>,
+        minCapacity = <span class="num">20</span>
+    ),
+    strategy = <span class="type">SelectionStrategy</span>.BALANCED
+)</code></pre>
+
+<hr>
+
+<h2>Purpose-Built Methods</h2>
+<pre><code><span class="cmt">// Best server near user's location</span>
+sdk.<span class="fn">smartConnectByLocation</span>(strategy = <span class="type">SelectionStrategy</span>.BALANCED)
+
+<span class="cmt">// Optimized for streaming</span>
+sdk.<span class="fn">smartConnectForStreaming</span>(country = <span class="str">"US"</span>)
+
+<span class="cmt">// Optimized for P2P</span>
+sdk.<span class="fn">smartConnectForP2P</span>(country = <span class="str">"NL"</span>)
+
+<span class="cmt">// By physical region</span>
+sdk.<span class="fn">smartConnectByRegion</span>(<span class="str">"Virginia"</span>)</code></pre>
+
+<blockquote><strong>Note:</strong> The <code>region</code> parameter is a physical province/state name (e.g., "Virginia", "Punjab"), not a cloud region code.</blockquote>
+
+<hr>
+
+<h2>Decision Guide</h2>
+<div class="mermaid-wrapper"><pre class="mermaid">
+flowchart TD
+    Q1{What's the use case?}
+    Q1 -- General --> B["smartConnect()"]
+    Q1 -- Streaming --> S["smartConnectForStreaming()"]
+    Q1 -- P2P --> P["smartConnectForP2P()"]
+    Q1 -- Gaming --> L["strategy = LOWEST_LATENCY"]
+    Q1 -- User picked country --> C["criteria = SmartConnectCriteria(country)"]
+    Q1 -- Simple 1-tap --> QC["quickConnect.selectRecommended()"]
+</pre></div>
+
+<div class="page-nav">
+  <a href="connection-lifecycle.html"><span class="nav-label">← Previous</span><span class="nav-title">Connection Lifecycle</span></a>
+  <a href="error-handling.html" class="next"><span class="nav-label">Next →</span><span class="nav-title">Error Handling</span></a>
+</div>
+</div>
+</main>
+</div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default',themeVariables:{primaryColor:'#0891b2',primaryTextColor:'#fff',lineColor:'#64748b'}});
+</script>
+</body>
+</html>

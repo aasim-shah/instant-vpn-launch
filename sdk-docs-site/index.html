@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FyreWay VPN SDK — Developer Guide</title>
+<meta name="description" content="Complete developer guide for FyreWay VPN SDK for Android. Build production-grade VPN apps fast.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="https://fyreway.com/favicon.png">
+<meta name="theme-color" content="#0891b2">
+<script src="docs.js"></script>
+</head>
+<body>
+
+<!-- Mobile header -->
+<div class="mobile-header">
+  <button class="hamburger" id="hamburger">☰</button>
+  <span style="font-weight:700;font-size:15px">SDK Docs</span>
+  <button class="theme-toggle" id="themeToggleMobile">🌙</button>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="page-wrapper">
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">F</div>
+    <span class="sidebar-brand">SDK Docs</span>
+    <span class="sidebar-version">v1.1.0</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Guide</div>
+      <a class="sidebar-link active" href="index.html"><span class="nav-num">↗</span> Overview</a>
+      <a class="sidebar-link" href="getting-started.html"><span class="nav-num">01</span> Getting Started</a>
+      <a class="sidebar-link" href="server-discovery.html"><span class="nav-num">02</span> Server Discovery</a>
+      <a class="sidebar-link" href="connection-lifecycle.html"><span class="nav-num">03</span> Connection Lifecycle</a>
+      <a class="sidebar-link" href="smart-connect.html"><span class="nav-num">04</span> Smart Connect</a>
+      <a class="sidebar-link" href="error-handling.html"><span class="nav-num">05</span> Error Handling</a>
+      <a class="sidebar-link" href="ui-utilities.html"><span class="nav-num">06</span> UI Utilities</a>
+      <a class="sidebar-link" href="configuration.html"><span class="nav-num">07</span> Configuration</a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    © 2026 FyreWay · <a href="https://fyreway.com">fyreway.com</a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main-content">
+  <div class="top-bar">
+    <div class="breadcrumb">
+      <a href="https://fyreway.com">FyreWay</a>
+      <span class="sep">/</span>
+      <a href="index.html">SDK Docs</a>
+      <span class="sep">/</span>
+      <span>Overview</span>
+    </div>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+  </div>
+
+  <div class="content">
+    <h1>FyreWay VPN SDK</h1>
+    <p class="page-description">
+      <span class="badge">SDK v1.1.0</span> &nbsp;·&nbsp; Last Updated: March 2026 &nbsp;·&nbsp; Min Android: API 21
+    </p>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 1 — What is the SDK?
+         ═══════════════════════════════════════════════════════ -->
+    <h2>What Is FyreWay VPN SDK?</h2>
+    <p>FyreWay VPN SDK is a drop-in Android library that lets you ship a production-grade VPN app without building the backend infrastructure yourself. The SDK handles:</p>
+
+    <table>
+      <thead><tr><th>Capability</th><th>What it does for you</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Device Activation</strong></td><td>Register devices, manage tokens, handle automatic refresh</td></tr>
+        <tr><td><strong>Server Discovery</strong></td><td>Browse, filter, and search VPN servers by country, city, region, or protocol</td></tr>
+        <tr><td><strong>Smart Connect</strong></td><td>One-call optimal server selection with strategies for streaming, P2P, low latency, and more</td></tr>
+        <tr><td><strong>Profile Management</strong></td><td>Create, store, export, and revoke WireGuard &amp; OpenVPN profiles</td></tr>
+        <tr><td><strong>Connection Reporting</strong></td><td>Report connect/disconnect events for session tracking and analytics</td></tr>
+        <tr><td><strong>UI Helpers</strong></td><td>Pre-formatted display models, country flags, load/latency formatters, location pickers</td></tr>
+      </tbody>
+    </table>
+
+    <p>You bring your own VPN tunnel implementation (WireGuard/OpenVPN library of your choice). The SDK manages everything around it — server selection, credential provisioning, session lifecycle, and analytics.</p>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 2 — Watch the overview (placed right after the
+         capabilities table to hook the developer early, before
+         they dive into technical details)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="video-section">
+      <div class="video-section-label">
+        <span class="vs-pill">▶ Watch</span>
+        <span class="vs-title">SDK Co-Pilot — 2-minute overview</span>
+      </div>
+      <div class="video-player-wrap">
+        <video
+          controls
+          preload="metadata"
+          poster="nobeookllm_content/FyreWay VPN Android SDK Developer Guide.png"
+        >
+          <source src="nobeookllm_content/FyreWay_SDK__Your_Co-Pilot.mp4" type="video/mp4">
+          <p class="video-fallback-msg">
+            Your browser doesn't support HTML5 video —
+            <a href="nobeookllm_content/FyreWay_SDK__Your_Co-Pilot.mp4">download the video</a> instead.
+          </p>
+        </video>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 3 — Protocols
+         ═══════════════════════════════════════════════════════ -->
+    <h2>Supported VPN Protocols</h2>
+    <table>
+      <thead><tr><th>Protocol</th><th>Config Format</th><th>Default Port</th><th>SDK Constant</th></tr></thead>
+      <tbody>
+        <tr><td><strong>WireGuard</strong></td><td><code>.conf</code></td><td>51820</td><td><code>VpnProtocol.WIREGUARD</code></td></tr>
+        <tr><td><strong>OpenVPN</strong></td><td><code>.ovpn</code></td><td>1194</td><td><code>VpnProtocol.OPENVPN</code></td></tr>
+      </tbody>
+    </table>
+    <p>Both protocols are first-class citizens throughout the SDK — from server filtering to profile creation to connection reporting.</p>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 4 — Architecture
+         ═══════════════════════════════════════════════════════ -->
+    <h2>Architecture</h2>
+    <p>The SDK sits between your app and the FyreWay backend. Your app never talks to the backend directly.</p>
+
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+graph TB
+    subgraph YourApp["Your Android App"]
+        UI["UI Layer<br/>(Compose / XML)"]
+        VM["ViewModel"]
+    end
+    subgraph SDK["FyreWay VPN SDK"]
+        Client["FyreWayClient<br/><i>Single entry point</i>"]
+        DevAPI["Device API"]
+        SrvAPI["Server API"]
+        LocAPI["Location API"]
+        ConnAPI["Connection API"]
+        ProfAPI["Profile API"]
+        SmartAPI["Smart Connect API"]
+        Providers["UI Providers"]
+        Utils["Utilities"]
+    end
+    Backend["FyreWay Backend<br/>(HTTPS)"]
+    Tunnel["VPN Tunnel<br/><i>Your WireGuard/OpenVPN</i>"]
+    UI --- VM
+    VM --> Client
+    Client --> DevAPI
+    Client --> SrvAPI
+    Client --> LocAPI
+    Client --> ConnAPI
+    Client --> ProfAPI
+    Client --> SmartAPI
+    Client --> Providers
+    Client --> Utils
+    SDK --> Backend
+    VM --> Tunnel
+      </pre>
+    </div>
+
+    <h3>Key Design Principles</h3>
+    <ul>
+      <li><strong>Singleton access</strong> — Initialize once, access anywhere via <code>FyreWaySDK.getInstance()</code></li>
+      <li><strong>Coroutines-first</strong> — All network calls are <code>suspend</code> functions (Java wrapper with callbacks available)</li>
+      <li><strong>Result type</strong> — Every operation returns <code>VpnResult&lt;T&gt;</code> (Success or Error) — no unchecked exceptions</li>
+      <li><strong>Built-in caching</strong> — Server and location data is cached with configurable policies</li>
+      <li><strong>Protocol agnostic</strong> — The same API surface works for WireGuard and OpenVPN</li>
+    </ul>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 5 — Scope / What SDK does NOT do
+         ═══════════════════════════════════════════════════════ -->
+    <h2>What the SDK Does NOT Do</h2>
+    <p>The SDK is <strong>not</strong> a VPN tunnel. It does not:</p>
+    <ul>
+      <li>Establish or manage the OS-level VPN connection</li>
+      <li>Implement the WireGuard or OpenVPN protocol</li>
+      <li>Provide a <code>VpnService</code> implementation</li>
+    </ul>
+    <p>You are responsible for:</p>
+    <ol>
+      <li>Using a tunnel library (e.g., <code>wireguard-android</code>, <code>ics-openvpn</code>) to establish the actual VPN connection</li>
+      <li>Using the profile/config returned by the SDK to configure the tunnel</li>
+      <li>Calling <code>reportConnected()</code> / <code>reportDisconnected()</code> to keep the backend in sync</li>
+    </ol>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 6 — Requirements
+         ═══════════════════════════════════════════════════════ -->
+    <h2>Requirements</h2>
+    <table>
+      <thead><tr><th>Requirement</th><th>Minimum</th></tr></thead>
+      <tbody>
+        <tr><td>Android API level</td><td>21 (Android 5.0)</td></tr>
+        <tr><td>Kotlin</td><td>1.9.21+</td></tr>
+        <tr><td>Gradle</td><td>8.0+</td></tr>
+        <tr><td>Java</td><td>8+</td></tr>
+        <tr><td>Network</td><td>HTTPS (Internet permission required)</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 7 — Developer Resources
+         Placed here: developer now understands the SDK fully,
+         this acts as "take these with you" before diving in.
+         Image preview (clickable lightbox) + compact download
+         cards side-by-side.
+         ═══════════════════════════════════════════════════════ -->
+    <h2>Developer Resources</h2>
+    <p>Download the full guide or browse the visual reference — everything you need to integrate quickly.</p>
+
+    <div class="dev-resources">
+      <!-- Image preview — opens lightbox on click -->
+      <div class="dev-res-image">
+        <button class="img-preview-btn" id="imgPreviewBtn" title="Click to enlarge">
+          <img
+            src="nobeookllm_content/FyreWay VPN Android SDK Developer Guide.png"
+            alt="FyreWay VPN Android SDK Developer Guide — visual overview"
+            loading="lazy"
+          >
+          <span class="img-zoom-hint">🔍 Click to enlarge</span>
+        </button>
+        <div class="dev-res-img-caption">Visual Developer Guide</div>
+      </div>
+
+      <!-- Download cards -->
+      <div class="dev-res-downloads">
+        <p class="dev-res-dl-label">Downloads</p>
+        <a href="nobeookllm_content/FyreWay_VPN_SDK_Guide.pdf" target="_blank" class="dl-card">
+          <span class="dl-icon">📄</span>
+          <div>
+            <div class="dl-name">Developer Guide</div>
+            <div class="dl-meta">PDF · Full reference &amp; API docs</div>
+          </div>
+          <span class="dl-arrow">↗</span>
+        </a>
+        <a href="nobeookllm_content/FyreWay_VPN_SDK_Guide.pdf" download class="dl-card dl-card-secondary">
+          <span class="dl-icon">⬇</span>
+          <div>
+            <div class="dl-name">Download PDF</div>
+            <div class="dl-meta">Save for offline reading</div>
+          </div>
+        </a>
+        <a href="nobeookllm_content/FyreWay_VPN_SDK_Guide.pptx" download class="dl-card">
+          <span class="dl-icon">📊</span>
+          <div>
+            <div class="dl-name">SDK Slide Deck</div>
+            <div class="dl-meta">PPTX · Architecture &amp; overview slides</div>
+          </div>
+          <span class="dl-arrow">⬇</span>
+        </a>
+        <a href="nobeookllm_content/FyreWay_SDK__Your_Co-Pilot.mp4" download class="dl-card">
+          <span class="dl-icon">🎬</span>
+          <div>
+            <div class="dl-name">Co-Pilot Video</div>
+            <div class="dl-meta">MP4 · Save the overview video</div>
+          </div>
+          <span class="dl-arrow">⬇</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Image lightbox overlay -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-label="Image preview">
+      <button class="lightbox-close" id="lightboxClose" title="Close">✕</button>
+      <img
+        src="nobeookllm_content/FyreWay VPN Android SDK Developer Guide.png"
+        alt="FyreWay VPN Android SDK Developer Guide — full size"
+        class="lightbox-img"
+      >
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 8 — Guide Structure / navigation table
+         ═══════════════════════════════════════════════════════ -->
+    <h2>Guide Structure</h2>
+    <table>
+      <thead><tr><th>Document</th><th>What you'll learn</th></tr></thead>
+      <tbody>
+        <tr><td><a href="getting-started.html">Getting Started</a></td><td>Install, configure, activate your first device</td></tr>
+        <tr><td><a href="server-discovery.html">Server Discovery</a></td><td>Browse servers, filter by location/protocol, use caching</td></tr>
+        <tr><td><a href="connection-lifecycle.html">Connection Lifecycle</a></td><td>End-to-end connect → use → disconnect flow</td></tr>
+        <tr><td><a href="smart-connect.html">Smart Connect</a></td><td>One-call server selection with strategies</td></tr>
+        <tr><td><a href="error-handling.html">Error Handling</a></td><td>VpnResult pattern, exception types, retry logic</td></tr>
+        <tr><td><a href="ui-utilities.html">UI Utilities</a></td><td>Display models, providers, formatters for fast UI building</td></tr>
+        <tr><td><a href="configuration.html">Configuration Reference</a></td><td>All config options, enums, and ProGuard rules</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Page nav -->
+    <div class="page-nav">
+      <div></div>
+      <a href="getting-started.html" class="next">
+        <span class="nav-label">Next →</span>
+        <span class="nav-title">Getting Started</span>
+      </a>
+    </div>
+  </div>
+</main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({
+  startOnLoad: true,
+  theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
+  themeVariables: { primaryColor: '#0891b2', primaryTextColor: '#fff', lineColor: '#64748b' }
+});
+</script>
+</body>
+</html>
+

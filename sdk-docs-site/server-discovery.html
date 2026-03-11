@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Server Discovery — FyreWay SDK Docs</title>
+<meta name="description" content="Browse, filter, and search VPN servers by country, city, region, or protocol with the FyreWay VPN SDK.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css"><link rel="icon" href="https://fyreway.com/favicon.png"><meta name="theme-color" content="#0891b2">
+<script src="docs.js"></script>
+</head>
+<body>
+<div class="mobile-header"><button class="hamburger" id="hamburger">☰</button><span style="font-weight:700;font-size:15px">SDK Docs</span><button class="theme-toggle" id="themeToggleMobile">🌙</button></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="page-wrapper">
+<aside class="sidebar" id="sidebar"><div class="sidebar-header"><div class="sidebar-logo">F</div><span class="sidebar-brand">SDK Docs</span><span class="sidebar-version">v1.1.0</span></div><nav class="sidebar-nav"><div class="sidebar-section"><div class="sidebar-section-title">Guide</div><a class="sidebar-link" href="index.html"><span class="nav-num">↗</span> Overview</a><a class="sidebar-link" href="getting-started.html"><span class="nav-num">01</span> Getting Started</a><a class="sidebar-link active" href="server-discovery.html"><span class="nav-num">02</span> Server Discovery</a><a class="sidebar-link" href="connection-lifecycle.html"><span class="nav-num">03</span> Connection Lifecycle</a><a class="sidebar-link" href="smart-connect.html"><span class="nav-num">04</span> Smart Connect</a><a class="sidebar-link" href="error-handling.html"><span class="nav-num">05</span> Error Handling</a><a class="sidebar-link" href="ui-utilities.html"><span class="nav-num">06</span> UI Utilities</a><a class="sidebar-link" href="configuration.html"><span class="nav-num">07</span> Configuration</a></div></nav><div class="sidebar-footer">© 2026 FyreWay · <a href="https://fyreway.com">fyreway.com</a></div></aside>
+
+<main class="main-content">
+<div class="top-bar"><div class="breadcrumb"><a href="https://fyreway.com">FyreWay</a><span class="sep">/</span><a href="index.html">SDK Docs</a><span class="sep">/</span><span>Server Discovery</span></div><button class="theme-toggle" id="themeToggle">🌙</button></div>
+
+<div class="content">
+<h1>Server Discovery</h1>
+<p class="page-description">The SDK provides a rich set of APIs to browse, filter, and search VPN servers. All data is cached by default — you control when to use fresh data.</p>
+
+<h2>Location Model</h2>
+<p>Servers are organized in a geographic hierarchy. The <code>region</code> field represents a <strong>physical province or state</strong> (e.g., "Punjab", "Virginia", "Île-de-France"), not a cloud region code.</p>
+
+<div class="mermaid-wrapper"><pre class="mermaid">
+graph TD
+    World["🌍 All Servers"]
+    US["🇺🇸 United States"]
+    DE["🇩🇪 Germany"]
+    PK["🇵🇰 Pakistan"]
+    VA["Virginia"]
+    CA_R["California"]
+    PJ["Punjab"]
+    HE["Hessen"]
+    NYC["New York"]
+    LA["Los Angeles"]
+    LHR["Lahore"]
+    FFM["Frankfurt"]
+    World --> US & DE & PK
+    US --> VA --> NYC
+    US --> CA_R --> LA
+    PK --> PJ --> LHR
+    DE --> HE --> FFM
+</pre></div>
+
+<hr>
+
+<h2>Fetching Servers</h2>
+<h3>Basic: Get All Servers</h3>
+<pre><code><span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">getServers</span>()) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        <span class="kw">val</span> servers = result.data.servers  <span class="cmt">// List&lt;Server&gt;</span>
+        <span class="kw">val</span> total = result.data.totalCount
+        <span class="kw">val</span> fromCache = result.fromCache
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<h3>With Format Control</h3>
+<p>The <code>ServerFormat</code> enum controls how much data is returned:</p>
+<table>
+  <thead><tr><th>Format</th><th>Use case</th><th>Data included</th></tr></thead>
+  <tbody>
+    <tr><td><code>FULL</code></td><td>Server detail view</td><td>All fields: location, capacity, performance, protocols</td></tr>
+    <tr><td><code>MINIMAL</code></td><td>Dropdowns, pickers</td><td>ID, name, location only</td></tr>
+    <tr><td><code>GROUPED</code></td><td>Grouped lists</td><td>Servers grouped by country or city</td></tr>
+    <tr><td><code>HIERARCHY</code></td><td>Nested tree views</td><td>Country → Region → City → Servers</td></tr>
+  </tbody>
+</table>
+
+<pre><code><span class="cmt">// Full details (default)</span>
+sdk.<span class="fn">getServers</span>(format = <span class="type">ServerFormat</span>.FULL)
+
+<span class="cmt">// Lightweight for dropdowns</span>
+sdk.<span class="fn">getServersMinimal</span>()
+
+<span class="cmt">// Grouped by country</span>
+sdk.<span class="fn">getServersGrouped</span>(groupBy = <span class="type">ServerGroupBy</span>.COUNTRY)
+
+<span class="cmt">// Tree structure for nested pickers</span>
+sdk.<span class="fn">getServersHierarchy</span>()</code></pre>
+
+<h3>With Filters</h3>
+<pre><code><span class="cmt">// By country</span>
+sdk.<span class="fn">getServers</span>(filter = <span class="type">ServerFilter</span>.<span class="fn">byCountry</span>(<span class="str">"US"</span>))
+
+<span class="cmt">// By city</span>
+sdk.<span class="fn">getServers</span>(filter = <span class="type">ServerFilter</span>.<span class="fn">byCity</span>(<span class="str">"US"</span>, <span class="str">"New York"</span>))
+
+<span class="cmt">// By region (physical province/state)</span>
+sdk.<span class="fn">getServers</span>(filter = <span class="type">ServerFilter</span>.<span class="fn">byRegion</span>(<span class="str">"Virginia"</span>))
+
+<span class="cmt">// Custom filter</span>
+sdk.<span class="fn">getServers</span>(filter = <span class="type">ServerFilter</span>(
+    country = <span class="str">"US"</span>,
+    city = <span class="str">"New York"</span>,
+    status = <span class="str">"active"</span>
+))</code></pre>
+
+<hr>
+
+<h2>Convenience Methods</h2>
+<pre><code><span class="cmt">// Servers in a country</span>
+<span class="kw">val</span> usServers = sdk.<span class="fn">getServersByCountry</span>(<span class="str">"US"</span>)
+
+<span class="cmt">// Servers in a city</span>
+<span class="kw">val</span> nycServers = sdk.<span class="fn">getServersByCity</span>(<span class="str">"US"</span>, <span class="str">"New York"</span>)
+
+<span class="cmt">// Servers supporting a protocol</span>
+<span class="kw">val</span> wgServers = sdk.<span class="fn">getServersByProtocol</span>(<span class="type">VpnProtocol</span>.WIREGUARD)
+<span class="kw">val</span> ovpnServers = sdk.<span class="fn">getServersByProtocol</span>(<span class="type">VpnProtocol</span>.OPENVPN)</code></pre>
+
+<hr>
+
+<h2>Location APIs</h2>
+<h3>Country List</h3>
+<pre><code><span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">getCountries</span>()) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        result.data.<span class="fn">forEach</span> { country -&gt;
+            <span class="fn">println</span>(<span class="str">"${country.flagEmoji} ${country.name} (${country.code}) — ${country.serverCount} servers"</span>)
+        }
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<h3>Cities in a Country</h3>
+<pre><code><span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">getCities</span>(<span class="str">"US"</span>)) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        result.data.<span class="fn">forEach</span> { city -&gt;
+            <span class="fn">println</span>(<span class="str">"${city.name} — ${city.serverCount} servers (${city.region})"</span>)
+        }
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<h3>Full Location Hierarchy</h3>
+<pre><code><span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">getLocationHierarchy</span>()) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        result.data.countries.<span class="fn">forEach</span> { country -&gt;
+            <span class="fn">println</span>(<span class="str">"${country.flagEmoji} ${country.name}"</span>)
+            country.regions.<span class="fn">forEach</span> { region -&gt;
+                <span class="fn">println</span>(<span class="str">"  📍 ${region.name}"</span>)
+                region.cities.<span class="fn">forEach</span> { city -&gt;
+                    <span class="fn">println</span>(<span class="str">"    🏙️ ${city.name} (${city.serverCount} servers)"</span>)
+                }
+            }
+        }
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<h3>Optimal Server (Backend Load-Balanced)</h3>
+<pre><code><span class="cmt">// Best server globally</span>
+<span class="kw">val</span> best = sdk.<span class="fn">getOptimalServer</span>()
+
+<span class="cmt">// Best server in a country</span>
+<span class="kw">val</span> bestUS = sdk.<span class="fn">getOptimalServer</span>(country = <span class="str">"US"</span>)
+
+<span class="cmt">// Best server in a city</span>
+<span class="kw">val</span> bestNYC = sdk.<span class="fn">getOptimalServer</span>(country = <span class="str">"US"</span>, city = <span class="str">"New York"</span>)</code></pre>
+
+<hr>
+
+<h2>The Server Object</h2>
+<pre><code><span class="kw">data class</span> <span class="type">Server</span>(
+    <span class="kw">val</span> serverId: <span class="type">String</span>,           <span class="cmt">// "wg-us-east-01"</span>
+    <span class="kw">val</span> name: <span class="type">String</span>,               <span class="cmt">// "US East 01"</span>
+    <span class="kw">val</span> location: <span class="type">ServerLocation</span>,   <span class="cmt">// Country, city, region, coordinates</span>
+    <span class="kw">val</span> capacity: <span class="type">ServerCapacity?</span>,  <span class="cmt">// Utilization, available slots</span>
+    <span class="kw">val</span> performance: <span class="type">ServerPerformance?</span>,
+    <span class="kw">val</span> tier: <span class="type">String?</span>,              <span class="cmt">// "free" or "premium"</span>
+    <span class="kw">val</span> status: <span class="type">String?</span>,            <span class="cmt">// "active", "maintenance", "offline"</span>
+    <span class="kw">val</span> protocols: <span class="type">List&lt;String&gt;?</span>    <span class="cmt">// ["wireguard", "openvpn"]</span>
+)</code></pre>
+
+<p><strong>Protocol support check:</strong></p>
+<pre><code><span class="kw">if</span> (server.<span class="fn">supportsProtocol</span>(<span class="type">VpnProtocol</span>.OPENVPN)) {
+    <span class="cmt">// This server supports OpenVPN</span>
+}
+
+<span class="kw">val</span> protocols: <span class="type">List&lt;VpnProtocol&gt;</span> = server.<span class="fn">getSupportedProtocols</span>()</code></pre>
+
+<hr>
+
+<h2>Caching</h2>
+<table>
+  <thead><tr><th>Policy</th><th>Behavior</th></tr></thead>
+  <tbody>
+    <tr><td><code>CACHE_FIRST</code></td><td>Return cached data if available; fetch from network only if cache is empty</td></tr>
+    <tr><td><code>NETWORK_FIRST</code></td><td>Always try network first; fall back to cache on failure</td></tr>
+    <tr><td><code>CACHE_ONLY</code></td><td>Only use cache — fail if not cached</td></tr>
+    <tr><td><code>NETWORK_ONLY</code></td><td>Always use network — never cache</td></tr>
+  </tbody>
+</table>
+<pre><code><span class="cmt">// Use cache (default)</span>
+sdk.<span class="fn">getServers</span>(useCache = <span class="kw">true</span>)
+
+<span class="cmt">// Force fresh data (e.g., pull-to-refresh)</span>
+sdk.<span class="fn">getServers</span>(useCache = <span class="kw">false</span>)
+
+<span class="cmt">// Clear cache manually</span>
+sdk.<span class="fn">clearServerCache</span>()
+sdk.<span class="fn">clearLocationCache</span>()</code></pre>
+
+<div class="page-nav">
+  <a href="getting-started.html"><span class="nav-label">← Previous</span><span class="nav-title">Getting Started</span></a>
+  <a href="connection-lifecycle.html" class="next"><span class="nav-label">Next →</span><span class="nav-title">Connection Lifecycle</span></a>
+</div>
+</div>
+</main>
+</div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default',themeVariables:{primaryColor:'#0891b2',primaryTextColor:'#fff',lineColor:'#64748b'}});
+</script>
+</body>
+</html>
+

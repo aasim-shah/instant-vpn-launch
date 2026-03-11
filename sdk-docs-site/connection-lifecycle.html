@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Connection Lifecycle — FyreWay SDK Docs</title>
+<meta name="description" content="End-to-end VPN connection flow: find server, create profile, establish tunnel, report connection.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css"><link rel="icon" href="https://fyreway.com/favicon.png"><meta name="theme-color" content="#0891b2">
+<script src="docs.js"></script>
+</head>
+<body>
+<div class="mobile-header"><button class="hamburger" id="hamburger">☰</button><span style="font-weight:700;font-size:15px">SDK Docs</span><button class="theme-toggle" id="themeToggleMobile">🌙</button></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="page-wrapper">
+<aside class="sidebar" id="sidebar"><div class="sidebar-header"><div class="sidebar-logo">F</div><span class="sidebar-brand">SDK Docs</span><span class="sidebar-version">v1.1.0</span></div><nav class="sidebar-nav"><div class="sidebar-section"><div class="sidebar-section-title">Guide</div>
+      <a class="sidebar-link" href="index.html"><span class="nav-num">↗</span> Overview</a>
+      <a class="sidebar-link" href="getting-started.html"><span class="nav-num">01</span> Getting Started</a>
+      <a class="sidebar-link" href="server-discovery.html"><span class="nav-num">02</span> Server Discovery</a>
+      <a class="sidebar-link active" href="connection-lifecycle.html"><span class="nav-num">03</span> Connection Lifecycle</a>
+      <a class="sidebar-link" href="smart-connect.html"><span class="nav-num">04</span> Smart Connect</a>
+      <a class="sidebar-link" href="error-handling.html"><span class="nav-num">05</span> Error Handling</a>
+      <a class="sidebar-link" href="ui-utilities.html"><span class="nav-num">06</span> UI Utilities</a>
+      <a class="sidebar-link" href="configuration.html"><span class="nav-num">07</span> Configuration</a>
+</div></nav><div class="sidebar-footer">© 2026 FyreWay · <a href="https://fyreway.com">fyreway.com</a></div></aside>
+<main class="main-content">
+<div class="top-bar"><div class="breadcrumb"><a href="https://fyreway.com">FyreWay</a><span class="sep">/</span><a href="index.html">SDK Docs</a><span class="sep">/</span><span>Connection Lifecycle</span></div><button class="theme-toggle" id="themeToggle">🌙</button></div>
+<div class="content">
+
+<h1>Connection Lifecycle</h1>
+<p class="page-description">The complete flow from finding a server to establishing a VPN tunnel and reporting the session to the backend.</p>
+
+<h2>The Big Picture</h2>
+<div class="mermaid-wrapper"><pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant App as Your App
+    participant SDK as FyreWay SDK
+    participant API as Backend
+    participant Tunnel as VPN Tunnel
+    User->>App: Tap "Connect"
+    Note over App,API: 1. Find a Server
+    App->>SDK: smartConnect()
+    SDK->>API: GET optimal server
+    API-->>SDK: Server details
+    SDK-->>App: SmartConnectResult
+    Note over App,API: 2. Create a VPN Profile
+    App->>SDK: createProfile(serverId)
+    SDK->>API: POST create peer
+    API-->>SDK: VPN config + credentials
+    SDK-->>App: VpnProfile
+    Note over App,Tunnel: 3. Establish VPN Tunnel
+    App->>Tunnel: Connect using VpnProfile
+    Tunnel-->>App: Tunnel established
+    Note over App,API: 4. Report Connected
+    App->>SDK: reportConnected(...)
+    SDK->>API: POST connection state
+    Note over User,Tunnel: User uses VPN...
+    Note over App,API: 5. Disconnect
+    User->>App: Tap "Disconnect"
+    App->>Tunnel: Tear down tunnel
+    App->>SDK: reportDisconnected()
+    SDK->>API: POST disconnected state
+</pre></div>
+
+<hr>
+
+<h2>Step 1 — Find a Server</h2>
+<pre><code><span class="cmt">// Option A: Automatic (recommended)</span>
+<span class="kw">val</span> result = sdk.<span class="fn">smartConnect</span>()
+<span class="kw">val</span> server = (result <span class="kw">as</span>? <span class="type">VpnResult.Success</span>)?.data?.server
+
+<span class="cmt">// Option B: User picks from a list</span>
+<span class="kw">val</span> servers = sdk.<span class="fn">getServersByCountry</span>(<span class="str">"US"</span>)
+<span class="kw">val</span> server = (servers <span class="kw">as</span>? <span class="type">VpnResult.Success</span>)?.data?.<span class="fn">firstOrNull</span>()</code></pre>
+
+<hr>
+
+<h2>Step 2 — Create a VPN Profile</h2>
+<h3>WireGuard Profile</h3>
+<div class="code-header"><span>Kotlin</span><button class="copy-btn">Copy</button></div>
+<pre><code><span class="kw">val</span> profileResult = sdk.<span class="fn">createProfile</span>(
+    serverId = server.serverId,
+    request = <span class="type">CreateProfileRequest</span>(
+        clientIdentity = <span class="str">"user@example.com"</span>,
+        tier = <span class="str">"free"</span>,
+        protocol = <span class="str">"wireguard"</span>,
+        allowedIPs = <span class="fn">listOf</span>(<span class="str">"0.0.0.0/0"</span>),
+        persistentKeepalive = <span class="num">25</span>,
+        dns = <span class="fn">listOf</span>(<span class="str">"1.1.1.1"</span>, <span class="str">"8.8.8.8"</span>)
+    )
+)
+
+<span class="kw">when</span> (profileResult) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        <span class="kw">val</span> profile: <span class="type">VpnProfile</span> = profileResult.data
+
+        profile.peerIdentifier       <span class="cmt">// YOUR client public key — use for reportConnected()</span>
+        profile.serverPublicKey      <span class="cmt">// Server's public key — goes in [Peer] section</span>
+        profile.endpoint             <span class="cmt">// "1.2.3.4:51820"</span>
+        profile.address              <span class="cmt">// "10.0.0.5/32" — your assigned IP</span>
+
+        <span class="kw">val</span> configText = profile.<span class="fn">toVpnConfig</span>()
+        <span class="kw">val</span> rawConfig = profile.vpnConfig?.raw
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<h3>OpenVPN Profile</h3>
+<pre><code><span class="kw">val</span> profileResult = sdk.<span class="fn">createProfile</span>(
+    serverId = server.serverId,
+    request = <span class="type">CreateProfileRequest</span>(
+        clientIdentity = <span class="str">"user@example.com"</span>,
+        tier = <span class="str">"premium"</span>,
+        protocol = <span class="str">"openvpn"</span>
+    )
+)
+
+<span class="kw">when</span> (profileResult) {
+    <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+        <span class="kw">val</span> ovpnContent = profileResult.data.vpnConfig?.raw
+        profileResult.data.peerIdentifier  <span class="cmt">// clientName (certificate CN)</span>
+    }
+    <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+}</code></pre>
+
+<hr>
+
+<h2>Step 3 — Establish the VPN Tunnel</h2>
+<p>This is <strong>your responsibility</strong>. Use whichever tunnel library fits your app:</p>
+<pre><code><span class="cmt">// WireGuard (pseudo-code)</span>
+<span class="kw">val</span> tunnelConfig = profile.<span class="fn">toVpnConfig</span>()
+wireguardBackend.<span class="fn">setState</span>(tunnel, tunnelConfig, <span class="type">State</span>.UP)
+
+<span class="cmt">// OpenVPN (pseudo-code)</span>
+<span class="kw">val</span> ovpnConfig = profile.vpnConfig?.raw ?: <span class="str">""</span>
+openVpnManager.<span class="fn">startVpn</span>(ovpnConfig)</code></pre>
+
+<hr>
+
+<h2>Step 4 — Report Connected</h2>
+<div class="code-header"><span>Kotlin</span><button class="copy-btn">Copy</button></div>
+<pre><code>sdk.<span class="fn">reportConnected</span>(
+    serverId = server.serverId,
+    serverName = server.name,
+    peerIdentifier = profile.peerIdentifier,
+    clientIdentity = <span class="str">"user@example.com"</span>,
+    tier = <span class="str">"free"</span>,
+    protocol = <span class="type">VpnProtocol</span>.WIREGUARD
+)</code></pre>
+
+<h3>Understanding peerIdentifier</h3>
+<table>
+  <thead><tr><th>Protocol</th><th>What to send</th><th>Where to get it</th></tr></thead>
+  <tbody>
+    <tr><td><strong>WireGuard</strong></td><td>Client's own public key</td><td><code>profile.peerIdentifier</code></td></tr>
+    <tr><td><strong>OpenVPN</strong></td><td>Client name (cert CN)</td><td><code>profile.peerIdentifier</code></td></tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <strong>Important:</strong> Do NOT confuse with the server's public key (<code>profile.serverPublicKey</code>). The <code>peerIdentifier</code> uniquely identifies <em>your device</em> on the VPN server. It's optional — pass <code>null</code> if unavailable.
+</blockquote>
+
+<hr>
+
+<h2>Step 5 — Disconnect</h2>
+<pre><code><span class="cmt">// 1. Tear down the tunnel</span>
+wireguardBackend.<span class="fn">setState</span>(tunnel, config, <span class="type">State</span>.DOWN)
+
+<span class="cmt">// 2. Report disconnection (no params needed)</span>
+sdk.<span class="fn">reportDisconnected</span>()</code></pre>
+
+<blockquote><strong>Note:</strong> <code>reportDisconnected()</code> takes <strong>no parameters</strong>. The backend identifies your device from the authentication token.</blockquote>
+
+<hr>
+
+<h2>Observing Connection State</h2>
+<pre><code><span class="kw">class</span> <span class="type">VpnViewModel</span> : <span class="type">ViewModel</span>() {
+    <span class="kw">private val</span> sdk = <span class="type">FyreWaySDK</span>.<span class="fn">getInstance</span>()
+    <span class="kw">val</span> connectionState: <span class="type">StateFlow&lt;ConnectionState&gt;</span> = sdk.connectionState
+
+    <span class="kw">init</span> {
+        viewModelScope.<span class="fn">launch</span> {
+            connectionState.<span class="fn">collect</span> { state -&gt;
+                <span class="kw">when</span> (state) {
+                    <span class="type">ConnectionState</span>.CONNECTED -&gt; { <span class="cmt">/* Update UI */</span> }
+                    <span class="type">ConnectionState</span>.CONNECTING -&gt; { <span class="cmt">/* Show progress */</span> }
+                    <span class="type">ConnectionState</span>.DISCONNECTED -&gt; { <span class="cmt">/* Show disconnected */</span> }
+                    <span class="type">ConnectionState</span>.DISCONNECTING -&gt; { <span class="cmt">/* Show progress */</span> }
+                }
+            }
+        }
+    }
+}</code></pre>
+
+<h3>In Compose</h3>
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">ConnectionStatus</span>(<span class="param">viewModel</span>: <span class="type">VpnViewModel</span>) {
+    <span class="kw">val</span> state <span class="kw">by</span> viewModel.connectionState.<span class="fn">collectAsState</span>()
+    <span class="type">Text</span>(text = <span class="kw">when</span> (state) {
+        <span class="type">ConnectionState</span>.CONNECTED -&gt; <span class="str">"🟢 Connected"</span>
+        <span class="type">ConnectionState</span>.CONNECTING -&gt; <span class="str">"🟡 Connecting..."</span>
+        <span class="type">ConnectionState</span>.DISCONNECTED -&gt; <span class="str">"🔴 Disconnected"</span>
+        <span class="type">ConnectionState</span>.DISCONNECTING -&gt; <span class="str">"🟡 Disconnecting..."</span>
+    })
+}</code></pre>
+
+<hr>
+
+<h2>Profile Management</h2>
+<pre><code><span class="cmt">// Get all stored profiles</span>
+<span class="kw">val</span> allProfiles = sdk.<span class="fn">getStoredProfiles</span>()
+
+<span class="cmt">// Filter by protocol</span>
+<span class="kw">val</span> wgProfiles = sdk.<span class="fn">getStoredProfiles</span>(<span class="type">VpnProtocol</span>.WIREGUARD)
+
+<span class="cmt">// Get profile for a specific server</span>
+<span class="kw">val</span> profile = sdk.<span class="fn">getStoredProfile</span>(serverId = <span class="str">"wg-us-east-01"</span>)
+
+<span class="cmt">// Delete a profile</span>
+sdk.<span class="fn">deleteProfile</span>(serverId = <span class="str">"wg-us-east-01"</span>)
+
+<span class="cmt">// Clear all</span>
+sdk.<span class="fn">clearStoredProfiles</span>()
+
+<span class="cmt">// Revoke on server</span>
+sdk.<span class="fn">revokeClient</span>(serverId = <span class="str">"wg-us-east-01"</span>, clientName = <span class="str">"user@example.com"</span>)
+
+<span class="cmt">// Re-export config</span>
+sdk.<span class="fn">exportConfig</span>(serverId = <span class="str">"wg-us-east-01"</span>, clientName = <span class="str">"user@example.com"</span>)</code></pre>
+
+<div class="page-nav">
+  <a href="server-discovery.html"><span class="nav-label">← Previous</span><span class="nav-title">Server Discovery</span></a>
+  <a href="smart-connect.html" class="next"><span class="nav-label">Next →</span><span class="nav-title">Smart Connect</span></a>
+</div>
+</div>
+</main>
+</div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default',themeVariables:{primaryColor:'#0891b2',primaryTextColor:'#fff',lineColor:'#64748b'}});
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UI Utilities — FyreWay SDK Docs</title>
+<meta name="description" content="Pre-formatted display models, server list providers, location pickers, and formatting utilities.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css"><link rel="icon" href="https://fyreway.com/favicon.png"><meta name="theme-color" content="#0891b2">
+<script src="docs.js"></script>
+</head>
+<body>
+<div class="mobile-header"><button class="hamburger" id="hamburger">☰</button><span style="font-weight:700;font-size:15px">SDK Docs</span><button class="theme-toggle" id="themeToggleMobile">🌙</button></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="page-wrapper">
+<aside class="sidebar" id="sidebar"><div class="sidebar-header"><div class="sidebar-logo">F</div><span class="sidebar-brand">SDK Docs</span><span class="sidebar-version">v1.1.0</span></div><nav class="sidebar-nav"><div class="sidebar-section"><div class="sidebar-section-title">Guide</div>
+      <a class="sidebar-link" href="index.html"><span class="nav-num">↗</span> Overview</a>
+      <a class="sidebar-link" href="getting-started.html"><span class="nav-num">01</span> Getting Started</a>
+      <a class="sidebar-link" href="server-discovery.html"><span class="nav-num">02</span> Server Discovery</a>
+      <a class="sidebar-link" href="connection-lifecycle.html"><span class="nav-num">03</span> Connection Lifecycle</a>
+      <a class="sidebar-link" href="smart-connect.html"><span class="nav-num">04</span> Smart Connect</a>
+      <a class="sidebar-link" href="error-handling.html"><span class="nav-num">05</span> Error Handling</a>
+      <a class="sidebar-link active" href="ui-utilities.html"><span class="nav-num">06</span> UI Utilities</a>
+      <a class="sidebar-link" href="configuration.html"><span class="nav-num">07</span> Configuration</a>
+</div></nav><div class="sidebar-footer">© 2026 FyreWay · <a href="https://fyreway.com">fyreway.com</a></div></aside>
+<main class="main-content">
+<div class="top-bar"><div class="breadcrumb"><a href="https://fyreway.com">FyreWay</a><span class="sep">/</span><a href="index.html">SDK Docs</a><span class="sep">/</span><span>UI Utilities</span></div><button class="theme-toggle" id="themeToggle">🌙</button></div>
+<div class="content">
+
+<h1>UI Utilities</h1>
+<p class="page-description">Pre-formatted display models, data providers, and formatters for building server lists, location pickers, and connection UIs rapidly.</p>
+
+<h2>Provider Architecture</h2>
+<div class="mermaid-wrapper"><pre class="mermaid">
+graph LR
+    subgraph Providers
+        SLP["ServerListProvider"]
+        LPP["LocationPickerProvider"]
+        QC["QuickConnect"]
+    end
+    subgraph SDK["FyreWayClient"]
+        ServerAPI["Server API"]
+        LocationAPI["Location API"]
+        SmartAPI["Smart Connect API"]
+    end
+    subgraph UI["Your UI"]
+        List["Server List"]
+        Picker["Location Picker"]
+        Card["Quick Connect Card"]
+    end
+    ServerAPI --> SLP
+    LocationAPI --> LPP
+    SmartAPI --> QC
+    SLP --> List
+    LPP --> Picker
+    QC --> Card
+</pre></div>
+
+<h3>Dual API Pattern</h3>
+<table>
+  <thead><tr><th>Style</th><th>Return type</th><th>Use when</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Simple</strong></td><td><code>T?</code> (null on error)</td><td>Quick UIs where you just want data or nothing</td></tr>
+    <tr><td><strong>Advanced</strong></td><td><code>VpnResult&lt;T&gt;</code></td><td>You need to handle and display specific errors</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>ServerListProvider</h2>
+<pre><code><span class="cmt">// All servers, sorted by recommendation score</span>
+<span class="kw">val</span> servers = serverListProvider.<span class="fn">getServersForDisplay</span>()
+
+<span class="cmt">// Servers in a specific country</span>
+<span class="kw">val</span> usServers = serverListProvider.<span class="fn">getCountryServers</span>(<span class="str">"US"</span>)
+
+<span class="cmt">// Best single server</span>
+<span class="kw">val</span> best = serverListProvider.<span class="fn">getBestServer</span>()
+
+<span class="cmt">// Top 5 fastest (by latency)</span>
+<span class="kw">val</span> fastest = serverListProvider.<span class="fn">getFastestServers</span>(limit = <span class="num">5</span>)</code></pre>
+
+<h3>The ServerDisplayItem</h3>
+<p>Every field is ready to render — no formatting needed:</p>
+<pre><code><span class="kw">data class</span> <span class="type">ServerDisplayItem</span>(
+    <span class="kw">val</span> serverId: <span class="type">String</span>,
+    <span class="kw">val</span> name: <span class="type">String</span>,               <span class="cmt">// "US East 01"</span>
+    <span class="kw">val</span> flagEmoji: <span class="type">String</span>,          <span class="cmt">// "🇺🇸"</span>
+    <span class="kw">val</span> locationDisplay: <span class="type">String</span>,    <span class="cmt">// "New York, US"</span>
+    <span class="kw">val</span> loadDisplay: <span class="type">String</span>,        <span class="cmt">// "45%"</span>
+    <span class="kw">val</span> loadLevel: <span class="type">LoadLevel</span>,       <span class="cmt">// LOW, MEDIUM, HIGH</span>
+    <span class="kw">val</span> latencyDisplay: <span class="type">String</span>,     <span class="cmt">// "25ms"</span>
+    <span class="kw">val</span> latencyLevel: <span class="type">LatencyLevel</span>, <span class="cmt">// EXCELLENT, GOOD, FAIR, POOR</span>
+    <span class="kw">val</span> isOnline: <span class="type">Boolean</span>,
+    <span class="kw">val</span> recommendationScore: <span class="type">Int</span>   <span class="cmt">// 0–100</span>
+)</code></pre>
+
+<table>
+  <thead><tr><th>Load Level</th><th>Range</th><th>Color</th></tr></thead>
+  <tbody>
+    <tr><td><code>LOW</code></td><td>0–40%</td><td>🟢 Green</td></tr>
+    <tr><td><code>MEDIUM</code></td><td>41–70%</td><td>🟡 Yellow</td></tr>
+    <tr><td><code>HIGH</code></td><td>71–100%</td><td>🔴 Red</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>LocationPickerProvider</h2>
+<pre><code><span class="cmt">// Country picker</span>
+<span class="kw">val</span> countries = locationPickerProvider.<span class="fn">getCountries</span>()
+
+<span class="cmt">// City picker (after country selection)</span>
+<span class="kw">val</span> cities = locationPickerProvider.<span class="fn">getCities</span>(<span class="str">"US"</span>)
+
+<span class="cmt">// Hierarchical tree</span>
+<span class="kw">val</span> tree = locationPickerProvider.<span class="fn">getLocationTree</span>()
+
+<span class="cmt">// Search</span>
+<span class="kw">val</span> results = locationPickerProvider.<span class="fn">searchLocations</span>(<span class="str">"New"</span>)</code></pre>
+
+<hr>
+
+<h2>Format Utilities</h2>
+<pre><code><span class="cmt">// Country flags</span>
+<span class="type">CountryFlags</span>.<span class="fn">getFlag</span>(<span class="str">"US"</span>)     <span class="cmt">// "🇺🇸"</span>
+<span class="type">CountryFlags</span>.<span class="fn">getFlag</span>(<span class="str">"GB"</span>)     <span class="cmt">// "🇬🇧"</span>
+
+<span class="cmt">// Server load</span>
+<span class="type">ServerLoadFormatter</span>.<span class="fn">format</span>(<span class="num">0.45f</span>)        <span class="cmt">// "45%"</span>
+<span class="type">ServerLoadFormatter</span>.<span class="fn">getLoadLevel</span>(<span class="num">0.3f</span>)   <span class="cmt">// LOW</span>
+
+<span class="cmt">// Latency</span>
+<span class="type">LatencyFormatter</span>.<span class="fn">format</span>(<span class="num">25</span>)              <span class="cmt">// "25ms"</span></code></pre>
+
+<hr>
+
+<h2>Extension Functions</h2>
+<pre><code><span class="cmt">// Convert Server → display model</span>
+<span class="kw">val</span> displayItem = server.<span class="fn">toDisplayItem</span>()
+<span class="kw">val</span> displayItems = servers.<span class="fn">toDisplayItems</span>()
+
+<span class="cmt">// Group for pickers</span>
+<span class="kw">val</span> countryItems = servers.<span class="fn">toCountryPickerItems</span>()
+<span class="kw">val</span> cityItems = servers.<span class="fn">toCityPickerItems</span>()
+
+<span class="cmt">// Filter & sort</span>
+<span class="kw">val</span> active = servers.<span class="fn">activeOnly</span>()
+<span class="kw">val</span> sorted = servers.<span class="fn">sortByRecommendation</span>()</code></pre>
+
+<div class="page-nav">
+  <a href="error-handling.html"><span class="nav-label">← Previous</span><span class="nav-title">Error Handling</span></a>
+  <a href="configuration.html" class="next"><span class="nav-label">Next →</span><span class="nav-title">Configuration</span></a>
+</div>
+</div>
+</main>
+</div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default',themeVariables:{primaryColor:'#0891b2',primaryTextColor:'#fff',lineColor:'#64748b'}});
+</script>
+</body>
+</html>

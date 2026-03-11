@@ -15,14 +15,15 @@ const LazyProfileDropdown = lazy(() => import("@/components/ProfileDropdown"));
 const showToast = (msg: string) => import("sonner").then(m => m.toast.success(msg));
 
 const baseNavLinks = [
-  { href: "#features", label: "Features", type: "hash" },
-  { href: "#how-it-works", label: "How It Works", type: "hash" },
-  { href: "#pricing", label: "Pricing", type: "hash" },
+  // { href: "#features", label: "Features", type: "hash" },
+  // { href: "#how-it-works", label: "How It Works", type: "hash" },
   { href: "/platform", label: "Platform", type: "route" },
-  { href: "/content", label: "Resources", type: "route" },
+  { href: "#pricing", label: "Pricing", type: "hash" },
+  // { href: "/content", label: "Resources", type: "route" },
   { href: "/community", label: "Community", type: "route" },
   { href: "/about", label: "About", type: "route" },
-  { href: "/contact", label: "Contact", type: "route" },
+  { href: "/sdk/docs", label: "SDK", type: "route" },
+  // { href: "/contact", label: "Contact", type: "route" },
 ];
 
 const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string, navigate: any, isHomePage: boolean) => {
@@ -121,10 +122,10 @@ export function Header() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto px-4">
-          <nav className="flex h-24 items-center justify-between">
+          <nav className="flex h-16 sm:h-20 md:h-24 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-24 h-24 flex justify-center items-center">
+              <div className="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 flex justify-center items-center">
                 <img 
                   src={isDarkTheme ? "/white.png" : "/black.png"} 
                   className="w-full h-full" 

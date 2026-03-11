@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Getting Started — FyreWay SDK Docs</title>
+<meta name="description" content="Install, configure, and activate the FyreWay VPN SDK for Android in under 5 minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="https://fyreway.com/favicon.png">
+<meta name="theme-color" content="#0891b2">
+<script src="docs.js"></script>
+</head>
+<body>
+
+<div class="mobile-header">
+  <button class="hamburger" id="hamburger">☰</button>
+  <span style="font-weight:700;font-size:15px">SDK Docs</span>
+  <button class="theme-toggle" id="themeToggleMobile">🌙</button>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="page-wrapper">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">F</div>
+    <span class="sidebar-brand">SDK Docs</span>
+    <span class="sidebar-version">v1.1.0</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Guide</div>
+      <a class="sidebar-link" href="index.html"><span class="nav-num">↗</span> Overview</a>
+      <a class="sidebar-link active" href="getting-started.html"><span class="nav-num">01</span> Getting Started</a>
+      <a class="sidebar-link" href="server-discovery.html"><span class="nav-num">02</span> Server Discovery</a>
+      <a class="sidebar-link" href="connection-lifecycle.html"><span class="nav-num">03</span> Connection Lifecycle</a>
+      <a class="sidebar-link" href="smart-connect.html"><span class="nav-num">04</span> Smart Connect</a>
+      <a class="sidebar-link" href="error-handling.html"><span class="nav-num">05</span> Error Handling</a>
+      <a class="sidebar-link" href="ui-utilities.html"><span class="nav-num">06</span> UI Utilities</a>
+      <a class="sidebar-link" href="configuration.html"><span class="nav-num">07</span> Configuration</a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">© 2026 FyreWay · <a href="https://fyreway.com">fyreway.com</a></div>
+</aside>
+
+<main class="main-content">
+  <div class="top-bar">
+    <div class="breadcrumb">
+      <a href="https://fyreway.com">FyreWay</a><span class="sep">/</span>
+      <a href="index.html">SDK Docs</a><span class="sep">/</span>
+      <span>Getting Started</span>
+    </div>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+  </div>
+
+  <div class="content">
+    <h1>Getting Started</h1>
+    <p class="page-description">Time to first API call: <strong>~5 minutes</strong></p>
+
+    <!-- 1. Dependency -->
+    <h2 id="dependency">1. Add the Dependency</h2>
+
+    <div class="code-header"><span>build.gradle.kts — Project</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="fn">repositories</span> {
+    <span class="fn">google</span>()
+    <span class="fn">mavenCentral</span>()
+    <span class="fn">maven</span> { url = <span class="fn">uri</span>(<span class="str">"https://maven.fyreway.com/releases"</span>) }
+}</code></pre>
+
+    <div class="code-header"><span>build.gradle.kts — App module</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="fn">dependencies</span> {
+    <span class="cmt">// FyreWay VPN SDK</span>
+    <span class="fn">implementation</span>(<span class="str">"com.fyreway.vpn:fyreway-vpn-sdk:1.1.0"</span>)
+
+    <span class="cmt">// Required</span>
+    <span class="fn">implementation</span>(<span class="str">"org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"</span>)
+    <span class="fn">implementation</span>(<span class="str">"androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"</span>)
+    <span class="fn">implementation</span>(<span class="str">"androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"</span>)
+}</code></pre>
+
+    <p>If you're using an AAR file directly:</p>
+    <pre><code><span class="fn">dependencies</span> {
+    <span class="fn">implementation</span>(<span class="fn">files</span>(<span class="str">"libs/fyreway-vpn-sdk-release.aar"</span>))
+}</code></pre>
+
+    <hr>
+
+    <!-- 2. Manifest -->
+    <h2 id="manifest">2. Update AndroidManifest.xml</h2>
+    <div class="code-header"><span>AndroidManifest.xml</span><button class="copy-btn">Copy</button></div>
+    <pre><code>&lt;<span class="kw">manifest</span> xmlns:android=<span class="str">"http://schemas.android.com/apk/res/android"</span>&gt;
+
+    <span class="cmt">&lt;!-- Required --&gt;</span>
+    &lt;<span class="kw">uses-permission</span> android:name=<span class="str">"android.permission.INTERNET"</span> /&gt;
+    &lt;<span class="kw">uses-permission</span> android:name=<span class="str">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;
+
+    &lt;<span class="kw">application</span>
+        android:name=<span class="str">".MyApplication"</span>
+        ... &gt;
+        <span class="cmt">&lt;!-- Your activities --&gt;</span>
+    &lt;/<span class="kw">application</span>&gt;
+&lt;/<span class="kw">manifest</span>&gt;</code></pre>
+
+    <hr>
+
+    <!-- 3. Initialize -->
+    <h2 id="initialize">3. Initialize the SDK</h2>
+    <p>Initialize <strong>once</strong> in your <code>Application.onCreate()</code>. Never initialize in an Activity or Fragment.</p>
+
+    <div class="code-header"><span>Kotlin</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="kw">class</span> <span class="type">MyApplication</span> : <span class="type">Application</span>() {
+    <span class="kw">override fun</span> <span class="fn">onCreate</span>() {
+        <span class="kw">super</span>.<span class="fn">onCreate</span>()
+
+        <span class="type">FyreWaySDK</span>.<span class="fn">initialize</span> {
+            baseUrl = <span class="str">"https://your-api-server.com"</span>    <span class="cmt">// Required</span>
+            enableLogging = <span class="type">BuildConfig</span>.DEBUG            <span class="cmt">// Disable in production</span>
+            logLevel = <span class="type">LogLevel</span>.BASIC                    <span class="cmt">// NONE, BASIC, HEADERS, BODY</span>
+            connectTimeout = <span class="num">30_000L</span>
+            readTimeout = <span class="num">30_000L</span>
+            writeTimeout = <span class="num">30_000L</span>
+            maxRetries = <span class="num">3</span>
+            cachePolicy = <span class="type">CachePolicy</span>.CACHE_FIRST
+            analyticsConfig = <span class="type">AnalyticsConfig</span>(
+                enabled = <span class="kw">true</span>,
+                batchSize = <span class="num">50</span>,
+                flushInterval = <span class="num">60_000L</span>
+            )
+        }
+    }
+}</code></pre>
+
+    <div class="code-header"><span>Java</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="kw">public class</span> <span class="type">MyApplication</span> <span class="kw">extends</span> <span class="type">Application</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onCreate</span>() {
+        <span class="kw">super</span>.<span class="fn">onCreate</span>();
+
+        <span class="type">FyreWayConfig</span> config = <span class="kw">new</span> <span class="type">FyreWayConfig</span>.<span class="type">Builder</span>()
+            .<span class="fn">baseUrl</span>(<span class="str">"https://your-api-server.com"</span>)
+            .<span class="fn">enableLogging</span>(<span class="type">BuildConfig</span>.DEBUG)
+            .<span class="fn">logLevel</span>(<span class="type">LogLevel</span>.BASIC)
+            .<span class="fn">build</span>();
+
+        <span class="type">FyreWaySDK</span>.<span class="fn">initialize</span>(config);
+    }
+}</code></pre>
+
+    <blockquote>
+      <strong>Important:</strong> <code>baseUrl</code> is the only required parameter. All others have sensible defaults. Never hardcode your production URL — use <code>BuildConfig</code> fields.
+    </blockquote>
+
+    <hr>
+
+    <!-- 4. Activate -->
+    <h2 id="activate">4. Activate the Device</h2>
+    <p>Device activation registers this device with the backend and returns authentication credentials. Call it once on first launch — the SDK stores credentials securely and reuses them.</p>
+
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+sequenceDiagram
+    participant App as Your App
+    participant SDK as FyreWay SDK
+    participant Store as Secure Storage
+    participant API as Backend API
+    App->>SDK: activateDevice("1.0.0")
+    SDK->>API: POST /devices/activate
+    API-->>SDK: deviceId, token, refreshToken
+    SDK->>Store: Store credentials
+    SDK->>SDK: Start proactive token refresh
+    SDK-->>App: VpnResult.Success(DeviceCredentials)
+      </pre>
+    </div>
+
+    <div class="code-header"><span>Kotlin</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="kw">class</span> <span class="type">MainViewModel</span> : <span class="type">ViewModel</span>() {
+    <span class="kw">private val</span> sdk = <span class="type">FyreWaySDK</span>.<span class="fn">getInstance</span>()
+
+    <span class="kw">fun</span> <span class="fn">activate</span>() {
+        viewModelScope.<span class="fn">launch</span> {
+            <span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">activateDevice</span>(appVersion = <span class="str">"1.0.0"</span>)) {
+                <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+                    <span class="kw">val</span> deviceId = result.data.deviceId
+                    <span class="cmt">// Device is ready — you can now call any SDK API</span>
+                }
+                <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; {
+                    <span class="kw">val</span> message = <span class="type">ErrorMessageMapper</span>.<span class="fn">getMessage</span>(result.exception)
+                    <span class="cmt">// Show user-friendly error</span>
+                }
+            }
+        }
+    }
+}</code></pre>
+
+    <div class="code-header"><span>Java</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="type">FyreWayJavaClient</span> client = <span class="type">FyreWayJavaClient</span>.<span class="fn">initialize</span>();
+
+client.<span class="fn">activateDevice</span>(<span class="str">"1.0.0"</span>, <span class="kw">new</span> <span class="type">FyreWayCallback</span>&lt;<span class="type">DeviceCredentials</span>&gt;() {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onSuccess</span>(<span class="type">DeviceCredentials</span> <span class="param">credentials</span>) {
+        <span class="cmt">// Device is ready</span>
+    }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onError</span>(<span class="type">Exception</span> <span class="param">exception</span>, <span class="type">Integer</span> <span class="param">statusCode</span>) {
+        <span class="cmt">// Handle error</span>
+    }
+});</code></pre>
+
+    <hr>
+
+    <!-- 5. Auth check -->
+    <h2 id="auth">5. Check Authentication State</h2>
+    <pre><code><span class="kw">val</span> sdk = <span class="type">FyreWaySDK</span>.<span class="fn">getInstance</span>()
+
+<span class="kw">if</span> (sdk.<span class="fn">isAuthenticated</span>()) {
+    <span class="cmt">// Proceed with API calls</span>
+} <span class="kw">else</span> {
+    <span class="cmt">// Need to activate device first</span>
+    sdk.<span class="fn">activateDevice</span>(<span class="str">"1.0.0"</span>)
+}</code></pre>
+
+    <hr>
+
+    <!-- 6. Token -->
+    <h2 id="token">6. Token Lifecycle</h2>
+    <p>The SDK manages token refresh automatically. After activation, a background job checks every 5 minutes and refreshes the token before it expires.</p>
+
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+graph LR
+    A[activateDevice] --> B[Token stored]
+    B --> C{Expiring within 24h?}
+    C -- Yes --> D[refreshToken]
+    D --> B
+    C -- No --> E[Wait 5 min]
+    E --> C
+      </pre>
+    </div>
+
+    <table>
+      <thead><tr><th>Method</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td><code>startProactiveTokenRefresh()</code></td><td>Called automatically after activation. Call manually only if you previously stopped it.</td></tr>
+        <tr><td><code>stopProactiveTokenRefresh()</code></td><td>Call before logout or when you no longer need the SDK.</td></tr>
+        <tr><td><code>refreshToken()</code></td><td>Manual one-time refresh. Rarely needed — the SDK handles this.</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- 7. Logout -->
+    <h2 id="logout">7. Logout</h2>
+    <pre><code>sdk.<span class="fn">logout</span>()  <span class="cmt">// Clears all credentials and stops token refresh</span></code></pre>
+    <p>After logout, you must call <code>activateDevice()</code> again before using any API.</p>
+
+    <hr>
+
+    <!-- Minimal example -->
+    <h2 id="minimal">Minimal Working Example</h2>
+    <div class="code-header"><span>Kotlin — Complete</span><button class="copy-btn">Copy</button></div>
+    <pre><code><span class="cmt">// Application.kt</span>
+<span class="kw">class</span> <span class="type">MyApp</span> : <span class="type">Application</span>() {
+    <span class="kw">override fun</span> <span class="fn">onCreate</span>() {
+        <span class="kw">super</span>.<span class="fn">onCreate</span>()
+        <span class="type">FyreWaySDK</span>.<span class="fn">initialize</span> {
+            baseUrl = <span class="str">"https://your-api-server.com"</span>
+        }
+    }
+}
+
+<span class="cmt">// MainViewModel.kt</span>
+<span class="kw">class</span> <span class="type">MainViewModel</span> : <span class="type">ViewModel</span>() {
+    <span class="kw">private val</span> sdk = <span class="type">FyreWaySDK</span>.<span class="fn">getInstance</span>()
+
+    <span class="kw">init</span> { <span class="fn">activate</span>() }
+
+    <span class="kw">private fun</span> <span class="fn">activate</span>() = viewModelScope.<span class="fn">launch</span> {
+        <span class="kw">if</span> (!sdk.<span class="fn">isAuthenticated</span>()) {
+            sdk.<span class="fn">activateDevice</span>(<span class="str">"1.0.0"</span>)
+        }
+    }
+
+    <span class="kw">fun</span> <span class="fn">getServers</span>() = viewModelScope.<span class="fn">launch</span> {
+        <span class="kw">when</span> (<span class="kw">val</span> result = sdk.<span class="fn">getServers</span>()) {
+            <span class="kw">is</span> <span class="type">VpnResult.Success</span> -&gt; {
+                <span class="kw">val</span> servers = result.data.servers
+                <span class="cmt">// Display servers to user</span>
+            }
+            <span class="kw">is</span> <span class="type">VpnResult.Error</span> -&gt; { <span class="cmt">/* Handle error */</span> }
+        }
+    }
+}</code></pre>
+
+    <!-- Nav -->
+    <div class="page-nav">
+      <a href="index.html">
+        <span class="nav-label">← Previous</span>
+        <span class="nav-title">Overview</span>
+      </a>
+      <a href="server-discovery.html" class="next">
+        <span class="nav-label">Next →</span>
+        <span class="nav-title">Server Discovery</span>
+      </a>
+    </div>
+  </div>
+</main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default',themeVariables:{primaryColor:'#0891b2',primaryTextColor:'#fff',lineColor:'#64748b'}});
+</script>
+</body>
+</html>
+

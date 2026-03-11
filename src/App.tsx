@@ -32,6 +32,16 @@ const PartnerReviews = lazy(() => import("./pages/PartnerReviews"));
 const CMSPage = lazy(() => import("./pages/CMSPage"));
 const PagesListing = lazy(() => import("./pages/PagesListing"));
 
+// SDK Documentation
+const SDKDocsOverview = lazy(() => import("./pages/sdk-docs/SDKDocsOverview"));
+const SDKDocsGettingStarted = lazy(() => import("./pages/sdk-docs/SDKDocsGettingStarted"));
+const SDKDocsServerDiscovery = lazy(() => import("./pages/sdk-docs/SDKDocsServerDiscovery"));
+const SDKDocsConnectionLifecycle = lazy(() => import("./pages/sdk-docs/SDKDocsConnectionLifecycle"));
+const SDKDocsSmartConnect = lazy(() => import("./pages/sdk-docs/SDKDocsSmartConnect"));
+const SDKDocsErrorHandling = lazy(() => import("./pages/sdk-docs/SDKDocsErrorHandling"));
+const SDKDocsUIUtilities = lazy(() => import("./pages/sdk-docs/SDKDocsUIUtilities"));
+const SDKDocsConfiguration = lazy(() => import("./pages/sdk-docs/SDKDocsConfiguration"));
+
 // QueryClient created lazily — only initialized when first needed
 let _qc: any = null;
 function getQueryClient() {
@@ -134,6 +144,16 @@ const App = () => (
               {/* Dynamic CMS Pages */}
               <Route path="/pages" element={<PagesListing />} />
               <Route path="/page/:slug" element={<CMSPage />} />
+              
+              {/* SDK Documentation */}
+              <Route path="/sdk/docs" element={<SDKDocsOverview />} />
+              <Route path="/sdk/docs/getting-started" element={<SDKDocsGettingStarted />} />
+              <Route path="/sdk/docs/server-discovery" element={<SDKDocsServerDiscovery />} />
+              <Route path="/sdk/docs/connection-lifecycle" element={<SDKDocsConnectionLifecycle />} />
+              <Route path="/sdk/docs/smart-connect" element={<SDKDocsSmartConnect />} />
+              <Route path="/sdk/docs/error-handling" element={<SDKDocsErrorHandling />} />
+              <Route path="/sdk/docs/ui-utilities" element={<SDKDocsUIUtilities />} />
+              <Route path="/sdk/docs/configuration" element={<SDKDocsConfiguration />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>
