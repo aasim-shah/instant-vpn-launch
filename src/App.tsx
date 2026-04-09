@@ -41,6 +41,7 @@ const SDKDocsSmartConnect = lazy(() => import("./pages/sdk-docs/SDKDocsSmartConn
 const SDKDocsErrorHandling = lazy(() => import("./pages/sdk-docs/SDKDocsErrorHandling"));
 const SDKDocsUIUtilities = lazy(() => import("./pages/sdk-docs/SDKDocsUIUtilities"));
 const SDKDocsConfiguration = lazy(() => import("./pages/sdk-docs/SDKDocsConfiguration"));
+const SDKDocsWhatsNew = lazy(() => import("./pages/sdk-docs/SDKDocsWhatsNew"));
 
 // QueryClient created lazily — only initialized when first needed
 let _qc: any = null;
@@ -147,6 +148,7 @@ const App = () => (
               
               {/* SDK Documentation */}
               <Route path="/sdk/docs" element={<SDKDocsOverview />} />
+              <Route path="/sdk/docs/whats-new" element={<SDKDocsWhatsNew />} />
               <Route path="/sdk/docs/getting-started" element={<SDKDocsGettingStarted />} />
               <Route path="/sdk/docs/server-discovery" element={<SDKDocsServerDiscovery />} />
               <Route path="/sdk/docs/connection-lifecycle" element={<SDKDocsConnectionLifecycle />} />

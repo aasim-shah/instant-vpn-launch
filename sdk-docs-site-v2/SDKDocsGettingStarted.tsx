@@ -255,7 +255,7 @@ client.<span className="fn">activateDevice</span>(<span className="str">"1.0.0"<
 {'}'}</code></pre>
 
         <PageNav 
-          prev={{ href: '/sdk/docs/whats-new', title: "What's New" }}
+          prev={{ href: '/sdk/docs', title: 'Overview' }}
           next={{ href: '/sdk/docs/server-discovery', title: 'Server Discovery' }} 
         />
       </SDKDocsLayout>

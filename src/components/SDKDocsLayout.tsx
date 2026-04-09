@@ -10,10 +10,11 @@ interface SDKDocsLayoutProps {
   description?: string;
 }
 
-const SDK_VERSION = 'v1.1.0';
+const SDK_VERSION = 'v1.2.0';
 
 const navItems = [
   { href: '/sdk/docs', label: 'Overview', num: '↗' },
+  { href: '/sdk/docs/whats-new', label: "What's New", num: '★' },
   { href: '/sdk/docs/getting-started', label: 'Getting Started', num: '01' },
   { href: '/sdk/docs/server-discovery', label: 'Server Discovery', num: '02' },
   { href: '/sdk/docs/connection-lifecycle', label: 'Connection Lifecycle', num: '03' },

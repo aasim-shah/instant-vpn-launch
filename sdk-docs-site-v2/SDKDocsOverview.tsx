@@ -350,7 +350,7 @@ graph TB
         </table>
 
         <PageNav 
-          next={{ href: '/sdk/docs/whats-new', title: "What's New" }} 
+          next={{ href: '/sdk/docs/getting-started', title: 'Getting Started' }} 
         />
       </SDKDocsLayout>
     </>
