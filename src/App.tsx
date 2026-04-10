@@ -43,29 +43,17 @@ const SDKDocsUIUtilities = lazy(() => import("./pages/sdk-docs/SDKDocsUIUtilitie
 const SDKDocsConfiguration = lazy(() => import("./pages/sdk-docs/SDKDocsConfiguration"));
 const SDKDocsWhatsNew = lazy(() => import("./pages/sdk-docs/SDKDocsWhatsNew"));
 
-// QueryClient created lazily — only initialized when first needed
-let _qc: any = null;
-function getQueryClient() {
-  if (!_qc) {
-    // Dynamic import ensures @tanstack/react-query is NOT in critical path
-    // This is safe because all consumers are lazy-loaded (Footer, CMS pages)
-    _qc = import("@tanstack/react-query").then(m => new m.QueryClient());
-  }
-  return _qc;
-}
-
 // Lazy-load QueryClientProvider to keep @tanstack/react-query off critical path
+// QueryClient is created synchronously once the module loads — no race condition
 const LazyQueryProvider = lazy(() =>
-  import("@tanstack/react-query").then(m => ({
-    default: ({ children }: { children: React.ReactNode }) => {
-      const [client, setClient] = useState<any>(null);
-      useEffect(() => {
-        getQueryClient().then(setClient);
-      }, []);
-      if (!client) return <>{children}</>;
-      return <m.QueryClientProvider client={client}>{children}</m.QueryClientProvider>;
-    }
-  }))
+  import("@tanstack/react-query").then(m => {
+    const client = new m.QueryClient();
+    return {
+      default: ({ children }: { children: React.ReactNode }) => (
+        <m.QueryClientProvider client={client}>{children}</m.QueryClientProvider>
+      )
+    };
+  })
 );
 
 // Lazy load UI chrome that's not needed for first paint
