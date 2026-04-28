@@ -66,7 +66,7 @@ export function TimeToValueSection() {
             Time to Value
           </span>
           <h2 className="mb-6 text-3xl font-bold sm:text-4xl lg:text-5xl">
-            From Concept to Global VPN Infrastructure —{" "}
+            From Concept to Global VPN Infrastructure {" "}
             <span className="gradient-text">In Hours</span>
           </h2>
           <p className="text-lg text-muted-foreground">
