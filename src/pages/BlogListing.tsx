@@ -175,6 +175,7 @@ export default function BlogListing() {
                   <ContentCard
                     key={post.slug}
                     title={post.title}
+                    subTitle={post.subTitle}
                     excerpt={post.summary}
                     href={`/blog/${post.slug}`}
                     image={post.featuredImage}

@@ -114,9 +114,15 @@ export default function BlogDetail() {
                 ))}
               </div>
 
-              <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl">
+              <h1 className="mb-3 text-4xl font-bold tracking-tight sm:text-5xl">
                 {post.title}
               </h1>
+
+              {post.subTitle && (
+                <p className="mb-6 text-xl text-muted-foreground font-medium leading-relaxed">
+                  {post.subTitle}
+                </p>
+              )}
 
               <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
                 {post.author && (
@@ -167,10 +173,19 @@ export default function BlogDetail() {
             <div className="mx-auto max-w-4xl">
               <div className="grid gap-12 lg:grid-cols-[1fr,250px]">
                 {/* Main Content */}
-                <div
-                  className="cms-content"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
+                <div className="space-y-8">
+                  {post.summary && (
+                    <div className="border-l-4 border-primary pl-5 py-1">
+                      <p className="text-lg text-muted-foreground leading-relaxed italic">
+                        {post.summary}
+                      </p>
+                    </div>
+                  )}
+                  <div
+                    className="cms-content"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
+                </div>
 
                 {/* Sidebar */}
                 <aside className="space-y-6">

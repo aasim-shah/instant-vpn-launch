@@ -53,6 +53,7 @@ export interface ICMSPage {
 export interface IBlog {
   _id: string;
   title: string;
+  subTitle?: string;
   slug: string;
   summary: string;
   content: string;

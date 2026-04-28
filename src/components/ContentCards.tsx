@@ -6,6 +6,7 @@ import { UserAvatar } from '@/components/ui/user-avatar';
 
 interface ContentCardProps {
   title: string;
+  subTitle?: string;
   excerpt: string;
   href: string;
   image?: string;
@@ -22,6 +23,7 @@ interface ContentCardProps {
 
 export function ContentCard({
   title,
+  subTitle,
   excerpt,
   href,
   image,
@@ -63,6 +65,11 @@ export function ContentCard({
           <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
             {title}
           </CardTitle>
+          {subTitle && (
+            <p className="text-sm font-medium text-foreground/70 line-clamp-1 mt-0.5">
+              {subTitle}
+            </p>
+          )}
           <CardDescription className="line-clamp-3">{excerpt}</CardDescription>
         </CardHeader>
         <CardContent>
