@@ -82,7 +82,6 @@ export function TimeToValueSection() {
               width="1200"
               height="675"
               loading="eager"
-              fetchpriority="high"
               className="max-w-full w-full rounded-2xl shadow-2xl shadow-primary/20 dark:shadow-primary/10 transition-transform duration-300 group-hover:scale-105"
             />
             {/* Hover Overlay */}

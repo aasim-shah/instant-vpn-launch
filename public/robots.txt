@@ -1,14 +1,10 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+Disallow: /infrastructure
+Disallow: /detailed-logs
+Disallow: /verify-email
+Disallow: /404
+
+Content-Signal: ai-train=no, search=yes, ai-input=no
+
+Sitemap: https://fyreway.com/sitemap.xml

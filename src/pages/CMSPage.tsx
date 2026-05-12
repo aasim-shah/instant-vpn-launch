@@ -71,6 +71,18 @@ export default function CMSPage() {
       <SEO
         title={page.metaTitle || page.headerTitle}
         description={page.metaDescription || page.headerDescription}
+        canonical={`/page/${page.slug}`}
+        ogImage={page.featuredImage || '/image3.png'}
+        ogImageAlt={page.headerTitle}
+        keywords={page.metaKeywords}
+        jsonLd={{
+          '@type': 'WebPage',
+          name: page.headerTitle,
+          description: page.metaDescription || page.headerDescription,
+          url: `https://fyreway.com/page/${page.slug}`,
+          datePublished: page.createdAt,
+          dateModified: page.updatedAt,
+        }}
       />
 
       <Header />

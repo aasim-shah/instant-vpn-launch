@@ -1,0 +1,21 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/server-card/2025-01-01.json",
+  "serverInfo": {
+    "name": "FyreWay Agent Discovery",
+    "version": "1.0.0"
+  },
+  "description": "Discovery metadata for FyreWay public resources and browser-exposed WebMCP tools.",
+  "transport": {
+    "type": "webmcp",
+    "endpoint": "https://fyreway.com/"
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": false
+    }
+  }
+}

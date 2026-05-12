@@ -1,0 +1,12 @@
+{
+  "resource": "https://fyreway.com/",
+  "authorization_servers": [
+    "https://rbac-api.fyreway.com"
+  ],
+  "scopes_supported": [
+    "profile",
+    "email",
+    "infrastructure:read",
+    "infrastructure:write"
+  ]
+}

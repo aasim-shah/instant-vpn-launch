@@ -6,99 +6,138 @@ interface SEOProps {
   canonical?: string;
   ogType?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  keywords?: string | string[];
+  robots?: string;
+  twitterCard?: 'summary' | 'summary_large_image';
   article?: {
     publishedTime?: string;
+    modifiedTime?: string;
     author?: string;
     tags?: string[];
   };
   jsonLd?: object;
 }
 
+const siteUrl = 'https://fyreway.com';
+const siteName = 'FyreWay';
+const defaultOgImage = '/image3.png';
+
+const toAbsoluteUrl = (value: string) => {
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value;
+  }
+
+  return `${siteUrl}${value.startsWith('/') ? value : `/${value}`}`;
+};
+
+const withBrandSuffix = (title: string) => {
+  if (title.endsWith(`| ${siteName}`)) {
+    return title;
+  }
+
+  return `${title} | ${siteName}`;
+};
+
 export function SEO({
   title,
   description,
   canonical,
   ogType = 'website',
-  ogImage = '/og-image.png',
+  ogImage = defaultOgImage,
+  ogImageAlt,
+  keywords,
+  robots = 'index, follow',
+  twitterCard = 'summary_large_image',
   article,
   jsonLd,
 }: SEOProps) {
-  const siteUrl = 'https://fyreway.com';
-  const fullTitle = `${title} | Fyreway`;
-  const fullCanonical = canonical ? `${siteUrl}${canonical}` : undefined;
-  const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+  const fullTitle = withBrandSuffix(title);
+  const canonicalPath = canonical || window.location.pathname;
+  const fullCanonical = toAbsoluteUrl(canonicalPath);
+  const fullOgImage = toAbsoluteUrl(ogImage);
+  const keywordContent = Array.isArray(keywords) ? keywords.join(', ') : keywords;
 
   useEffect(() => {
-    // Update document title
+    document.querySelectorAll('[data-seo-managed="true"]').forEach((element) => {
+      element.remove();
+    });
+
     document.title = fullTitle;
 
-    // Update or create meta tags
-    const updateMetaTag = (name: string, content: string, isProperty = false) => {
-      const attribute = isProperty ? 'property' : 'name';
+    const setMetaTag = (attribute: 'name' | 'property', name: string, content?: string) => {
+      if (!content) return;
+
       let element = document.querySelector(`meta[${attribute}="${name}"]`);
       if (!element) {
         element = document.createElement('meta');
-        element.setAttribute(attribute, name);
         document.head.appendChild(element);
       }
+
+      element.setAttribute(attribute, name);
       element.setAttribute('content', content);
+      element.setAttribute('data-seo-managed', 'true');
     };
 
-    // Primary Meta Tags
-    updateMetaTag('title', fullTitle);
-    updateMetaTag('description', description);
+    const appendMetaTag = (attribute: 'name' | 'property', name: string, content?: string) => {
+      if (!content) return;
 
-    // Open Graph
-    updateMetaTag('og:type', ogType, true);
-    updateMetaTag('og:title', fullTitle, true);
-    updateMetaTag('og:description', description, true);
-    updateMetaTag('og:image', fullOgImage, true);
-    updateMetaTag('og:site_name', 'Fyreway', true);
-    if (fullCanonical) {
-      updateMetaTag('og:url', fullCanonical, true);
-    }
+      const element = document.createElement('meta');
+      element.setAttribute(attribute, name);
+      element.setAttribute('content', content);
+      element.setAttribute('data-seo-managed', 'true');
+      document.head.appendChild(element);
+    };
 
-    // Twitter
-    updateMetaTag('twitter:card', 'summary_large_image', true);
-    updateMetaTag('twitter:title', fullTitle, true);
-    updateMetaTag('twitter:description', description, true);
-    updateMetaTag('twitter:image', fullOgImage, true);
+    setMetaTag('name', 'title', fullTitle);
+    setMetaTag('name', 'description', description);
+    setMetaTag('name', 'keywords', keywordContent);
+    setMetaTag('name', 'robots', robots);
 
-    // Article Meta Tags
+    setMetaTag('property', 'og:type', ogType);
+    setMetaTag('property', 'og:url', fullCanonical);
+    setMetaTag('property', 'og:title', fullTitle);
+    setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:image', fullOgImage);
+    setMetaTag('property', 'og:image:alt', ogImageAlt || title);
+    setMetaTag('property', 'og:site_name', siteName);
+    setMetaTag('property', 'og:locale', 'en_US');
+
+    setMetaTag('name', 'twitter:card', twitterCard);
+    setMetaTag('name', 'twitter:url', fullCanonical);
+    setMetaTag('name', 'twitter:title', fullTitle);
+    setMetaTag('name', 'twitter:description', description);
+    setMetaTag('name', 'twitter:image', fullOgImage);
+    setMetaTag('name', 'twitter:image:alt', ogImageAlt || title);
+
     if (article) {
-      if (article.publishedTime) {
-        updateMetaTag('article:published_time', article.publishedTime, true);
-      }
-      if (article.author) {
-        updateMetaTag('article:author', article.author, true);
-      }
+      appendMetaTag('property', 'article:published_time', article.publishedTime);
+      appendMetaTag('property', 'article:modified_time', article.modifiedTime);
+      appendMetaTag('property', 'article:author', article.author);
+      article.tags?.forEach((tag) => appendMetaTag('property', 'article:tag', tag));
     }
 
-    // Canonical link
-    if (canonical) {
-      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'canonical';
-        document.head.appendChild(link);
-      }
-      link.href = fullCanonical!;
+    let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      document.head.appendChild(link);
     }
 
-    // JSON-LD Structured Data
+    link.rel = 'canonical';
+    link.href = fullCanonical;
+    link.setAttribute('data-seo-managed', 'true');
+
     if (jsonLd) {
-      let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
-      if (!script) {
-        script = document.createElement('script');
-        script.type = 'application/ld+json';
-        document.head.appendChild(script);
-      }
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.setAttribute('data-seo-managed', 'true');
       script.textContent = JSON.stringify({
         '@context': 'https://schema.org',
         ...jsonLd,
       });
+      document.head.appendChild(script);
     }
-  }, [fullTitle, description, fullCanonical, ogType, fullOgImage, article, jsonLd]);
+  }, [fullTitle, description, fullCanonical, ogType, fullOgImage, ogImageAlt, title, keywordContent, robots, twitterCard, article, jsonLd]);
 
   return null;
 }
@@ -106,9 +145,9 @@ export function SEO({
 // JSON-LD Schema Helpers
 export const organizationSchema = {
   '@type': 'Organization',
-  name: 'Fyreway',
-  url: 'https://fyreway.com',
-  logo: 'https://fyreway.com/logo.png',
+  name: 'FyreWay',
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
   description: 'VPN backend infrastructure platform for developers and SaaS teams',
   sameAs: [
     'https://twitter.com/fyreway',
@@ -123,7 +162,7 @@ export const breadcrumbSchema = (items: { name: string; url: string }[]) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name,
-    item: `https://fyreway.com${item.url}`,
+    item: `${siteUrl}${item.url}`,
   })),
 });
 
@@ -180,7 +219,7 @@ export const reviewSchema = (review: {
 
 export const productSchema = {
   '@type': 'SoftwareApplication',
-  name: 'Fyreway',
+  name: 'FyreWay',
   applicationCategory: 'DeveloperApplication',
   offers: {
     '@type': 'Offer',

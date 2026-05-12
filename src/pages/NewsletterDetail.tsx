@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, ArrowLeft, Mail, AlertCircle } from 'lucide-react';
 import { useNewsletterBySlug } from '@/hooks/use-cms';import '@/styles/cms-content.css';
+import { SEO, organizationSchema } from '@/components/SEO';
 export default function NewsletterDetail() {
   const { slug } = useParams<{ slug: string }>();
 
@@ -66,8 +67,45 @@ export default function NewsletterDetail() {
     );
   }
 
+  const publishedDate = newsletter.publishedAt || newsletter.createdAt;
+  const metaTitle = newsletter.metaTitle || newsletter.title;
+  const metaDescription = newsletter.metaDescription || newsletter.summary || `Read ${newsletter.title} from FyreWay.`;
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={metaTitle}
+        description={metaDescription}
+        canonical={`/newsletter/${newsletter.slug}`}
+        ogType="article"
+        ogImage={newsletter.featuredImage || '/image3.png'}
+        ogImageAlt={newsletter.title}
+        keywords={newsletter.tags}
+        article={{
+          publishedTime: publishedDate,
+          modifiedTime: newsletter.updatedAt,
+          author: 'FyreWay',
+          tags: newsletter.tags,
+        }}
+        jsonLd={{
+          '@type': 'Article',
+          headline: newsletter.title,
+          description: metaDescription,
+          image: newsletter.featuredImage,
+          datePublished: publishedDate,
+          dateModified: newsletter.updatedAt,
+          author: {
+            '@type': 'Organization',
+            name: 'FyreWay',
+          },
+          publisher: organizationSchema,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://fyreway.com/newsletter/${newsletter.slug}`,
+          },
+          keywords: newsletter.tags.join(', '),
+        }}
+      />
       <Header />
       
       <main>

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agentskills.io/schemas/agent-skills-index-v0.2.json",
+  "skills": [
+    {
+      "name": "fyreway-agent-discovery",
+      "type": "text/markdown",
+      "description": "Discover FyreWay public resources, API metadata, sitemap information, content usage preferences, and browser-exposed WebMCP tools.",
+      "url": "https://fyreway.com/.well-known/agent-skills/fyreway-agent-discovery/SKILL.md",
+      "sha256": "f81998061036c12b87cbbc26543bb330eec3665de0db920af5ba6f66fed6b2fb"
+    }
+  ]
+}

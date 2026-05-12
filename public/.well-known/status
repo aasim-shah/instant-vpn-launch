@@ -1,0 +1,6 @@
+{
+  "status": "ok",
+  "service": "fyreway-agent-discovery",
+  "homepage": "https://fyreway.com/",
+  "apiCatalog": "https://fyreway.com/.well-known/api-catalog"
+}

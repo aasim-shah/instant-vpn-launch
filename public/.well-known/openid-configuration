@@ -1,0 +1,23 @@
+{
+  "issuer": "https://rbac-api.fyreway.com",
+  "authorization_endpoint": "https://rbac-api.fyreway.com/api/v1/auth/login",
+  "token_endpoint": "https://rbac-api.fyreway.com/api/v1/auth/login",
+  "jwks_uri": "https://rbac-api.fyreway.com/.well-known/jwks.json",
+  "grant_types_supported": [
+    "password"
+  ],
+  "response_types_supported": [
+    "token"
+  ],
+  "subject_types_supported": [
+    "public"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256"
+  ],
+  "scopes_supported": [
+    "openid",
+    "profile",
+    "email"
+  ]
+}

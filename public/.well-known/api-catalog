@@ -1,0 +1,46 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://api.fyreway.com/api",
+      "service-desc": [
+        {
+          "href": "https://fyreway.com/.well-known/openapi.json",
+          "type": "application/vnd.oai.openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://fyreway.com/sdk/docs",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://fyreway.com/.well-known/status",
+          "type": "application/json"
+        }
+      ]
+    },
+    {
+      "anchor": "https://infra-api.fyreway.com/api/v1",
+      "service-desc": [
+        {
+          "href": "https://fyreway.com/.well-known/openapi.json",
+          "type": "application/vnd.oai.openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://fyreway.com/sdk/docs",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://fyreway.com/.well-known/status",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

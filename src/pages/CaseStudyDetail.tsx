@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Quote, TrendingUp, ArrowRight } from 'lucide-react';
 import { caseStudies } from '@/content/caseStudyData';
+import { SEO, organizationSchema } from '@/components/SEO';
 
 export default function CaseStudyDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -18,9 +19,42 @@ export default function CaseStudyDetail() {
   const relatedCaseStudies = caseStudies
     .filter(cs => (cs.industry === caseStudy.industry || cs.useCase === caseStudy.useCase) && cs.slug !== caseStudy.slug)
     .slice(0, 2);
+  const caseStudyUrl = `https://fyreway.com/case-studies/${caseStudy.slug}`;
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={caseStudy.title}
+        description={caseStudy.excerpt}
+        canonical={`/case-studies/${caseStudy.slug}`}
+        ogType="article"
+        ogImage={caseStudy.image || '/image3.png'}
+        ogImageAlt={caseStudy.title}
+        keywords={[caseStudy.industry, caseStudy.useCase, ...caseStudy.tags]}
+        article={{
+          publishedTime: caseStudy.date,
+          author: 'FyreWay',
+          tags: caseStudy.tags,
+        }}
+        jsonLd={{
+          '@type': 'Article',
+          headline: caseStudy.title,
+          description: caseStudy.excerpt,
+          image: caseStudy.image,
+          datePublished: caseStudy.date,
+          author: {
+            '@type': 'Organization',
+            name: 'FyreWay',
+          },
+          publisher: organizationSchema,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': caseStudyUrl,
+          },
+          about: [caseStudy.industry, caseStudy.useCase],
+          keywords: [caseStudy.industry, caseStudy.useCase, ...caseStudy.tags].join(', '),
+        }}
+      />
       <Header />
       
       <main>

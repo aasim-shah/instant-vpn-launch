@@ -3,6 +3,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { lazy, Suspense, useEffect, useState, createContext, useContext } from "react";
+import type { ReactElement } from "react";
+import { SEO, organizationSchema, productSchema } from "@/components/SEO";
 
 // Critical routes - loaded immediately (only homepage)
 import Index from "./pages/Index";
@@ -60,6 +62,17 @@ const LazyQueryProvider = lazy(() =>
 const Toaster = lazy(() => import("@/components/ui/toaster").then(m => ({ default: m.Toaster })));
 const Sonner = lazy(() => import("@/components/ui/sonner").then(m => ({ default: m.Toaster })));
 
+type SEOConfig = Parameters<typeof SEO>[0];
+
+const withSEO = (seo: SEOConfig, element: ReactElement) => (
+  <>
+    <SEO {...seo} />
+    {element}
+  </>
+);
+
+const noIndex = 'noindex, nofollow';
+
 // Loading fallback component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -93,45 +106,148 @@ const App = () => (
             <ScrollToTop />
             <Suspense fallback={<PageLoader />}>
               <Routes>
-              <Route path="/" element={<Index />} />
+              <Route
+                path="/"
+                element={withSEO({
+                  title: "Launch VPN Infrastructure in Minutes",
+                  description: "Deploy production-ready VPN servers instantly with FyreWay. Pre-configured VPN infrastructure, global locations, SDKs, and monitoring for SaaS and app teams.",
+                  canonical: "/",
+                  keywords: ["VPN infrastructure", "VPN server platform", "VPN backend", "WireGuard hosting", "OpenVPN hosting", "VPN SDK"],
+                  jsonLd: {
+                    '@graph': [organizationSchema, productSchema],
+                  },
+                }, <Index />)}
+              />
               <Route 
                 path="/infrastructure" 
-                element={
+                element={withSEO({
+                  title: "Infrastructure Dashboard",
+                  description: "Protected FyreWay infrastructure dashboard.",
+                  canonical: "/infrastructure",
+                  robots: noIndex,
+                }, (
                   <ProtectedRoute>
                     <Infrastructure />
                   </ProtectedRoute>
-                } 
+                ))} 
               />
-              <Route path="/detailed-logs" element={<ShowDetails/>} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/detailed-logs" element={withSEO({
+                title: "Detailed Logs",
+                description: "Internal FyreWay infrastructure logs.",
+                canonical: "/detailed-logs",
+                robots: noIndex,
+              }, <ShowDetails/>)} />
+              <Route path="/about" element={withSEO({
+                title: "About FyreWay",
+                description: "Learn about FyreWay and the team helping developers launch scalable VPN infrastructure, mobile experiences, and secure connectivity products.",
+                canonical: "/about",
+                keywords: ["FyreWay about", "VPN infrastructure company", "VPN platform team"],
+                jsonLd: organizationSchema,
+              }, <AboutUs />)} />
+              <Route path="/contact" element={withSEO({
+                title: "Contact FyreWay Sales",
+                description: "Contact the FyreWay team to discuss VPN infrastructure, SDK integration, pricing, or a production-ready deployment for your app or SaaS product.",
+                canonical: "/contact",
+                keywords: ["contact FyreWay", "VPN infrastructure sales", "VPN platform consultation"],
+              }, <Contact />)} />
+              <Route path="/verify-email" element={withSEO({
+                title: "Verify Email",
+                description: "Verify your FyreWay account email address.",
+                canonical: "/verify-email",
+                robots: noIndex,
+              }, <VerifyEmail />)} />
               
               {/* Platform */}
-              <Route path="/platform" element={<Platform />} />
+              <Route path="/platform" element={withSEO({
+                title: "VPN Backend Platform",
+                description: "Explore FyreWay's developer-first VPN backend platform with global servers, WireGuard and OpenVPN support, analytics, and automated scaling.",
+                canonical: "/platform",
+                keywords: ["VPN backend platform", "VPN API", "global VPN infrastructure", "VPN analytics", "VPN control plane"],
+                jsonLd: productSchema,
+              }, <Platform />)} />
               
               {/* Content & Knowledge */}
-              <Route path="/content" element={<ContentHub />} />
-              <Route path="/blog" element={<BlogListing />} />
+              <Route path="/content" element={withSEO({
+                title: "VPN Infrastructure Content Hub",
+                description: "Browse FyreWay blogs, newsletters, case studies, and technical resources for building and scaling VPN products.",
+                canonical: "/content",
+                keywords: ["VPN resources", "VPN infrastructure blog", "VPN case studies", "VPN product updates"],
+              }, <ContentHub />)} />
+              <Route path="/blog" element={withSEO({
+                title: "VPN Infrastructure Blog",
+                description: "Technical articles, best practices, and engineering insights about VPN infrastructure, security, performance, and app integration.",
+                canonical: "/blog",
+                keywords: ["VPN blog", "VPN infrastructure articles", "WireGuard", "OpenVPN", "VPN security"],
+              }, <BlogListing />)} />
               <Route path="/blog/:slug" element={<BlogDetail />} />
-              <Route path="/newsletter" element={<NewsletterListing />} />
+              <Route path="/newsletter" element={withSEO({
+                title: "FyreWay Newsletter",
+                description: "Read FyreWay product updates, release notes, security news, and infrastructure insights for VPN builders.",
+                canonical: "/newsletter",
+                keywords: ["FyreWay newsletter", "VPN product updates", "VPN release notes"],
+              }, <NewsletterListing />)} />
               <Route path="/newsletter/:slug" element={<NewsletterDetail />} />
-              <Route path="/newsletter/subscribe" element={<NewsletterSubscribe />} />
-              <Route path="/case-studies" element={<CaseStudiesListing />} />
+              <Route path="/newsletter/subscribe" element={withSEO({
+                title: "Subscribe to the FyreWay Newsletter",
+                description: "Subscribe to FyreWay updates for VPN infrastructure releases, product news, and technical guidance.",
+                canonical: "/newsletter/subscribe",
+                keywords: ["subscribe FyreWay newsletter", "VPN updates", "VPN infrastructure news"],
+              }, <NewsletterSubscribe />)} />
+              <Route path="/case-studies" element={withSEO({
+                title: "VPN Infrastructure Case Studies",
+                description: "See how startups, SaaS companies, IoT teams, and gaming platforms use FyreWay to launch and scale VPN infrastructure.",
+                canonical: "/case-studies",
+                keywords: ["VPN case studies", "VPN customer stories", "VPN app launch", "VPN SaaS"],
+              }, <CaseStudiesListing />)} />
               <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
               
               {/* Community */}
-              <Route path="/community" element={<CommunityHub />} />
-              <Route path="/community/discord" element={<DiscordCommunity />} />
-              <Route path="/community/team" element={<TeamPage />} />
+              <Route path="/community" element={withSEO({
+                title: "FyreWay Community",
+                description: "Join the FyreWay community for VPN infrastructure discussions, developer support, and product updates.",
+                canonical: "/community",
+                keywords: ["FyreWay community", "VPN developer community", "VPN infrastructure support"],
+              }, <CommunityHub />)} />
+              <Route path="/community/discord" element={withSEO({
+                title: "FyreWay Discord Community",
+                description: "Connect with FyreWay developers and VPN builders in the community Discord.",
+                canonical: "/community/discord",
+                keywords: ["FyreWay Discord", "VPN Discord", "VPN developer community"],
+              }, <DiscordCommunity />)} />
+              <Route path="/community/team" element={withSEO({
+                title: "FyreWay Team",
+                description: "Meet the team behind FyreWay's VPN infrastructure platform and developer tools.",
+                canonical: "/community/team",
+                keywords: ["FyreWay team", "VPN infrastructure team", "VPN platform developers"],
+              }, <TeamPage />)} />
               
               {/* Partners */}
-              <Route path="/partners" element={<PartnersHub />} />
-              <Route path="/partners/affiliate" element={<AffiliateProgram />} />
-              <Route path="/partners/reviews" element={<PartnerReviews />} />
+              <Route path="/partners" element={withSEO({
+                title: "FyreWay Partners",
+                description: "Explore FyreWay partner programs, affiliate opportunities, and trusted customer reviews.",
+                canonical: "/partners",
+                keywords: ["FyreWay partners", "VPN affiliate program", "VPN platform partners"],
+              }, <PartnersHub />)} />
+              <Route path="/partners/affiliate" element={withSEO({
+                title: "FyreWay Affiliate Program",
+                description: "Join the FyreWay affiliate program and earn recurring commissions by recommending VPN infrastructure to developers and SaaS teams.",
+                canonical: "/partners/affiliate",
+                keywords: ["VPN affiliate program", "FyreWay affiliate", "VPN partner program"],
+              }, <AffiliateProgram />)} />
+              <Route path="/partners/reviews" element={withSEO({
+                title: "FyreWay Partner Reviews",
+                description: "Read partner and customer reviews about building VPN products with FyreWay infrastructure.",
+                canonical: "/partners/reviews",
+                keywords: ["FyreWay reviews", "VPN infrastructure reviews", "VPN partner reviews"],
+              }, <PartnerReviews />)} />
               
               {/* Dynamic CMS Pages */}
-              <Route path="/pages" element={<PagesListing />} />
+              <Route path="/pages" element={withSEO({
+                title: "FyreWay Pages",
+                description: "Browse public FyreWay resources, guides, and platform pages.",
+                canonical: "/pages",
+                keywords: ["FyreWay resources", "VPN guides", "VPN platform pages"],
+              }, <PagesListing />)} />
               <Route path="/page/:slug" element={<CMSPage />} />
               
               {/* SDK Documentation */}
@@ -145,7 +261,12 @@ const App = () => (
               <Route path="/sdk/docs/ui-utilities" element={<SDKDocsUIUtilities />} />
               <Route path="/sdk/docs/configuration" element={<SDKDocsConfiguration />} />
               
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={withSEO({
+                title: "Page Not Found",
+                description: "The requested FyreWay page could not be found.",
+                canonical: "/404",
+                robots: noIndex,
+              }, <NotFound />)} />
             </Routes>
           </Suspense>
         </BrowserRouter>

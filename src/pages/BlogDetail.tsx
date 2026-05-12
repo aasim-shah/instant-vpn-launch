@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, Clock, ArrowLeft, Share2, Twitter, Linkedin, Facebook, AlertCircle } from 'lucide-react';
 import { useBlogBySlug, useRelatedBlogs } from '@/hooks/use-cms';import '@/styles/cms-content.css';
 import { UserAvatar } from '@/components/ui/user-avatar';
+import { SEO, organizationSchema } from '@/components/SEO';
 export default function BlogDetail() {
   const { slug } = useParams<{ slug: string }>();
 
@@ -83,8 +84,45 @@ export default function BlogDetail() {
     );
   }
 
+  const publishedDate = post.publishedAt || post.createdAt;
+  const metaTitle = post.metaTitle || post.title;
+  const metaDescription = post.metaDescription || post.summary || post.subTitle || `Read ${post.title} from FyreWay.`;
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={metaTitle}
+        description={metaDescription}
+        canonical={`/blog/${post.slug}`}
+        ogType="article"
+        ogImage={post.featuredImage || '/image3.png'}
+        ogImageAlt={post.title}
+        keywords={post.tags}
+        article={{
+          publishedTime: publishedDate,
+          modifiedTime: post.updatedAt,
+          author: post.author?.name,
+          tags: post.tags,
+        }}
+        jsonLd={{
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: metaDescription,
+          image: post.featuredImage,
+          datePublished: publishedDate,
+          dateModified: post.updatedAt,
+          author: {
+            '@type': 'Person',
+            name: post.author?.name || 'FyreWay',
+          },
+          publisher: organizationSchema,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://fyreway.com/blog/${post.slug}`,
+          },
+          keywords: post.tags.join(', '),
+        }}
+      />
       <Header />
       
       <main>
