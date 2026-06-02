@@ -79,6 +79,113 @@
   margin-left: auto;
 }
 
+/* Version switcher */
+.sdk-version-switcher {
+  margin-left: auto;
+  position: relative;
+}
+
+.sdk-version-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted));
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.sdk-version-btn:hover {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--primary) / 0.4);
+}
+
+.sdk-version-label {
+  color: hsl(var(--primary));
+}
+
+.sdk-version-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 1px 5px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.sdk-version-chevron {
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sdk-version-chevron.open {
+  transform: rotate(180deg);
+}
+
+.sdk-version-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.sdk-version-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  min-width: 160px;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
+  box-shadow: 0 8px 24px hsl(0 0% 0% / 0.12);
+  overflow: hidden;
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+}
+
+.sdk-version-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  text-align: left;
+  transition: background 0.1s ease;
+}
+
+.sdk-version-option:hover {
+  background: hsl(var(--accent));
+}
+
+.sdk-version-option.active {
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+.sdk-version-check {
+  margin-left: auto;
+  font-size: 12px;
+  color: hsl(var(--primary));
+}
+
 .sdk-sidebar-nav {
   padding: 16px 12px;
   flex: 1;

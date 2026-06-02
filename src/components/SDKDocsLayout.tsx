@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, ArrowLeft } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Sun, Moon, ArrowLeft, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import '@/styles/sdk-docs.css';
 
@@ -10,34 +10,50 @@ interface SDKDocsLayoutProps {
   description?: string;
 }
 
-const SDK_VERSION = 'v1.2.0';
+const SDK_VERSIONS = [
+  { id: 'v3', label: 'v3.0', badge: '' },
+  { id: 'v2', label: 'v2.0', badge: '' },
+] as const;
 
-const navItems = [
-  { href: '/sdk/docs', label: 'Overview', num: '↗' },
-  { href: '/sdk/docs/whats-new', label: "What's New", num: '★' },
-  { href: '/sdk/docs/getting-started', label: 'Getting Started', num: '01' },
-  { href: '/sdk/docs/server-discovery', label: 'Server Discovery', num: '02' },
-  { href: '/sdk/docs/connection-lifecycle', label: 'Connection Lifecycle', num: '03' },
-  { href: '/sdk/docs/smart-connect', label: 'Smart Connect', num: '04' },
-  { href: '/sdk/docs/error-handling', label: 'Error Handling', num: '05' },
-  { href: '/sdk/docs/ui-utilities', label: 'UI Utilities', num: '06' },
-  { href: '/sdk/docs/configuration', label: 'Configuration', num: '07' },
+type SDKVersionId = typeof SDK_VERSIONS[number]['id'];
+
+const NAV_SLUGS = [
+  { slug: '',                   label: 'Overview',            num: '↗' },
+  { slug: '/whats-new',         label: "What's New",          num: '★' },
+  { slug: '/getting-started',   label: 'Getting Started',     num: '01' },
+  { slug: '/server-discovery',  label: 'Server Discovery',    num: '02' },
+  { slug: '/connection-lifecycle', label: 'Connection Lifecycle', num: '03' },
+  { slug: '/smart-connect',     label: 'Smart Connect',       num: '04' },
+  { slug: '/error-handling',    label: 'Error Handling',      num: '05' },
+  { slug: '/ui-utilities',      label: 'UI Utilities',        num: '06' },
+  { slug: '/configuration',     label: 'Configuration',       num: '07' },
 ];
+
+function useSDKVersion() {
+  const { pathname } = useLocation();
+  const match = pathname.match(/^\/sdk\/docs\/(v\d+)(.*)/);
+  const versionId = (match?.[1] ?? 'v3') as SDKVersionId;
+  const slug = match?.[2] ?? '';
+  const basePath = `/sdk/docs/${versionId}`;
+  const versionMeta = SDK_VERSIONS.find(v => v.id === versionId) ?? SDK_VERSIONS[0];
+  return { versionId, slug, basePath, versionMeta };
+}
 
 export function SDKDocsLayout({ children, title }: SDKDocsLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [versionDropdownOpen, setVersionDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { versionId, slug, basePath, versionMeta } = useSDKVersion();
 
   useEffect(() => {
     const checkDark = () => {
       setIsDark(document.documentElement.classList.contains('dark'));
     };
     checkDark();
-
     const observer = new MutationObserver(checkDark);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
     return () => observer.disconnect();
   }, []);
 
@@ -51,9 +67,18 @@ export function SDKDocsLayout({ children, title }: SDKDocsLayoutProps) {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  const isActive = (href: string) => {
-    return location.pathname === href;
+  const isActive = (href: string) => location.pathname === href;
+
+  const handleVersionSwitch = (targetVersionId: SDKVersionId) => {
+    setVersionDropdownOpen(false);
+    navigate(`/sdk/docs/${targetVersionId}${slug}`);
   };
+
+  const navItems = NAV_SLUGS.map(item => ({
+    href: `${basePath}${item.slug}`,
+    label: item.label,
+    num: item.num,
+  }));
 
   return (
     <div className="sdk-docs-wrapper">
@@ -65,9 +90,9 @@ export function SDKDocsLayout({ children, title }: SDKDocsLayoutProps) {
           </button>
         </div>
         <Link to="/" className="sdk-mobile-logo">
-          <img 
-            src={isDark ? "/white.png" : "/black.png"} 
-            alt="FyreWay" 
+          <img
+            src={isDark ? "/white.png" : "/black.png"}
+            alt="FyreWay"
             className="sdk-mobile-logo-img"
           />
           <span className="sdk-mobile-title">SDK Docs</span>
@@ -95,16 +120,56 @@ export function SDKDocsLayout({ children, title }: SDKDocsLayoutProps) {
         <aside className={`sdk-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="sdk-sidebar-header">
             <Link to="/" className="sdk-sidebar-logo-link">
-              <img 
-                src={isDark ? "/white.png" : "/black.png"} 
-                className="sdk-sidebar-logo-img" 
+              <img
+                src={isDark ? "/white.png" : "/black.png"}
+                className="sdk-sidebar-logo-img"
                 alt="FyreWay Logo"
                 width="32"
                 height="32"
-              /> 
+              />
             </Link>
             <span className="sdk-sidebar-brand">SDK Docs</span>
-            <span className="sdk-sidebar-version">{SDK_VERSION}</span>
+
+            {/* Version switcher */}
+            <div className="sdk-version-switcher">
+              <button
+                className="sdk-version-btn"
+                onClick={() => setVersionDropdownOpen(v => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={versionDropdownOpen}
+              >
+                <span className="sdk-version-label">{versionMeta.label}</span>
+                {versionMeta.badge && (
+                  <span className="sdk-version-badge">{versionMeta.badge}</span>
+                )}
+                <ChevronDown size={12} className={`sdk-version-chevron ${versionDropdownOpen ? 'open' : ''}`} />
+              </button>
+
+              {versionDropdownOpen && (
+                <>
+                  <div
+                    className="sdk-version-backdrop"
+                    onClick={() => setVersionDropdownOpen(false)}
+                  />
+                  <ul className="sdk-version-dropdown" role="listbox">
+                    {SDK_VERSIONS.map(v => (
+                      <li key={v.id} role="option" aria-selected={v.id === versionId}>
+                        <button
+                          className={`sdk-version-option ${v.id === versionId ? 'active' : ''}`}
+                          onClick={() => handleVersionSwitch(v.id)}
+                        >
+                          <span>{v.label}</span>
+                          {v.badge && (
+                            <span className="sdk-version-badge">{v.badge}</span>
+                          )}
+                          {v.id === versionId && <span className="sdk-version-check">✓</span>}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
           </div>
 
           <nav className="sdk-sidebar-nav">
@@ -135,7 +200,7 @@ export function SDKDocsLayout({ children, title }: SDKDocsLayoutProps) {
             <div className="sdk-breadcrumb">
               <Link to="/">FyreWay</Link>
               <span className="sep">/</span>
-              <Link to="/sdk/docs">SDK Docs</Link>
+              <Link to={basePath}>SDK Docs</Link>
               <span className="sep">/</span>
               <span>{title}</span>
             </div>
@@ -240,7 +305,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
       try {
         const mermaid = await import('mermaid');
         const isDark = document.documentElement.classList.contains('dark');
-        
+
         mermaid.default.initialize({
           startOnLoad: false,
           theme: isDark ? 'dark' : 'default',

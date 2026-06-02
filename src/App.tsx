@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -34,16 +34,27 @@ const PartnerReviews = lazy(() => import("./pages/PartnerReviews"));
 const CMSPage = lazy(() => import("./pages/CMSPage"));
 const PagesListing = lazy(() => import("./pages/PagesListing"));
 
-// SDK Documentation
-const SDKDocsOverview = lazy(() => import("./pages/sdk-docs/SDKDocsOverview"));
-const SDKDocsGettingStarted = lazy(() => import("./pages/sdk-docs/SDKDocsGettingStarted"));
-const SDKDocsServerDiscovery = lazy(() => import("./pages/sdk-docs/SDKDocsServerDiscovery"));
-const SDKDocsConnectionLifecycle = lazy(() => import("./pages/sdk-docs/SDKDocsConnectionLifecycle"));
-const SDKDocsSmartConnect = lazy(() => import("./pages/sdk-docs/SDKDocsSmartConnect"));
-const SDKDocsErrorHandling = lazy(() => import("./pages/sdk-docs/SDKDocsErrorHandling"));
-const SDKDocsUIUtilities = lazy(() => import("./pages/sdk-docs/SDKDocsUIUtilities"));
-const SDKDocsConfiguration = lazy(() => import("./pages/sdk-docs/SDKDocsConfiguration"));
-const SDKDocsWhatsNew = lazy(() => import("./pages/sdk-docs/SDKDocsWhatsNew"));
+// SDK Documentation — v2
+const SDKDocsOverviewV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsOverview"));
+const SDKDocsWhatsNewV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsWhatsNew"));
+const SDKDocsGettingStartedV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsGettingStarted"));
+const SDKDocsServerDiscoveryV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsServerDiscovery"));
+const SDKDocsConnectionLifecycleV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsConnectionLifecycle"));
+const SDKDocsSmartConnectV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsSmartConnect"));
+const SDKDocsErrorHandlingV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsErrorHandling"));
+const SDKDocsUIUtilitiesV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsUIUtilities"));
+const SDKDocsConfigurationV2 = lazy(() => import("./pages/sdk-docs/v2/SDKDocsConfiguration"));
+
+// SDK Documentation — v3 (latest)
+const SDKDocsOverviewV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsOverview"));
+const SDKDocsWhatsNewV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsWhatsNew"));
+const SDKDocsGettingStartedV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsGettingStarted"));
+const SDKDocsServerDiscoveryV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsServerDiscovery"));
+const SDKDocsConnectionLifecycleV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsConnectionLifecycle"));
+const SDKDocsSmartConnectV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsSmartConnect"));
+const SDKDocsErrorHandlingV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsErrorHandling"));
+const SDKDocsUIUtilitiesV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsUIUtilities"));
+const SDKDocsConfigurationV3 = lazy(() => import("./pages/sdk-docs/v3/SDKDocsConfiguration"));
 
 // Lazy-load QueryClientProvider to keep @tanstack/react-query off critical path
 // QueryClient is created synchronously once the module loads — no race condition
@@ -250,16 +261,38 @@ const App = () => (
               }, <PagesListing />)} />
               <Route path="/page/:slug" element={<CMSPage />} />
               
-              {/* SDK Documentation */}
-              <Route path="/sdk/docs" element={<SDKDocsOverview />} />
-              <Route path="/sdk/docs/whats-new" element={<SDKDocsWhatsNew />} />
-              <Route path="/sdk/docs/getting-started" element={<SDKDocsGettingStarted />} />
-              <Route path="/sdk/docs/server-discovery" element={<SDKDocsServerDiscovery />} />
-              <Route path="/sdk/docs/connection-lifecycle" element={<SDKDocsConnectionLifecycle />} />
-              <Route path="/sdk/docs/smart-connect" element={<SDKDocsSmartConnect />} />
-              <Route path="/sdk/docs/error-handling" element={<SDKDocsErrorHandling />} />
-              <Route path="/sdk/docs/ui-utilities" element={<SDKDocsUIUtilities />} />
-              <Route path="/sdk/docs/configuration" element={<SDKDocsConfiguration />} />
+              {/* SDK Documentation — legacy redirects → v3 (latest) */}
+              <Route path="/sdk/docs" element={<Navigate to="/sdk/docs/v3" replace />} />
+              <Route path="/sdk/docs/whats-new" element={<Navigate to="/sdk/docs/v3/whats-new" replace />} />
+              <Route path="/sdk/docs/getting-started" element={<Navigate to="/sdk/docs/v3/getting-started" replace />} />
+              <Route path="/sdk/docs/server-discovery" element={<Navigate to="/sdk/docs/v3/server-discovery" replace />} />
+              <Route path="/sdk/docs/connection-lifecycle" element={<Navigate to="/sdk/docs/v3/connection-lifecycle" replace />} />
+              <Route path="/sdk/docs/smart-connect" element={<Navigate to="/sdk/docs/v3/smart-connect" replace />} />
+              <Route path="/sdk/docs/error-handling" element={<Navigate to="/sdk/docs/v3/error-handling" replace />} />
+              <Route path="/sdk/docs/ui-utilities" element={<Navigate to="/sdk/docs/v3/ui-utilities" replace />} />
+              <Route path="/sdk/docs/configuration" element={<Navigate to="/sdk/docs/v3/configuration" replace />} />
+
+              {/* SDK Documentation — v2 */}
+              <Route path="/sdk/docs/v2" element={<SDKDocsOverviewV2 />} />
+              <Route path="/sdk/docs/v2/whats-new" element={<SDKDocsWhatsNewV2 />} />
+              <Route path="/sdk/docs/v2/getting-started" element={<SDKDocsGettingStartedV2 />} />
+              <Route path="/sdk/docs/v2/server-discovery" element={<SDKDocsServerDiscoveryV2 />} />
+              <Route path="/sdk/docs/v2/connection-lifecycle" element={<SDKDocsConnectionLifecycleV2 />} />
+              <Route path="/sdk/docs/v2/smart-connect" element={<SDKDocsSmartConnectV2 />} />
+              <Route path="/sdk/docs/v2/error-handling" element={<SDKDocsErrorHandlingV2 />} />
+              <Route path="/sdk/docs/v2/ui-utilities" element={<SDKDocsUIUtilitiesV2 />} />
+              <Route path="/sdk/docs/v2/configuration" element={<SDKDocsConfigurationV2 />} />
+
+              {/* SDK Documentation — v3 (latest) */}
+              <Route path="/sdk/docs/v3" element={<SDKDocsOverviewV3 />} />
+              <Route path="/sdk/docs/v3/whats-new" element={<SDKDocsWhatsNewV3 />} />
+              <Route path="/sdk/docs/v3/getting-started" element={<SDKDocsGettingStartedV3 />} />
+              <Route path="/sdk/docs/v3/server-discovery" element={<SDKDocsServerDiscoveryV3 />} />
+              <Route path="/sdk/docs/v3/connection-lifecycle" element={<SDKDocsConnectionLifecycleV3 />} />
+              <Route path="/sdk/docs/v3/smart-connect" element={<SDKDocsSmartConnectV3 />} />
+              <Route path="/sdk/docs/v3/error-handling" element={<SDKDocsErrorHandlingV3 />} />
+              <Route path="/sdk/docs/v3/ui-utilities" element={<SDKDocsUIUtilitiesV3 />} />
+              <Route path="/sdk/docs/v3/configuration" element={<SDKDocsConfigurationV3 />} />
               
               <Route path="*" element={withSEO({
                 title: "Page Not Found",

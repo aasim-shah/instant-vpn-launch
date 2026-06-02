@@ -1,4 +1,15 @@
 {
+  "redirects": [
+    { "source": "/sdk/docs",                    "destination": "/sdk/docs/v3",                    "permanent": true },
+    { "source": "/sdk/docs/whats-new",          "destination": "/sdk/docs/v3/whats-new",          "permanent": true },
+    { "source": "/sdk/docs/getting-started",    "destination": "/sdk/docs/v3/getting-started",    "permanent": true },
+    { "source": "/sdk/docs/server-discovery",   "destination": "/sdk/docs/v3/server-discovery",   "permanent": true },
+    { "source": "/sdk/docs/connection-lifecycle","destination": "/sdk/docs/v3/connection-lifecycle","permanent": true },
+    { "source": "/sdk/docs/smart-connect",      "destination": "/sdk/docs/v3/smart-connect",      "permanent": true },
+    { "source": "/sdk/docs/error-handling",     "destination": "/sdk/docs/v3/error-handling",     "permanent": true },
+    { "source": "/sdk/docs/ui-utilities",       "destination": "/sdk/docs/v3/ui-utilities",       "permanent": true },
+    { "source": "/sdk/docs/configuration",      "destination": "/sdk/docs/v3/configuration",      "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
@@ -11,7 +22,7 @@
       "headers": [
         {
           "key": "Link",
-          "value": "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </sdk/docs>; rel=\"service-doc\"; type=\"text/html\", </.well-known/openapi.json>; rel=\"service-desc\"; type=\"application/vnd.oai.openapi+json\", </sitemap.xml>; rel=\"sitemap\"; type=\"application/xml\", </.well-known/agent-skills/index.json>; rel=\"https://agentskills.io/rels/agent-skills\"; type=\"application/json\", </>; rel=\"alternate\"; type=\"text/markdown\""
+          "value": "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </sdk/docs/v3>; rel=\"service-doc\"; type=\"text/html\", </.well-known/openapi.json>; rel=\"service-desc\"; type=\"application/vnd.oai.openapi+json\", </sitemap.xml>; rel=\"sitemap\"; type=\"application/xml\", </.well-known/agent-skills/index.json>; rel=\"https://agentskills.io/rels/agent-skills\"; type=\"application/json\", </>; rel=\"alternate\"; type=\"text/markdown\""
         },
         {
           "key": "Vary",
