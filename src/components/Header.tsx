@@ -1,9 +1,17 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import type { NavigateFunction } from "react-router-dom";
 
 // Lazy load AuthModal - 663 lines of code only needed on button click
 const AuthModal = lazy(() => import("@/components/AuthModal").then(m => ({ default: m.AuthModal })));
@@ -26,7 +34,12 @@ const baseNavLinks = [
   // { href: "/contact", label: "Contact", type: "route" },
 ];
 
-const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string, navigate: any, isHomePage: boolean) => {
+const handleHashNavigation = (
+  e: React.MouseEvent<HTMLAnchorElement>,
+  href: string,
+  navigate: NavigateFunction,
+  isHomePage: boolean,
+) => {
   if (href.startsWith('#')) {
     e.preventDefault();
     const id = href.substring(1);
@@ -100,6 +113,10 @@ export function Header() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname, location.hash]);
+
   // Add Infrastructure link only if authenticated
   const navLinks = isAuthenticated
     ? [
@@ -121,14 +138,14 @@ export function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
-        <div className="container mx-auto px-4">
-          <nav className="flex h-16 sm:h-20 md:h-24 items-center justify-between">
+        <div className="mx-auto w-full max-w-[1440px] px-3 sm:px-5 lg:px-6 xl:px-8">
+          <nav className="flex h-16 items-center justify-between gap-3 sm:h-[4.5rem] lg:h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 flex justify-center items-center">
+            <Link to="/" className="flex shrink-0 items-center" aria-label="FyreWay home">
+              <div className="flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14 lg:h-16 lg:w-16">
                 <img 
                   src={isDarkTheme ? "/white.png" : "/black.png"} 
-                  className="w-full h-full" 
+                  className="h-full w-full object-contain"
                   alt="FyreWay Logo"
                   width="96"
                   height="96"
@@ -138,14 +155,22 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden items-center gap-8 md:flex">
+            <div className="hidden min-w-0 items-center justify-center gap-1 lg:flex xl:gap-2">
               {navLinks.map((link) => {
+                const isActive = link.type === "route"
+                  ? location.pathname === link.href || location.pathname.startsWith(`${link.href}/`)
+                  : isHomePage && location.hash === link.href;
+
                 if (link.type === "route") {
                   return (
                     <Link
                       key={link.href}
                       to={link.href}
-                      className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground flex items-center gap-1.5"
+                      className={`rounded-lg px-2.5 py-2 text-sm font-medium transition-colors xl:px-3 ${
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
                     >
                       {link.label}
                     </Link>
@@ -156,7 +181,7 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     onClick={(e) => handleHashNavigation(e, link.href, navigate, isHomePage)}
-                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    className="rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground xl:px-3"
                   >
                     {link.label}
                   </a>
@@ -165,99 +190,140 @@ export function Header() {
             </div>
 
             {/* Desktop Actions */}
-            <div className="hidden items-center gap-3 md:flex">
+            <div className="hidden shrink-0 items-center gap-2 lg:flex">
               <ThemeToggle />
               {isAuthenticated && user ? (
                 <Suspense fallback={<Button variant="outline" size="sm" className="gap-2">Profile</Button>}>
                   <LazyProfileDropdown user={user} onLogout={handleLogout} />
                 </Suspense>
               ) : (
-                <Button size="sm" onClick={() => setIsAuthModalOpen(true)}>
-                 Get In
+                <Button size="sm" className="shadow-sm" onClick={() => setIsAuthModalOpen(true)}>
+                  Get Started
                 </Button>
               )}
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex items-center gap-2 md:hidden">
+            <div className="flex items-center gap-1 lg:hidden">
               <ThemeToggle />
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="h-10 w-10 rounded-xl"
+                onClick={() => setIsMenuOpen(true)}
+                aria-label="Open navigation menu"
+                aria-expanded={isMenuOpen}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                <Menu className="h-5 w-5" />
               </Button>
             </div>
           </nav>
-
-          {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="border-t border-border py-4 md:hidden">
-              <div className="flex flex-col gap-4">
-                {navLinks.map((link) => {
-                  if (link.type === "route") {
-                    return (
-                      <Link
-                        key={link.href}
-                        to={link.href}
-                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground flex items-center gap-1.5"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  }
-                  return (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      onClick={(e) => {
-                        handleHashNavigation(e, link.href, navigate, isHomePage);
-                        setIsMenuOpen(false);
-                      }}
-                      className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                    </a>
-                  );
-                })}
-                <div className="flex flex-col gap-2 pt-4">
-                  {isAuthenticated && user ? (
-                    <>
-                      <div className="px-3 py-2 text-sm text-muted-foreground border-b border-border">
-                        <p className="font-medium text-foreground">{user.name}</p>
-                        <p className="text-xs">{user.email}</p>
-                      </div>
-                     
-                      <Button 
-                        variant="destructive" 
-                        className="justify-start" 
-                        onClick={() => {
-                          handleLogout();
-                          setIsMenuOpen(false);
-                        }}
-                      >
-                        Logout
-                      </Button>
-                    </>
-                  ) : (
-                    <Button 
-                      className="justify-start" 
-                      onClick={() => {
-                        setIsAuthModalOpen(true);
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      Get Started
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </header>
+
+      {/* Mobile and tablet navigation */}
+      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+        <SheetContent
+          side="right"
+          className="flex h-dvh w-[min(88vw,380px)] flex-col gap-0 overflow-hidden border-l bg-background/95 p-0 backdrop-blur-xl lg:hidden"
+        >
+          <SheetHeader className="border-b border-border/70 px-5 pb-4 pt-5 text-left">
+            <Link
+              to="/"
+              className="flex w-fit items-center"
+              onClick={() => setIsMenuOpen(false)}
+              aria-label="FyreWay home"
+            >
+              <img
+                src={isDarkTheme ? "/white.png" : "/black.png"}
+                className="h-14 w-14 object-contain"
+                alt="FyreWay Logo"
+                width="96"
+                height="96"
+              />
+            </Link>
+            <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+            <SheetDescription className="sr-only">
+              Navigate through FyreWay pages and account actions.
+            </SheetDescription>
+          </SheetHeader>
+
+          <nav className="flex-1 overflow-y-auto px-3 py-4">
+            <div className="flex flex-col gap-1">
+              {navLinks.map((link) => {
+                const isActive = link.type === "route"
+                  ? location.pathname === link.href || location.pathname.startsWith(`${link.href}/`)
+                  : isHomePage && location.hash === link.href;
+                const linkClassName = `flex min-h-12 items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-colors ${
+                  isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`;
+
+                if (link.type === "route") {
+                  return (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={linkClassName}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.label}
+                      <ArrowRight className="h-4 w-4 opacity-50" />
+                    </Link>
+                  );
+                }
+
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => {
+                      handleHashNavigation(e, link.href, navigate, isHomePage);
+                      setIsMenuOpen(false);
+                    }}
+                    className={linkClassName}
+                  >
+                    {link.label}
+                    <ArrowRight className="h-4 w-4 opacity-50" />
+                  </a>
+                );
+              })}
+            </div>
+          </nav>
+
+          <div className="border-t border-border/70 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            {isAuthenticated && user ? (
+              <div className="space-y-3">
+                <div className="min-w-0 rounded-xl bg-secondary/70 px-4 py-3">
+                  <p className="truncate text-sm font-semibold text-foreground">{user.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <Button
+                  variant="destructive"
+                  className="h-11 w-full"
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className="h-11 w-full"
+                onClick={() => {
+                  setIsAuthModalOpen(true);
+                  setIsMenuOpen(false);
+                }}
+              >
+                Get Started
+              </Button>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Auth Modal - lazy loaded */}
       {isAuthModalOpen && (

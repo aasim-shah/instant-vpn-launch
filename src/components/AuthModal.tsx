@@ -310,20 +310,20 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-[500px] h-[80vh] p-0 overflow-y-scroll">
-          <div className="relative">
+        <DialogContent className="max-h-[calc(100dvh-1rem)] w-[calc(100%-1rem)] max-w-[500px] gap-0 overflow-hidden rounded-2xl p-0 sm:max-h-[calc(100dvh-2rem)] [&>button]:right-3 [&>button]:top-3 [&>button]:z-10 [&>button]:flex [&>button]:h-9 [&>button]:w-9 [&>button]:items-center [&>button]:justify-center [&>button]:rounded-full [&>button]:bg-background/80 [&>button]:shadow-sm [&>button]:backdrop-blur-sm">
+          <div className="relative min-h-0 overflow-y-auto overscroll-contain">
             {/* Header with gradient background */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background px-6 pt-8 pb-6">
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-7">
               <div className="absolute inset-0 hero-grid opacity-50" />
               <div className="relative">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 ring-4 ring-primary/20">
-                  <Shield className="h-7 w-7 text-primary" />
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 ring-4 ring-primary/20 sm:mb-4 sm:h-14 sm:w-14">
+                  <Shield className="h-6 w-6 text-primary sm:h-7 sm:w-7" />
                 </div>
                 <DialogHeader>
-                  <DialogTitle className="text-center text-2xl font-bold">
+                  <DialogTitle className="px-8 text-center text-xl font-bold leading-tight sm:px-0 sm:text-2xl">
                     Welcome to <span className="gradient-text">VPN Service</span>
                   </DialogTitle>
-                  <DialogDescription className="text-center">
+                  <DialogDescription className="mx-auto max-w-sm text-center text-xs sm:text-sm">
                     Sign in to your account or create a new one
                   </DialogDescription>
                 </DialogHeader>
@@ -331,17 +331,21 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
             </div>
 
             {/* Tabs Content */}
-            <div className="px-6 py-6">
+            <div className="px-4 py-4 sm:px-6 sm:py-6">
               <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "signup" | "login")}>
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsList className="mb-4 grid h-11 w-full grid-cols-2 sm:mb-6">
+                  <TabsTrigger value="login" className="h-full">
+                    Login
+                  </TabsTrigger>
+                  <TabsTrigger value="signup" className="h-full">
+                    Sign Up
+                  </TabsTrigger>
                 </TabsList>
 
                 {/* Login Tab */}
-                <TabsContent value="login" className="space-y-4 mt-0">
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="space-y-2">
+                <TabsContent value="login" className="mt-0 space-y-4">
+                  <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="login-email" className="flex items-center gap-2">
                         <Mail className="h-3.5 w-3.5 text-primary" />
                         Email Address <span className="text-destructive">*</span>
@@ -354,10 +358,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                         disabled={isLoading}
                         required
+                        className="h-11"
                       />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="login-password" className="flex items-center gap-2">
                         <Lock className="h-3.5 w-3.5 text-primary" />
                         Password <span className="text-destructive">*</span>
@@ -371,12 +376,14 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                           onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                           disabled={isLoading}
                           required
+                          className="h-11 pr-11"
                         />
                         <button
                           type="button"
                           onClick={() => setShowLoginPassword(!showLoginPassword)}
                           disabled={isLoading}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                          className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {showLoginPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -397,7 +404,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                       </a>
                     </div> */}
 
-                    <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+                    <Button type="submit" className="mt-4 h-11 w-full sm:mt-6" disabled={isLoading}>
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -409,7 +416,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                     </Button>
                   </form>
 
-                  <p className="text-xs text-center text-muted-foreground mt-4">
+                  <p className="mt-4 text-center text-xs text-muted-foreground">
                     Don't have an account?{" "}
                     <button
                       onClick={() => setActiveTab("signup")}
@@ -421,9 +428,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                 </TabsContent>
 
                 {/* Signup Tab */}
-                <TabsContent value="signup" className="space-y-4 mt-0">
-                  <form onSubmit={handleSignup} className="space-y-4">
-                    <div className="space-y-2">
+                <TabsContent value="signup" className="mt-0 space-y-4">
+                  <form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="name" className="flex items-center gap-2">
                         <User className="h-3.5 w-3.5 text-primary" />
                         Full Name <span className="text-destructive">*</span>
@@ -435,10 +442,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
                         disabled={isLoading}
                         required
+                        className="h-11"
                       />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="signup-email" className="flex items-center gap-2">
                         <Mail className="h-3.5 w-3.5 text-primary" />
                         Email Address <span className="text-destructive">*</span>
@@ -451,10 +459,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                         disabled={isLoading}
                         required
+                        className="h-11"
                       />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="signup-password" className="flex items-center gap-2">
                         <Lock className="h-3.5 w-3.5 text-primary" />
                         Password <span className="text-destructive">*</span>
@@ -469,12 +478,14 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                           disabled={isLoading}
                           required
                           minLength={6}
+                          className="h-11 pr-11"
                         />
                         <button
                           type="button"
                           onClick={() => setShowSignupPassword(!showSignupPassword)}
                           disabled={isLoading}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          aria-label={showSignupPassword ? "Hide password" : "Show password"}
+                          className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {showSignupPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -488,7 +499,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                       </p>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="phone" className="flex items-center gap-2">
                         <Phone className="h-3.5 w-3.5 text-muted-foreground" />
                         Phone Number <span className="text-xs text-muted-foreground">(optional)</span>
@@ -500,10 +511,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         value={signupData.phone}
                         onChange={(e) => setSignupData({ ...signupData, phone: e.target.value })}
                         disabled={isLoading}
+                        className="h-11"
                       />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="website" className="flex items-center gap-2">
                         <Globe className="h-3.5 w-3.5 text-muted-foreground" />
                         Website <span className="text-xs text-muted-foreground">(optional)</span>
@@ -515,10 +527,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         value={signupData.website}
                         onChange={(e) => setSignupData({ ...signupData, website: e.target.value })}
                         disabled={isLoading}
+                        className="h-11"
                       />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label htmlFor="location" className="flex items-center gap-2">
                         <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                         Location <span className="text-xs text-muted-foreground">(optional)</span>
@@ -529,10 +542,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                         value={signupData.location}
                         onChange={(e) => setSignupData({ ...signupData, location: e.target.value })}
                         disabled={isLoading}
+                        className="h-11"
                       />
                     </div>
 
-                    <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+                    <Button type="submit" className="mt-4 h-11 w-full sm:mt-6" disabled={isLoading}>
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -544,7 +558,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, defaultTab = "login" }: 
                     </Button>
                   </form>
 
-                  <p className="text-xs text-center text-muted-foreground mt-4">
+                  <p className="mt-4 text-center text-xs text-muted-foreground">
                     By signing up, you agree to our Terms of Service and Privacy Policy
                   </p>
                 </TabsContent>

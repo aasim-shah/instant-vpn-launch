@@ -8,6 +8,15 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    // Dev only: forward the dynamic sitemap to the local Node SEO service
+    // (run `node server/index.mjs` alongside `npm run dev`). In production
+    // Nginx proxies /sitemap.xml to that service instead.
+    proxy: {
+      "/sitemap.xml": {
+        target: "http://127.0.0.1:3001",
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

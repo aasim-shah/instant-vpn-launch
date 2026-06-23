@@ -7,7 +7,36 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, Clock, ArrowLeft, Share2, Twitter, Linkedin, Facebook, AlertCircle } from 'lucide-react';
 import { useBlogBySlug, useRelatedBlogs } from '@/hooks/use-cms';import '@/styles/cms-content.css';
 import { UserAvatar } from '@/components/ui/user-avatar';
-import { SEO, organizationSchema } from '@/components/SEO';
+import { SEO, organizationSchema, breadcrumbSchema, faqSchema } from '@/components/SEO';
+
+// Extract FAQ pairs from rendered content: an <h2-4>FAQ: …</h2-4> heading
+// immediately followed by a <p> answer (the CMS content convention).
+function parseFaqsFromHtml(content: string): { question: string; answer: string }[] {
+  const stripTags = (html: string) =>
+    html
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const faqs: { question: string; answer: string }[] = [];
+  const re = /<h[2-4][^>]*>([\s\S]*?)<\/h[2-4]>\s*<p[^>]*>([\s\S]*?)<\/p>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(content)) !== null) {
+    const heading = stripTags(match[1]);
+    if (!/^faq\s*:/i.test(heading)) continue;
+    const question = heading.replace(/^faq\s*:\s*/i, '').trim();
+    const answer = stripTags(match[2]);
+    if (question && answer) faqs.push({ question, answer });
+  }
+  return faqs;
+}
+
 export default function BlogDetail() {
   const { slug } = useParams<{ slug: string }>();
 
@@ -105,22 +134,37 @@ export default function BlogDetail() {
           tags: post.tags,
         }}
         jsonLd={{
-          '@type': 'BlogPosting',
-          headline: post.title,
-          description: metaDescription,
-          image: post.featuredImage,
-          datePublished: publishedDate,
-          dateModified: post.updatedAt,
-          author: {
-            '@type': 'Person',
-            name: post.author?.name || 'FyreWay',
-          },
-          publisher: organizationSchema,
-          mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': `https://fyreway.com/blog/${post.slug}`,
-          },
-          keywords: post.tags.join(', '),
+          '@graph': [
+            {
+              '@type': 'BlogPosting',
+              headline: post.title,
+              description: metaDescription,
+              image: post.featuredImage,
+              datePublished: publishedDate,
+              dateModified: post.updatedAt,
+              author: {
+                '@type': 'Person',
+                name: post.author?.name || 'FyreWay',
+              },
+              publisher: {
+                ...organizationSchema,
+                logo: { '@type': 'ImageObject', url: 'https://fyreway.com/logo.png' },
+              },
+              mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `https://fyreway.com/blog/${post.slug}`,
+              },
+              keywords: post.tags.join(', '),
+            },
+            breadcrumbSchema([
+              { name: 'Home', url: '/' },
+              { name: 'Blog', url: '/blog' },
+              { name: post.title, url: `/blog/${post.slug}` },
+            ]),
+            ...(parseFaqsFromHtml(post.content || '').length
+              ? [faqSchema(parseFaqsFromHtml(post.content || ''))]
+              : []),
+          ],
         }}
       />
       <Header />
